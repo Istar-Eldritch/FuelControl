@@ -16,13 +16,20 @@ class FuelStationGroup {
 	bool HasFuel() {
 		return fuelAmount > 0 || fuelAmount == -1;
 	}
+
+	void RemoveFuel(float quantity) {
+		fuelAmount = fuelAmount - quantity;
+		if (fuelAmount <  0) {
+			fuelAmount = 0;
+		}
+	}
 }
 
 class FuelStationManager {
 	
 	static int STATION_RADIOUS = 45;
 	
-	private ref map<string, ref FuelStationGroup> stations;
+	ref map<string, ref FuelStationGroup> stations;
 	
 	void FuelStationManager() {
 		stations = new map<string, ref FuelStationGroup>();
@@ -32,7 +39,7 @@ class FuelStationManager {
 				vector pos;
 				pos[0] = station.x;
 				pos[2] = station.y;
-				stations[station.name] = new ref FuelStationGroup(station.name, pos, station.capacity, station.fuel);
+				stations[station.name] = new ref FuelStationGroup(station.name, pos, station.capacity * 1000, station.fuel * 1000);
 			}
 			// TODO: Load this from a save file if it exists.
 			
@@ -42,11 +49,8 @@ class FuelStationManager {
 	}
 	
 	ref FuelStationGroup FindStationForPump(vector pumpLocation) {
-		Print("[FuelControl] Check fuel pump at " + pumpLocation);
 		foreach(auto station: stations){
-			Print("[FuelControl] Checking station " + station);
 			if (station && Math.IsPointInCircle(station.position, STATION_RADIOUS, pumpLocation)) {
-				Print("[FuelControl] Fuel pump at " + pumpLocation + " is part of the " + station.name + " station");
 				return station;
 			}
 		}
@@ -65,12 +69,20 @@ class FuelStationManager {
 			Print("[FuelControl] Got fuel stations from server");
 			ref map<string, ref FuelStationGroup> sts = data.param1;
 			foreach(auto station: sts) {
-				Print("[FuelControl] Station " + station.name + " @ " + station.position);
 				stations[station.name] = new ref FuelStationGroup(station.name, station.position, station.fuelCapacity, station.fuelAmount);
 			}
 		} else if (GetGame().IsServer()) {
 			// If the sender is not sending an update, then send all the station information back to it.
 			GetRPCManager().SendRPC("FuelControl", "GetFuelStations", new Param1<map<string, ref FuelStationGroup>>(stations), true, sender, target);
+		}
+	}
+	
+	void UpdateStation( CallType type, ref ParamsReadContext ctx, ref PlayerIdentity sender, ref Object target ) {
+		Param1<FuelStationGroup> data;
+		if (GetGame().IsClient() && ctx.Read(data)) {
+			ref FuelStationGroup station = data.param1;
+			Print("[FuelControl] Got update on station " + station.name + " from server");
+			stations[station.name] = new ref FuelStationGroup(station.name, station.position, station.fuelCapacity, station.fuelAmount);
 		}
 	}
 }

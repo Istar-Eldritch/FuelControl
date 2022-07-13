@@ -25,4 +25,10 @@ modded class FuelStation {
 		return true;
 	}
 
+	void RemoveFuel(float quantity) {
+		if (group) {
+			group.RemoveFuel(quantity);
+		}
+	}
+
 };

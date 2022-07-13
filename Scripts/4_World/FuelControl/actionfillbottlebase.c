@@ -1,13 +1,22 @@
 
 modded class ActionFillBottleBase: ActionContinuousBase {
 
-	// TODO GET TEXT
+	bool pumpHasFuel = true;
+	
+	override string GetText(){
+		if (pumpHasFuel){
+			return super.GetText();
+		}
+		return "There is no fuel on this station";
+	}
 	
 	override bool ActionCondition( PlayerBase player, ActionTarget target, ItemBase item ) {
 		if (super.ActionCondition( player, target, item )) {
 			FuelStation station = FuelStation.Cast(target.GetObject());
 			if (station){
-				return station.HasFuel();
+				// TODO: Find a better way to notify hte player the station has no fuel.
+				pumpHasFuel = station.HasFuel();
+				return true;
 			}
 			return true;
 		}
@@ -25,3 +34,18 @@ modded class ActionFillBottleBase: ActionContinuousBase {
 		return false;
 	}
 };
+
+modded class CAContinuousFill : CAContinuousBase
+{
+	override void CalcAndSetQuantity( ActionData action_data )
+	{
+		FuelStation station = FuelStation.Cast(action_data.m_Target.GetObject());
+		ItemBase theBottle = ItemBase.Cast(action_data.m_MainItem);
+		if (station && theBottle && GetGame().IsServer()){
+			station.RemoveFuel(m_SpentQuantity);
+			GetRPCManager().SendRPC("FuelControl", "UpdateStation", new Param1<FuelStationGroup>(GetFuelStationManager().FindStationForPump(station.GetPosition())), true);
+		}
+		super.CalcAndSetQuantity( action_data );
+	}
+	
+ };
