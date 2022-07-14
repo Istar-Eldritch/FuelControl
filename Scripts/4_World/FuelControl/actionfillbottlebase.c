@@ -7,7 +7,7 @@ modded class ActionFillBottleBase: ActionContinuousBase {
 		if (pumpHasFuel){
 			return super.GetText();
 		}
-		return "There is no fuel on this station";
+		return "There is no fuel at this station";
 	}
 	
 	override bool ActionCondition( PlayerBase player, ActionTarget target, ItemBase item ) {
