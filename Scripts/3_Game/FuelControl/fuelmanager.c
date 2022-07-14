@@ -18,16 +18,18 @@ class FuelStationGroup {
 	}
 
 	void RemoveFuel(float quantity) {
-		fuelAmount = fuelAmount - quantity;
-		if (fuelAmount <  0) {
-			fuelAmount = 0;
+		if (fuelAmount != -1) {
+			fuelAmount = fuelAmount - quantity;
+			if (fuelAmount <  0) {
+				fuelAmount = 0;
+			}
 		}
 	}
 }
 
 class FuelStationManager {
 	
-	static int STATION_RADIOUS = 45;
+	static int STATION_RADIOUS = 100;
 	
 	ref map<string, ref FuelStationGroup> stations;
 	
@@ -56,6 +58,15 @@ class FuelStationManager {
 		}
 		
 		return null;
+	}
+	
+	void Save() {
+		FuelControlSettings config = GetFuelControlSettings();
+		foreach(auto cst: config.stations) {
+			FuelStationGroup gst = stations[cst.name];
+			cst.fuel = gst.fuelAmount / 1000;
+		}
+		config.Save();
 	}
 
 	void SyncFuelStations() {

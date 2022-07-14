@@ -34,6 +34,10 @@ class FuelControlSettings {
 			DefaultSettings();
 		}
 	}
+	
+	void Save() {
+		JsonFileLoader<FuelControlSettings>.JsonSaveFile(SETTINGS_PATH, this);
+	}
 
 	void DefaultSettings() {
 		Print("[FuelControl] Using default settings");

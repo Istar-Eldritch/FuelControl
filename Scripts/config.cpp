@@ -22,19 +22,19 @@ class CfgMods
 			class gameScriptModule
 			{
 				value = "";
-				files[] = {"FuelControl/Scripts/3_Game"};
+				files[] = {"FuelControl/scripts/3_Game"};
 			};
 
 			class worldScriptModule
 			{
 				value = "";
-				files[] = {"FuelControl/Scripts/4_World"};
+				files[] = {"FuelControl/scripts/4_World"};
 			};
 
             class missionScriptModule
 			{
 				value = "";
-				files[] = {"FuelControl/Scripts/5_Mission"};
+				files[] = {"FuelControl/scripts/5_Mission"};
 			};
 		};
 	};
