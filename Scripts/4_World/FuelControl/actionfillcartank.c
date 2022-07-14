@@ -1,6 +1,7 @@
 class CAFillCarTank : CAContinuousFillFuel {
 	
 	override void Setup(ActionData action_data) {
+
 		m_Player = action_data.m_Player;
 		
 		Car car = Car.Cast(action_data.m_Target.GetObject());
@@ -53,16 +54,12 @@ class CAFillCarTank : CAContinuousFillFuel {
 			
 			if(station) {
 				station.RemoveFuel(m_SpentQuantity);
-				// Notify all the clients that this station fuel was updated.
-				// XXX: Not sure if this is necesary and I'm also not sure how much of a performance impact this will have with lots of players.
-				// It may be better to trigger a request from the client side when a player gets close to a fuel station.
-				GetRPCManager().SendRPC("FuelControl", "UpdateStation", new Param1<FuelStationGroup>(GetFuelStationManager().FindStationForPump(station.GetPosition())), true);
-				
+				car.Fill( CarFluid.FUEL, (m_SpentQuantity / 1000) );
+
 				// This is likely to be very ineficient. There should be a better way of doing this.
 				GetFuelStationManager().Save();
 			}
 			
-			car.Fill( CarFluid.FUEL, (m_SpentQuantity / 1000) );
 		}
 
 		m_SpentQuantity = 0;
@@ -79,6 +76,7 @@ class ActionFillCarTankCB : ActionContinuousBaseCB {
 
 class ActionFillCarTank : ActionContinuousBase {
 	
+	vector refillPointPos;
 	bool nearbyStation = false;
 	bool pumpHasFuel = false;
 	
@@ -127,6 +125,11 @@ class ActionFillCarTank : ActionContinuousBase {
 	}
 	
 	override bool ActionCondition(PlayerBase player, ActionTarget target, ItemBase item) {
+		
+		FuelControlSettings settings = GetFuelControlSettings();
+		
+		if(!settings.pump_refueling)
+			return false;
 
 		Car car = Car.Cast( target.GetObject() );
 		if (!car || car.GetFluidFraction(CarFluid.FUEL) >= 0.98)
@@ -137,18 +140,16 @@ class ActionFillCarTank : ActionContinuousBase {
 
 		CarScript carS = CarScript.Cast(car);
 		
-		if ( carS )
-		{
-			for (int s = 0; s < selections.Count(); s++)
-			{
-				if ( selections[s] == carS.GetActionCompNameFuel() )
-				{
-					auto refillPointPos = carS.GetRefillPointPosWS();
+		if ( carS ) {
+			for (int s = 0; s < selections.Count(); s++) {
+				if ( selections[s] == carS.GetActionCompNameFuel() ) {
+					refillPointPos = carS.GetRefillPointPosWS();
 					float dist = vector.DistanceSq(refillPointPos, player.GetPosition() );
-
-					if ( dist < carS.GetActionDistanceFuel() * carS.GetActionDistanceFuel() ) {
+					float distanceFuel = carS.GetActionDistanceFuel() * carS.GetActionDistanceFuel();
+					if(dist < distanceFuel) {
+						GetFuelStationManager().SendRequestStation(refillPointPos);
 						CheckNearbyStations(refillPointPos);
-						return nearbyStation;
+						return nearbyStation;		
 					}
 				}
 			}
@@ -159,7 +160,7 @@ class ActionFillCarTank : ActionContinuousBase {
 	
 	override bool ActionConditionContinue( ActionData action_data ) {
 		if (super.ActionConditionContinue( action_data )) {
-			CheckNearbyStations();
+			CheckNearbyStations(refillPointPos);
 			return pumpHasFuel;
 		}
 		return false;

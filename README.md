@@ -6,6 +6,7 @@ This mod provides tools to control your sever's fuel economy.
 
 - Enable / Disable fuel stations
 - Set fuel limit per station.
+- Refuel car directly if its placed close to a fuel pump.
 
 ## Configuration:
 In the profiles folder you'll find an example configuration for the Chernarous map. If you are not using Chernarous, you'll have to create a file similar to the one provided with the locations of the fuel stations you want to configure.
@@ -15,6 +16,7 @@ In the profiles folder you'll find an example configuration for the Chernarous m
 
 ```js
 {
+    "pump_refueling": 1 // Enables refueling a car if its close to a fuel pump. 1 = enabled, 0 = disabled
     "stations": [] // An array of StationConfig. Describes the configurations for each one of the stations.
 }
 ```

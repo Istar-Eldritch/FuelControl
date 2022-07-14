@@ -14,6 +14,7 @@ modded class ActionFillBottleBase: ActionContinuousBase {
 		if (super.ActionCondition( player, target, item )) {
 			FuelStation station = FuelStation.Cast(target.GetObject());
 			if (station){
+				GetFuelStationManager().SendRequestStation(station.GetPosition());
 				// TODO: Find a better way to notify hte player the station has no fuel.
 				pumpHasFuel = station.HasFuel();
 				return true;
@@ -43,11 +44,6 @@ modded class CAContinuousFill : CAContinuousBase
 		ItemBase theBottle = ItemBase.Cast(action_data.m_MainItem);
 		if (station && theBottle && GetGame().IsServer()){
 			station.RemoveFuel(m_SpentQuantity);
-			// Notify all the clients that this station fuel was updated.
-			// XXX: Not sure if this is necesary and I'm also not sure how much of a performance impact this will have with lots of players.
-			// It may be better to trigger a request from the client side when a player gets close to a fuel station.
-			GetRPCManager().SendRPC("FuelControl", "UpdateStation", new Param1<FuelStationGroup>(GetFuelStationManager().FindStationForPump(station.GetPosition())), true);
-			
 			// This is likely to be very ineficient. There should be a better way of doing this.
 			GetFuelStationManager().Save();
 		}

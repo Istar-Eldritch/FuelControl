@@ -31,11 +31,12 @@ class FuelStationManager {
 	
 	static int STATION_RADIOUS = 100;
 	
-	ref map<string, ref FuelStationGroup> stations;
+	int lastRequestTime = 0;
+	
+	ref map<string, ref FuelStationGroup> stations = new ref map<string, ref FuelStationGroup>;
 	
 	void FuelStationManager() {
-		stations = new map<string, ref FuelStationGroup>();
-		if(GetGame().IsServer()) {
+		if (GetGame().IsServer()) {
 			FuelControlSettings config = GetFuelControlSettings();
 			foreach(auto station: config.stations) {
 				vector pos;
@@ -43,10 +44,6 @@ class FuelStationManager {
 				pos[2] = station.y;
 				stations[station.name] = new ref FuelStationGroup(station.name, pos, station.capacity * 1000, station.fuel * 1000);
 			}
-			// TODO: Load this from a save file if it exists.
-			
-		} else {
-			stations = new map<string, ref FuelStationGroup>();
 		}
 	}
 	
@@ -68,23 +65,24 @@ class FuelStationManager {
 		}
 		config.Save();
 	}
-
-	void SyncFuelStations() {
-		Print("[FuelControl] Requesting fuel stations from server");
-		GetRPCManager().SendRPC("FuelControl", "GetFuelStations", null, true);
+	
+	void SendRequestStation(vector position) {
+		auto currentTime = GetGame().GetTime();
+		if (currentTime - lastRequestTime > 1000) {
+			Print("Requestion station at position " + position);
+			GetRPCManager().SendRPC("FuelControl", "RequestStation", new Param1<vector>(position), true);
+			lastRequestTime = currentTime;
+		}
 	}
 	
-	void GetFuelStations( CallType type, ref ParamsReadContext ctx, ref PlayerIdentity sender, ref Object target ) {
-		Param1<map<string, ref FuelStationGroup>> data;
-		if (ctx.Read(data)) {
-			Print("[FuelControl] Got fuel stations from server");
-			ref map<string, ref FuelStationGroup> sts = data.param1;
-			foreach(auto station: sts) {
-				stations[station.name] = new ref FuelStationGroup(station.name, station.position, station.fuelCapacity, station.fuelAmount);
-			}
-		} else if (GetGame().IsServer()) {
-			// If the sender is not sending an update, then send all the station information back to it.
-			GetRPCManager().SendRPC("FuelControl", "GetFuelStations", new Param1<map<string, ref FuelStationGroup>>(stations), true, sender, target);
+	void RequestStation( CallType type, ref ParamsReadContext ctx, ref PlayerIdentity sender, ref Object target ) {
+		Param1<vector> data;
+		if (GetGame().IsServer() && ctx.Read(data)) {
+			vector position = data.param1;
+			Print("[FuelControl] Client is requesting station for pump at " + position);
+			auto station = FindStationForPump(position);
+			if (station)
+				GetRPCManager().SendRPC("FuelControl", "UpdateStation", new Param1<FuelStationGroup>(station), true, sender, target);
 		}
 	}
 	
