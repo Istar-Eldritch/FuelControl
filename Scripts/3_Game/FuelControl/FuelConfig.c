@@ -20,9 +20,9 @@ class FuelControlSettings {
 	static private const string DIR_PATH = "$profile:FuelControl";
 	static private const string SETTINGS_PATH = DIR_PATH + "\\settings.json";
 
-	ref array<ref StationConfig> stations = new ref array<ref StationConfig>;
 	bool pump_refueling = false;
 	bool siphoning = false;
+	ref array<ref StationConfig> stations = new ref array<ref StationConfig>;
 
 	void FuelControlSettings() {}
 	

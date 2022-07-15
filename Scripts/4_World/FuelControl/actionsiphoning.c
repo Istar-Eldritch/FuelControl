@@ -12,11 +12,11 @@ class CASiphon : CAContinuousFill {
 			SetACData(m_SpentUnits);
 		}
 		
-		//if (GetGame().IsServer()) {
+		if (GetGame().IsServer()) {
 			Car car = Car.Cast(action_data.m_Target.GetObject());
 			car.Leak( CarFluid.FUEL, (m_SpentQuantity / 1000));
 			Liquid.FillContainerEnviro(action_data.m_MainItem, m_liquid_type, m_SpentQuantity, false);
-		//}
+		}
 		
 		m_SpentQuantity = 0;
 
@@ -66,7 +66,9 @@ class ActionSiphon : ActionContinuousBase {
 		if (!car || car.GetFluidFraction(CarFluid.FUEL) <= 0.2)
 			return false;
 		
-		// TODO: Check if the item is full.
+		// Check this item can be used to put fuel inside
+		if(!item || !Liquid.CanFillContainer(item, LIQUID_GASOLINE))
+			return false;
 		
 		array<string> selections = new array<string>;
 		target.GetObject().GetActionComponentNameList(target.GetComponentIndex(), selections);
