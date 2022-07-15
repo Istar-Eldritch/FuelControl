@@ -7,10 +7,10 @@ This mod provides tools to control your sever's fuel economy.
 - Enable / Disable fuel stations
 - Set fuel limit per station.
 - Refuel car directly if its placed close to a fuel pump.
+- Siphon fuel out of a car fuel tank.
 
 ## Configuration:
 In the profiles folder you'll find an example configuration for the Chernarous map. If you are not using Chernarous, you'll have to create a file similar to the one provided with the locations of the fuel stations you want to configure.
-
 
 ### Structure of the configuration file
 
