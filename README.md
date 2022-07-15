@@ -17,6 +17,7 @@ In the profiles folder you'll find an example configuration for the Chernarous m
 ```js
 {
     "pump_refueling": 1 // Enables refueling a car if its close to a fuel pump. 1 = enabled, 0 = disabled
+    "siphoning": 1 // Enables siphoning fuel from cars. 1 = enabled, 0 = disabled.
     "stations": [] // An array of StationConfig. Describes the configurations for each one of the stations.
 }
 ```

@@ -70,7 +70,7 @@ class ActionFillCarTankCB : ActionContinuousBaseCB {
 	private const float TIME_TO_REPEAT = 0.5;
 
 	override void CreateActionComponent() {
-		m_ActionData.m_ActionComponent = new CAFillCarTank( UAQuantityConsumed.FUEL * 3, TIME_TO_REPEAT );
+		m_ActionData.m_ActionComponent = new CAFillCarTank( UAQuantityConsumed.FUEL, TIME_TO_REPEAT );
 	}
 };
 
@@ -172,6 +172,7 @@ modded class ActionConstructor {
 	override void RegisterActions(TTypenameArray actions) {
 		super.RegisterActions(actions);
 		actions.Insert(ActionFillCarTank);
+		actions.Insert(ActionSiphon);
 	}
 };
 
@@ -179,5 +180,6 @@ modded class CarScript {
 	override void SetActions() {
 		super.SetActions();
 		AddAction(ActionFillCarTank);
+		AddAction(ActionSiphon);
 	}
 };
