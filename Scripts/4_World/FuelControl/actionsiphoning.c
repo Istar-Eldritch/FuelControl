@@ -93,8 +93,13 @@ class ActionSiphon : ActionContinuousBase {
 		if (super.ActionConditionContinue( action_data )) {
 			// TODO check if the item is full.
 			
+			FuelControlSettings settings = GetFuelControlSettings();
 			Car car = Car.Cast(action_data.m_Target.GetObject());
-			if (!car || car.GetFluidFraction(CarFluid.FUEL) <= 0.2)
+			float siphoning_limit = (100 - settings.siphoning_limit) / 100;
+			if(siphoning_limit < 0) {
+				siphoning_limit = 0;
+			}
+			if (!car || car.GetFluidFraction(CarFluid.FUEL) <= siphoning_limit)
 				return false;
 
 			return true;

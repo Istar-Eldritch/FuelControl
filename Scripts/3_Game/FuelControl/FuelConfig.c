@@ -22,6 +22,7 @@ class FuelControlSettings {
 
 	bool pump_refueling = false;
 	bool siphoning = false;
+	bool siphoning_limit = 98;
 	ref array<ref StationConfig> stations = new ref array<ref StationConfig>;
 
 	void FuelControlSettings() {}
@@ -66,6 +67,7 @@ class FuelControlSettings {
 			}
 			pump_refueling = settings.pump_refueling;
 			siphoning = settings.siphoning;
+			siphoning_limit = settings.siphoning_limit;
 		} else if (GetGame().IsServer()) {
 			// If the sender is not sending an update, then send all the station information back to it.
 			GetRPCManager().SendRPC("FuelControl", "GetSettings", new Param1<FuelControlSettings>(this), true, sender, target);

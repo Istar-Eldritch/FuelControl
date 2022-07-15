@@ -1,6 +1,7 @@
 {
     "pump_refueling": 1,
     "siphoning": 1,
+    "siphoning_limit": 98,
     "stations": [
       {
         "x": 314.600555,
