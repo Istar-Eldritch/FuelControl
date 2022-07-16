@@ -48,7 +48,6 @@ modded class CAContinuousFill : CAContinuousBase
 			GetFuelStationManager().Save();
 		}
 		
-		// TODO Remove Fuel from Car
 		super.CalcAndSetQuantity( action_data );
 	}
 	
