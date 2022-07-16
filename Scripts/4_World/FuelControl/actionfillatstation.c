@@ -154,7 +154,28 @@ class ActionFillAtStationCB : ActionContinuousBaseCB {
 	private const float TIME_TO_REPEAT = 0.5;
 
 	override void CreateActionComponent() {
-		m_ActionData.m_ActionComponent = new CAFillAtStation( UAQuantityConsumed.FUEL, TIME_TO_REPEAT );
+		FuelControlSettings settings = GetFuelControlSettings();
+		float containerRate = settings.liquid_transfer_rates.Get(m_ActionData.m_Target.GetObject().GetType());
+		if (!containerRate) {
+			containerRate = UAQuantityConsumed.FUEL;
+		}
+		
+		float stationRate = settings.liquid_transfer_rates.Get("Land_FuelStation_Feed");
+		
+		if (!stationRate) {
+			stationRate = UAQuantityConsumed.FUEL;
+		}
+		
+		float transferRate;
+		
+		if (stationRate <= containerRate) {
+			transferRate = stationRate;
+		} else {
+			transferRate = containerRate;
+		}
+		
+		
+		m_ActionData.m_ActionComponent = new CAFillAtStation( transferRate, TIME_TO_REPEAT );
 	}
 };
 

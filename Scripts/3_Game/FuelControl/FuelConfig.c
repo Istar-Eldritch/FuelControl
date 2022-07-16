@@ -25,6 +25,7 @@ class FuelControlSettings {
 	bool siphoning = true;
 	bool siphoning_limit = 98;
 	ref array<ref StationConfig> stations = new ref array<ref StationConfig>;
+	ref map<string, float> liquid_transfer_rates = new ref map<string, float>;
 
 	void FuelControlSettings() {}
 	
@@ -66,6 +67,7 @@ class FuelControlSettings {
 			foreach(auto k, auto station: settings.stations) {
 		 		stations.Insert(new ref StationConfig(station.x, station.y, station.name, station.capacity, station.fuel));
 			}
+			liquid_transfer_rates = settings.liquid_transfer_rates;
 			pump_car_refueling = settings.pump_car_refueling;
 			pump_barrel_refueling = settings.pump_barrel_refueling;
 			siphoning = settings.siphoning;

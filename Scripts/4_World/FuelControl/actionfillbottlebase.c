@@ -52,3 +52,31 @@ modded class CAContinuousFill : CAContinuousBase
 	}
 	
  };
+
+modded class ActionFillBottleBaseCB : ActionContinuousBaseCB
+{
+	
+	override void CreateActionComponent() {
+		
+		FuelControlSettings settings = GetFuelControlSettings();
+		float targetRate = settings.liquid_transfer_rates.Get(m_ActionData.m_Target.GetObject().GetType());
+		if (!targetRate) {
+			targetRate = UAQuantityConsumed.FUEL;
+		}
+		float itemRate = settings.liquid_transfer_rates.Get(m_ActionData.m_MainItem.GetType());
+		if (!itemRate) {
+			itemRate = UAQuantityConsumed.FILL_LIQUID;
+		}
+		
+		float transferRate;
+		
+		if (targetRate < itemRate) {
+			transferRate = targetRate;
+		} else {
+			transferRate = itemRate;
+		}
+		
+		m_liquid_type = ActionFillBottleBase.Cast( m_ActionData.m_Action ).GetLiquidType( m_ActionData.m_Player, m_ActionData.m_Target, m_ActionData.m_MainItem );
+		m_ActionData.m_ActionComponent = new CAContinuousFill(transferRate, m_liquid_type);
+	}
+};
