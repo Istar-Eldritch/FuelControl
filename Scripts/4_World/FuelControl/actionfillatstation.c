@@ -132,7 +132,6 @@ class CAFillAtStation : CAContinuousBase {
 			}
 			
 			if(station) {
-				station.RemoveFuel(m_SpentQuantity);
 				Object obj = action_data.m_Target.GetObject();
 				Car car = Car.Cast(obj);
 				Barrel_ColorBase barrel = Barrel_ColorBase.Cast(obj);
@@ -142,6 +141,7 @@ class CAFillAtStation : CAContinuousBase {
 					Liquid.FillContainer(barrel, LIQUID_GASOLINE, m_SpentQuantity);
 				}
 
+				station.RemoveFuel(m_SpentQuantity);
 				// This is likely to be very ineficient. There should be a better way of doing this.
 				GetFuelStationManager().Save();
 			}
@@ -212,8 +212,6 @@ class ActionFillAtStation : ActionContinuousBase {
 		
 		FuelControlSettings settings = GetFuelControlSettings();
 		
-		if(!settings.pump_refueling)
-			return false;
 
 		Car car = Car.Cast( target.GetObject() );
 		Barrel_ColorBase barrel = Barrel_ColorBase.Cast(target.GetObject());
@@ -221,7 +219,7 @@ class ActionFillAtStation : ActionContinuousBase {
 		if (!car && !barrel)
 			return false;
 		
-		if (car && car.GetFluidFraction(CarFluid.FUEL) < 0.98) {
+		if (settings.pump_car_refueling && car && car.GetFluidFraction(CarFluid.FUEL) < 0.98) {
 			array<string> selections = new array<string>;
 			target.GetObject().GetActionComponentNameList(target.GetComponentIndex(), selections);
 	
@@ -241,7 +239,7 @@ class ActionFillAtStation : ActionContinuousBase {
 					}
 				}
 			}
-		} else if (barrel && barrel.IsOpen() && Liquid.CanFillContainer(barrel, LIQUID_GASOLINE)) {
+		} else if (settings.pump_barrel_refueling && barrel && barrel.IsOpen() && Liquid.CanFillContainer(barrel, LIQUID_GASOLINE)) {
 			refillPointPos = barrel.GetPosition();
 			GetFuelStationManager().SendRequestStation(refillPointPos);
 			CheckNearbyStations(refillPointPos);

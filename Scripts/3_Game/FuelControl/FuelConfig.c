@@ -20,8 +20,9 @@ class FuelControlSettings {
 	static private const string DIR_PATH = "$profile:FuelControl";
 	static private const string SETTINGS_PATH = DIR_PATH + "\\settings.json";
 
-	bool pump_refueling = false;
-	bool siphoning = false;
+	bool pump_car_refueling = true;
+	bool pump_barrel_refueling = true;
+	bool siphoning = true;
 	bool siphoning_limit = 98;
 	ref array<ref StationConfig> stations = new ref array<ref StationConfig>;
 
@@ -65,7 +66,8 @@ class FuelControlSettings {
 			foreach(auto k, auto station: settings.stations) {
 		 		stations.Insert(new ref StationConfig(station.x, station.y, station.name, station.capacity, station.fuel));
 			}
-			pump_refueling = settings.pump_refueling;
+			pump_car_refueling = settings.pump_car_refueling;
+			pump_barrel_refueling = settings.pump_barrel_refueling;
 			siphoning = settings.siphoning;
 			siphoning_limit = settings.siphoning_limit;
 		} else if (GetGame().IsServer()) {
