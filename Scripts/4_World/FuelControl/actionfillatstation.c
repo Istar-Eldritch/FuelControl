@@ -133,10 +133,10 @@ class CAFillAtStation : CAContinuousBase {
 			
 			if(station) {
 				Object obj = action_data.m_Target.GetObject();
-				Car car = Car.Cast(obj);
+				CarScript car = CarScript.Cast(obj);
 				Barrel_ColorBase barrel = Barrel_ColorBase.Cast(obj);
 				if (car) {
-					car.Fill( CarFluid.FUEL, (m_SpentQuantity / 1000) );
+					car.AddFuel(m_SpentQuantity / 1000 );
 				} else if(barrel) {
 					Liquid.FillContainer(barrel, LIQUID_GASOLINE, m_SpentQuantity);
 				}
@@ -231,7 +231,7 @@ class ActionFillAtStation : ActionContinuousBase {
 	
 	override bool ActionCondition(PlayerBase player, ActionTarget target, ItemBase item) {
 		
-		FuelControlSettings settings = GetFuelControlSettings();
+		FuelControlSettings config = GetFuelControlSettings();
 		
 
 		Car car = Car.Cast( target.GetObject() );
@@ -240,7 +240,7 @@ class ActionFillAtStation : ActionContinuousBase {
 		if (!car && !barrel)
 			return false;
 		
-		if (settings.pump_car_refueling && car && car.GetFluidFraction(CarFluid.FUEL) < 0.98) {
+		if (config.settings.pump_car_refueling && car && car.GetFluidFraction(CarFluid.FUEL) < 0.98) {
 			array<string> selections = new array<string>;
 			target.GetObject().GetActionComponentNameList(target.GetComponentIndex(), selections);
 	
@@ -260,7 +260,7 @@ class ActionFillAtStation : ActionContinuousBase {
 					}
 				}
 			}
-		} else if (settings.pump_barrel_refueling && barrel && barrel.IsOpen() && Liquid.CanFillContainer(barrel, LIQUID_GASOLINE)) {
+		} else if (config.settings.pump_barrel_refueling && barrel && barrel.IsOpen() && Liquid.CanFillContainer(barrel, LIQUID_GASOLINE)) {
 			refillPointPos = barrel.GetPosition();
 			GetFuelStationManager().SendRequestStation(refillPointPos);
 			CheckNearbyStations(refillPointPos);

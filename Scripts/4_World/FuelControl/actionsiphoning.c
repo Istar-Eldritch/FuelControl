@@ -13,8 +13,8 @@ class CASiphon : CAContinuousFill {
 		}
 		
 		if (GetGame().IsServer()) {
-			Car car = Car.Cast(action_data.m_Target.GetObject());
-			car.Leak( CarFluid.FUEL, (m_SpentQuantity / 1000));
+			CarScript car = CarScript.Cast(action_data.m_Target.GetObject());
+			car.RemoveFuel(m_SpentQuantity / 1000);
 			Liquid.FillContainerEnviro(action_data.m_MainItem, m_liquid_type, m_SpentQuantity, false);
 		}
 		
@@ -74,12 +74,12 @@ class ActionSiphon : ActionContinuousBase {
 	
 	override bool ActionCondition(PlayerBase player, ActionTarget target, ItemBase item) {
 		
-		FuelControlSettings settings = GetFuelControlSettings();
+		FuelControlSettings config = GetFuelControlSettings();
 		
-		if(!settings.siphoning)
+		if(!config.settings.siphoning)
 			return false;
 
-		Car car = Car.Cast( target.GetObject() );
+		CarScript car = CarScript.Cast( target.GetObject() );
 		if (!car || car.GetFluidFraction(CarFluid.FUEL) <= 0.2)
 			return false;
 		
@@ -90,14 +90,13 @@ class ActionSiphon : ActionContinuousBase {
 		array<string> selections = new array<string>;
 		target.GetObject().GetActionComponentNameList(target.GetComponentIndex(), selections);
 
-		CarScript carS = CarScript.Cast(car);
 		
-		if ( carS ) {
+		if ( car ) {
 			for (int s = 0; s < selections.Count(); s++) {
-				if ( selections[s] == carS.GetActionCompNameFuel() ) {
-					vector refillPointPos = carS.GetRefillPointPosWS();
+				if ( selections[s] == car.GetActionCompNameFuel() ) {
+					vector refillPointPos = car.GetRefillPointPosWS();
 					float dist = vector.DistanceSq(refillPointPos, player.GetPosition() );
-					float distanceFuel = carS.GetActionDistanceFuel() * carS.GetActionDistanceFuel();
+					float distanceFuel = car.GetActionDistanceFuel() * car.GetActionDistanceFuel();
 					return dist < distanceFuel;
 				}
 			}
@@ -110,9 +109,9 @@ class ActionSiphon : ActionContinuousBase {
 		if (super.ActionConditionContinue( action_data )) {
 			// TODO check if the item is full.
 			
-			FuelControlSettings settings = GetFuelControlSettings();
+			FuelControlSettings config = GetFuelControlSettings();
 			Car car = Car.Cast(action_data.m_Target.GetObject());
-			float siphoning_limit = (100 - settings.siphoning_limit) / 100;
+			float siphoning_limit = (100 - config.settings.siphoning_limit) / 100;
 			if(siphoning_limit < 0) {
 				siphoning_limit = 0;
 			}

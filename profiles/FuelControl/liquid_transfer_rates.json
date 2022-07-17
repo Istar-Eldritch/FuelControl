@@ -1,0 +1,30 @@
+{
+    "Land_FuelStation_Feed": 1000.0,
+
+    "CivilianSedan": 500.0,
+    "CivilianSedan_Black": 500.0,
+    "CivilianSedan_Wine": 500.0,
+    "Hatchback_02": 500.0,
+    "Hatchback_02_Blue": 500.0,
+    "Hatchback_02_Black": 500.0,
+    "OffroadHatchback": 500.0,
+    "OffroadHatchback_Blue": 500.0,
+    "OffroadHatchback_White": 500.0,
+    "Sedan_02": 500.0,
+    "Sedan_02_Red": 500.0,
+    "Sedan_02_Grey": 500.0,
+    "Truck_01_Covered": 500.0,
+    "Truck_01_Covered_Blue": 800.0,
+    "Truck_01_Covered_Orange": 800.0,
+
+    "Barrel_Blue": 1000.0,
+    "Barrel_Green": 1000.0,
+    "Barrel_Red": 1000.0,
+    "Barrel_Yellow": 1000.0,
+
+    "CanisterGasoline": 500.0,
+    "Canteen": 100.0,
+    "Cauldron": 500.0,
+    "Pot": 300.0,
+    "WaterBottle": 100.0
+  }

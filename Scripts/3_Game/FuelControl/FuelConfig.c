@@ -14,32 +14,41 @@ class StationConfig {
 	}
 }
 
+class Settings {
+	bool pump_car_refueling = true;
+	bool pump_barrel_refueling = true;
+	bool siphoning = true;
+	bool siphoning_limit = 98;
+}
+
 
 class FuelControlSettings {
 	
 	static private const string DIR_PATH = "$profile:FuelControl";
 	static private const string SETTINGS_PATH = DIR_PATH + "\\settings.json";
-
-	bool pump_car_refueling = true;
-	bool pump_barrel_refueling = true;
-	bool siphoning = true;
-	bool siphoning_limit = 98;
-	ref array<ref StationConfig> stations = new ref array<ref StationConfig>;
+	static private const string STATIONS_PATH = DIR_PATH + "\\stations.json";
+	static private const string CONSUMPTION_RATES_PATH = DIR_PATH + "\\consumption_rates.json";
+	static private const string LIQUID_TRANSFER_RATES_PATH = DIR_PATH + "\\liquid_transfer_rates.json";
+	
+	ref Settings settings = new ref Settings();
+	ref array<StationConfig> stations = new ref array<StationConfig>;
+	ref map<string, float> consumption_rates = new ref map<string, float>;
 	ref map<string, float> liquid_transfer_rates = new ref map<string, float>;
-
-	void FuelControlSettings() {}
 	
 	void Load() {
 		if (FileExist(SETTINGS_PATH)){ //If config exist load File
 			Print("[FuelControl] Loading configuration");
-			JsonFileLoader<FuelControlSettings>.JsonLoadFile(SETTINGS_PATH, this );
+			JsonFileLoader<Settings>.JsonLoadFile(SETTINGS_PATH, settings );
+			JsonFileLoader<array<StationConfig>>.JsonLoadFile(STATIONS_PATH, stations );
+			JsonFileLoader<map<string, float>>.JsonLoadFile(CONSUMPTION_RATES_PATH, consumption_rates );
+			JsonFileLoader<map<string, float>>.JsonLoadFile(LIQUID_TRANSFER_RATES_PATH, liquid_transfer_rates );
 		} else if (GetGame().IsServer()) { //File does not exist use default settings and create file.
 			DefaultSettings();
 		}
 	}
 	
 	void Save() {
-		JsonFileLoader<FuelControlSettings>.JsonSaveFile(SETTINGS_PATH, this);
+		JsonFileLoader<array<StationConfig>>.JsonSaveFile(STATIONS_PATH, stations );
 	}
 
 	void DefaultSettings() {
@@ -62,21 +71,22 @@ class FuelControlSettings {
 	void GetSettings( CallType type, ref ParamsReadContext ctx, ref PlayerIdentity sender, ref Object target ) {
 		Param1<FuelControlSettings> data;
 		if (ctx.Read(data)) {
-			Print("[FuelControl] Got settings from server");
-			ref FuelControlSettings settings = data.param1;
-			foreach(auto k, auto station: settings.stations) {
+			ref FuelControlSettings config = data.param1;
+
+			settings = config.settings;
+			consumption_rates = config.consumption_rates;
+			foreach(auto k, auto station: config.stations) {
 		 		stations.Insert(new ref StationConfig(station.x, station.y, station.name, station.capacity, station.fuel));
 			}
-			liquid_transfer_rates = settings.liquid_transfer_rates;
-			pump_car_refueling = settings.pump_car_refueling;
-			pump_barrel_refueling = settings.pump_barrel_refueling;
-			siphoning = settings.siphoning;
-			siphoning_limit = settings.siphoning_limit;
+			liquid_transfer_rates = config.liquid_transfer_rates;
+			Print("[FuelControl] Got config from server");
+
 		} else if (GetGame().IsServer()) {
 			// If the sender is not sending an update, then send all the station information back to it.
 			GetRPCManager().SendRPC("FuelControl", "GetSettings", new Param1<FuelControlSettings>(this), true, sender, target);
 		}
 	}
+	
 }
 
 static ref FuelControlSettings g_FuelControlSettings;
