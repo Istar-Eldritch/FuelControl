@@ -7,14 +7,6 @@ modded class ActionConstructor {
 	}
 };
 
-modded class CarScript {
-	override void SetActions() {
-		super.SetActions();
-		AddAction(ActionFillAtStation);
-		AddAction(ActionSiphon);
-	}
-};
-
 modded class ActionDrainLiquidCB : ActionContinuousBaseCB
 {
 	private const float TIME_TO_REPEAT = 0.25;
