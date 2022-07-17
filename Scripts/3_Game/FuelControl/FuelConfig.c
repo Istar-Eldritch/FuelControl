@@ -54,13 +54,62 @@ class FuelControlSettings {
 	void DefaultSettings() {
 		Print("[FuelControl] Using default settings");
 		stations.Insert(new ref StationConfig(5861, 2210, "Cherno West", -1, -1));
-		stations.Insert(new ref StationConfig(6872, 3092, "Cherno North", -1, -1));
+		stations.Insert(new ref StationConfig(6872, 3092, "Cherno East", -1, -1));
+		
+	    consumption_rates.Insert("CivilianSedan",  1);
+	    consumption_rates.Insert("CivilianSedan_Black",  1);
+	    consumption_rates.Insert("CivilianSedan_Wine",  1);
+	    consumption_rates.Insert("Hatchback_02",  1);
+	    consumption_rates.Insert("Hatchback_02_Blue",  1);
+	    consumption_rates.Insert("Hatchback_02_Black",  1);
+	    consumption_rates.Insert("OffroadHatchback",  1);
+	    consumption_rates.Insert("OffroadHatchback_Blue",  1);
+	    consumption_rates.Insert("OffroadHatchback_White", 1);
+	    consumption_rates.Insert("Sedan_02",  1);
+	    consumption_rates.Insert("Sedan_02_Red",  1);
+	    consumption_rates.Insert("Sedan_02_Grey",  1);
+	    consumption_rates.Insert("Truck_01_Covered",  1);
+	    consumption_rates.Insert("Truck_01_Covered_Blue",  1);
+	    consumption_rates.Insert("Truck_01_Covered_Orange", 1);
+		
+		liquid_transfer_rates.Insert("Land_FuelStation_Feed",  1000.0);
+
+	    liquid_transfer_rates.Insert("CivilianSedan",  500.0);
+	    liquid_transfer_rates.Insert("CivilianSedan_Black",  500.0);
+	    liquid_transfer_rates.Insert("CivilianSedan_Wine",  500.0);
+	    liquid_transfer_rates.Insert("Hatchback_02",  500.0);
+	    liquid_transfer_rates.Insert("Hatchback_02_Blue",  500.0);
+	    liquid_transfer_rates.Insert("Hatchback_02_Black",  500.0);
+	    liquid_transfer_rates.Insert("OffroadHatchback",  500.0);
+	    liquid_transfer_rates.Insert("OffroadHatchback_Blue",  500.0);
+	    liquid_transfer_rates.Insert("OffroadHatchback_White",  500.0);
+	    liquid_transfer_rates.Insert("Sedan_02",  500.0);
+	    liquid_transfer_rates.Insert("Sedan_02_Red",  500.0);
+	    liquid_transfer_rates.Insert("Sedan_02_Grey",  500.0);
+	    liquid_transfer_rates.Insert("Truck_01_Covered",  500.0);
+	    liquid_transfer_rates.Insert("Truck_01_Covered_Blue",  800.0);
+	    liquid_transfer_rates.Insert("Truck_01_Covered_Orange",  800.0);
+	
+	    liquid_transfer_rates.Insert("Barrel_Blue",  1000.0);
+	    liquid_transfer_rates.Insert("Barrel_Green",  1000.0);
+	    liquid_transfer_rates.Insert("Barrel_Red",  1000.0);
+	    liquid_transfer_rates.Insert("Barrel_Yellow",  1000.0);
+	
+	    liquid_transfer_rates.Insert("CanisterGasoline",  500.0);
+	    liquid_transfer_rates.Insert("Canteen",  100.0);
+	    liquid_transfer_rates.Insert("Cauldron",  500.0);
+	    liquid_transfer_rates.Insert("Pot",  300.0);
+	    liquid_transfer_rates.Insert("WaterBottle",  100.0);
 		
 		Print("[FuelControl] Config file doesn't exist, creating one");
 		if (!FileExist(DIR_PATH)){
 			MakeDirectory(DIR_PATH);
 		}
-		JsonFileLoader<FuelControlSettings>.JsonSaveFile(SETTINGS_PATH, this);
+		
+		JsonFileLoader<Settings>.JsonSaveFile(SETTINGS_PATH, settings);
+		JsonFileLoader<array<StationConfig>>.JsonSaveFile(STATIONS_PATH, stations);
+		JsonFileLoader<map<string, float>>.JsonSaveFile(CONSUMPTION_RATES_PATH, consumption_rates );
+		JsonFileLoader<map<string, float>>.JsonSaveFile(LIQUID_TRANSFER_RATES_PATH, liquid_transfer_rates );
 	}
 	
 	void SyncSettings() {
