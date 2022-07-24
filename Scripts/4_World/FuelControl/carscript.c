@@ -41,22 +41,17 @@ modded class CarScript {
 		if (consumptionRate != 1 && EngineIsOn() && fuelFraction != lastFuelFraction) {
 			float lastFuel = lastFuelFraction * fuelCapacity;
 			float fuel = fuelFraction * fuelCapacity;
-			
 			float consumed = lastFuel - fuel;
-			float shouldBeConsumed = consumed * consumptionRate;
-			float diffConsumed = consumed - shouldBeConsumed;
-			
-			if (diffConsumed < 0) {
-				RemoveFuel((diffConsumed * -1));
-			} else if (diffConsumed > 0) {
-				AddFuel(diffConsumed);
+			if (consumed > 0) {
+				float shouldBeConsumed = consumed * consumptionRate;
+				float diffConsumed = consumed - shouldBeConsumed;
+				
+				if (diffConsumed < 0) {
+					RemoveFuel((diffConsumed * -1));
+				} else if (diffConsumed > 0) {
+					AddFuel(diffConsumed);
+				}
 			}
-			
-			Print("LastFraction: " + lastFuelFraction);
-			Print("Fraction: " + fuelFraction);
-			Print("consumed" + consumed); 
-			Print("shouldBeConsumed" + shouldBeConsumed);
-			Print("Diffconsumed" + diffConsumed);
 		}
 	}
 	
