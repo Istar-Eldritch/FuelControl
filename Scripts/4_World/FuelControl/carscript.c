@@ -30,15 +30,7 @@ modded class CarScript {
 			consumptionRate = 1;
 		}
 
-		/*
-		queue.CallLater(this.CheckFuel, 1000, true);
-		*/
-
 		super.OnEngineStart();
-	}
-	
-	override void OnFluidChanged( CarFluid fluid, float newValue, float oldValue ) {
-		Print("Fluid changed: " + fluid + " " + newValue + " " + oldValue);
 	}
 	
 	override void OnUpdate(float dt) {
@@ -69,21 +61,7 @@ modded class CarScript {
 	}
 	
 	override void OnEngineStop() {
-		/*
-		queue.Remove(this.CheckFuel);
-		CheckFuel();
-		*/
 		super.OnEngineStop();
 	}
 
 };
-
-/*
-modded class Car: Transport {
-
-		
-	override void OnFluidChanged(CarFluid fluid, float newValue, float oldValue) {
-		Print("Here " + fluid + " amount " + newValue);
-	}
-}
-*/
