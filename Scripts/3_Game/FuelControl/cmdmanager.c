@@ -3,7 +3,7 @@ class ChatCmd {
 	ref array<string> args;
     void ChatCmd(ref array<string> tokens) {
         name = tokens.Get(0);
-		tokens.Remove(0);
+		tokens.RemoveOrdered(0);
 		args = tokens;
     }
 
@@ -29,7 +29,7 @@ ref Param2<string, string> ParseQuotedString(string cmd) {
 }
 
 ref Param2<string, string> ParseString(string cmd) {
-    if (cmd.Length() > 0) {
+    if (cmd.Length() > 0 && cmd[0] != " ") {
         int i;
         string acc = "";
         for (i = 0; i < cmd.Length(); i++) {
@@ -88,8 +88,9 @@ ref array<string> ParseCMD(string cmd) {
 
 class CmdManager {
 
-    string validCmds[4] = {
+    string validCmds[5] = {
         "fc_addstation",
+        "fc_removestation",
         "fc_setfuel",
         "fc_getstations",
         "fc_getfuel"
@@ -97,7 +98,7 @@ class CmdManager {
 
     bool CanHandle(ref ChatCmd cmd) {
         int i;
-        for (i = 0; i < 4; i++) {
+        for (i = 0; i < 5; i++) {
             if (cmd.name == validCmds[i]) {
 				return true;
 			}
@@ -132,6 +133,8 @@ class CmdManager {
 					GetStations(cmd, sender);
 				} else if (cmd.name == "fc_setfuel") {
                     SetFuel(cmd, sender);
+                } else if (cmd.name == "fc_addstation") {
+                    AddStation(cmd, sender);
                 }
                 return;
             }
@@ -170,6 +173,7 @@ class CmdManager {
                 if (player.GetIdentity().GetId() == sender.GetId()) {
                     auto playerLocation = player.GetPosition();
                     station = GetFuelStationManager().FindStationForPump(playerLocation);
+                    break;
                 }
             }
         }
@@ -215,7 +219,8 @@ class CmdManager {
             GetRPCManager().SendRPC("FuelControl", "HandleChatMessage", parameter, true, sender);
             return;
         }
-		
+
+        Print("[FuelControl] Executing SetFuel chat command - " + cmd.args.Get(0) + " " + cmd.args.Get(1));
 
 		string stationName;
 		float amount;
@@ -226,31 +231,106 @@ class CmdManager {
 			amount = cmd.args.Get(0).ToFloat();
 		}
 
+        auto manager = GetFuelStationManager();
         ref FuelStationGroup station;
 
         if (stationName) {
-            station = GetFuelStationManager().FindStationByName(stationName);
+            station = manager.FindStationByName(stationName);
         } else {
             array<Man> players = new array<Man>;
             GetGame().GetWorld().GetPlayerList(players);
             foreach (auto player: players) {
                 if (player.GetIdentity().GetId() == sender.GetId()) {
                     auto playerLocation = player.GetPosition();
-                    station = GetFuelStationManager().FindStationForPump(playerLocation);
+                    station = manager.FindStationForPump(playerLocation);
+                    break;
                 }
             }
         }
 
         string text;
         if (station) {
-			Print("[FuelControl] Executing SetFuel chat command @" + station.name);
+			Print("[FuelControl] Executing SetFuel chat command - " + station.name +  " = " +  amount + "L");
             station.fuelAmount = amount * 1000;
-            GetFuelStationManager().Save();
-            text = "Fuel available at " + station.name + ": " + amount;
+            manager.Save();
+			string amountStr;
+			if (station.fuelAmount >= 0) {
+                auto scaledAmount = station.fuelAmount / 1000;
+                amountStr = "" + scaledAmount + "L";
+            } else {
+                amountStr = "Infinite";
+            }
+            text = "Fuel available at " + station.name + ": " + amountStr;
         } else {
             text = "Could not find the fuel station";
         }
         parameter = new Param2<string, string>(text, "colorStatusChannel");
+        GetRPCManager().SendRPC("FuelControl", "HandleChatMessage", parameter, true, sender);
+    }
+
+    void AddStation(ref ChatCmd cmd, ref PlayerIdentity sender) {
+        Param2<string, string> parameter;
+        if (cmd.args.Count() < 1) {
+            parameter = new Param2<string, string>("The name of the station must be provided", "colorStatusChannel");
+            GetRPCManager().SendRPC("FuelControl", "HandleChatMessage", parameter, true, sender);
+            return;
+        }
+		
+		string stationName;
+        float x;
+        float y;
+		if(cmd.args.Count() == 3) {
+            x = cmd.args.Get(0).ToFloat();
+            y = cmd.args.Get(1).ToFloat();
+			stationName = cmd.args.Get(2);
+		} else {
+            stationName = cmd.args.Get(0);
+        }
+
+        ref FuelStationGroup station;
+
+        if (!x || !y) {
+            array<Man> players = new array<Man>;
+            GetGame().GetWorld().GetPlayerList(players);
+            foreach (auto player: players) {
+                if (player.GetIdentity().GetId() == sender.GetId()) {
+                    auto playerLocation = player.GetPosition();
+                    x = playerLocation[0];
+                    y = playerLocation[2];
+                    break;
+                }
+            }
+        }
+
+		Print("[FuelControl] Executing AddStation chat command x:" + x + ",y:" + y + " name: " + stationName);
+
+        vector pos;
+		pos[0] = x;
+		pos[2] = y;
+
+        auto manager = GetFuelStationManager();
+
+        // Check a station doesn't exist already with that name
+        station = manager.FindStationByName(stationName);
+        if (station) {
+            parameter = new Param2<string, string>("A station with that name already exists", "colorStatusChannel");
+            GetRPCManager().SendRPC("FuelControl", "HandleChatMessage", parameter, true, sender);
+            return;
+        }
+
+        // Check a station doesn't exist already at that position
+        station = GetFuelStationManager().FindStationForPump(pos);
+        if (station) {
+            parameter = new Param2<string, string>("A station in this position already exists: " + station.name, "colorStatusChannel");
+            GetRPCManager().SendRPC("FuelControl", "HandleChatMessage", parameter, true, sender);
+            return;
+        }
+
+        station = new ref FuelStationGroup(stationName, pos, -1 * 1000, -1 * 1000);
+
+        manager.stations.Insert(stationName, station);
+        manager.Save();
+        parameter = new Param2<string, string>("Station " + station.name + " added", "colorStatusChannel");
         GetRPCManager().SendRPC("FuelControl", "HandleChatMessage", parameter, true, sender);
     }
 }

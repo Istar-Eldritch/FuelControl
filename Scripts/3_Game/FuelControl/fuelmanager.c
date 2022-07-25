@@ -73,9 +73,10 @@ class FuelStationManager {
 	
 	void Save() {
 		FuelControlSettings config = GetFuelControlSettings();
-		foreach(auto cst: config.stations) {
-			FuelStationGroup gst = stations[cst.name];
-			cst.fuel = gst.fuelAmount / 1000;
+		config.stations = new ref array<ref StationConfig>;
+		foreach(auto name, auto st: stations) {
+			StationConfig stc = new ref StationConfig(st.position[0], st.position[2], st.name, st.fuelAmount / 1000, st.fuelCapacity / 1000);
+			config.stations.Insert(stc);
 		}
 		config.Save();
 	}
