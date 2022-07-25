@@ -8,9 +8,9 @@ modded class ChatInputMenu
 		if (text != "" && (text.Substring(0,1)) == "#") {
 			auto cmdLength = text.Length();
 			auto stripped = text.Substring(1, cmdLength - 1);
-            auto cmd = ChatCmd.FromString(stripped);
+            auto cmd = CmdParser.Parse(stripped);
 			if (GetCmdManager().CanHandle(cmd)) {
-				GetRPCManager().SendRPC("FuelControl", "HandleChatCommand", new Param1<ref ChatCmd>(cmd), true);
+				GetRPCManager().SendRPC("FuelControl", "HandleChatCommand", new Param1<ref CmdArgs>(cmd), true);
 				m_close_timer.Run(0.1, this, "Close"); //Exit out as we don't want to send commands in chat for others to see.
 				return true;
 			}
