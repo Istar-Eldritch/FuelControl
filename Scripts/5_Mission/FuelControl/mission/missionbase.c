@@ -9,10 +9,12 @@ modded class MissionBase {
 		GetRPCManager().AddRPC("FuelControl", "UpdateStation", manager, SingleplayerExecutionType.Both);
 		GetRPCManager().AddRPC("FuelControl", "RequestStation", manager, SingleplayerExecutionType.Both);
 
+		CmdManager cmdManager = GetCmdManager();
+		GetRPCManager().AddRPC("FuelControl", "HandleChatCommand", cmdManager, SingleplayerExecutionType.Both);
+		GetRPCManager().AddRPC("FuelControl", "HandleChatMessage", cmdManager, SingleplayerExecutionType.Both);
 
 		if (GetGame().IsClient()) {
 			settings.SyncSettings();
 		}
 	}
-
 }

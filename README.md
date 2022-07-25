@@ -14,6 +14,36 @@ This mod provides tools to control your sever's fuel economy.
 
 All this features are configurable.
 
+## Commands
+
+### `#fc_addstation <x> <y> name`
+Adds a station group at x and y position with the given name. If x and y are not provided, will add an station at the player position.
+
+```
+#fc_addstation 13123 12314 "Cherno North"
+```
+
+### `#fc_setfuel [name] value`
+Sets the fuel of a station to the given value given in Liters.
+
+```
+#fc_setfuel "Cherno North" 1000
+```
+
+### `#fc_getstations`
+Lists the stations in the map
+
+```
+#fc_getstations
+```
+
+### `#fc_getfuel <name>`
+Returns the fuel available at the station. If no name is provided it will use the player location.
+
+```
+#fc_getfuel "Cherno North"
+```
+
 ## Configuration:
 In the profiles folder you'll find some default configurations.
 
@@ -22,6 +52,7 @@ In the profiles folder you'll find some default configurations.
 This file is used to change general settings and toggle features on and off:
 ```js
 {
+    "administrators": [], // A list of steam ids, separated by commas, allows for usage of the administration commands.
     "pump_car_refueling": 1, // Enables refueling a car if its close to a fuel pump. 1 = enabled, 0 = disabled
     "pump_barrel_refueling": 1, // Enables refueling a barrel if its close to a fuel pump. 1 = enabled, 0 = disabled
     "siphoning": 1, // Enables siphoning fuel from cars. 1 = enabled, 0 = disabled.

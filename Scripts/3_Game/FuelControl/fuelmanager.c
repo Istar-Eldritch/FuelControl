@@ -12,9 +12,13 @@ class FuelStationGroup {
 		fuelCapacity = fuelCap;
 		fuelAmount = fuel;
 	}
+
+	float GetFuel() {
+		return fuelAmount;
+	}
 	
 	bool HasFuel() {
-		return fuelAmount > 0 || fuelAmount == -1;
+		return fuelAmount > 0 || (fuelAmount / 1000) == -1;
 	}
 
 	void RemoveFuel(float quantity) {
@@ -50,6 +54,16 @@ class FuelStationManager {
 	ref FuelStationGroup FindStationForPump(vector pumpLocation) {
 		foreach(auto station: stations){
 			if (station && Math.IsPointInCircle(station.position, STATION_RADIOUS, pumpLocation)) {
+				return station;
+			}
+		}
+		
+		return null;
+	}
+
+	ref FuelStationGroup FindStationByName(string name) {
+		foreach(auto station: stations){
+			if (station && station.name == name) {
 				return station;
 			}
 		}

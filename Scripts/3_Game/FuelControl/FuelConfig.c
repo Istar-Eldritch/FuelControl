@@ -15,6 +15,7 @@ class StationConfig {
 }
 
 class Settings {
+	ref array<string> administrators = new ref array<string>;
 	bool pump_car_refueling = true;
 	bool pump_barrel_refueling = true;
 	bool siphoning = true;
