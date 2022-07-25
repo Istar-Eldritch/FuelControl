@@ -22,7 +22,7 @@ class FuelStationGroup {
 	}
 
 	void RemoveFuel(float quantity) {
-		if (fuelAmount != -1) {
+		if ((fuelAmount / 1000) != -1) {
 			fuelAmount = fuelAmount - quantity;
 			if (fuelAmount <  0) {
 				fuelAmount = 0;

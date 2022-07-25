@@ -130,7 +130,9 @@ class CmdManager {
                     GetFuel(cmd, sender);
                 } else if (cmd.name == "fc_getstations") {
 					GetStations(cmd, sender);
-				}
+				} else if (cmd.name == "fc_setfuel") {
+                    SetFuel(cmd, sender);
+                }
                 return;
             }
 		}
@@ -174,7 +176,7 @@ class CmdManager {
 
         string text;
         if (station) {
-			Print("[FuelControl] Executing GetFuel chat command" + station.name);
+			Print("[FuelControl] Executing GetFuel chat command @" + station.name);
             string amount;
             if (station.fuelAmount >= 0) {
                 auto scaledAmount = station.fuelAmount / 1000;
@@ -204,6 +206,52 @@ class CmdManager {
 			auto parameter = new Param2<string, string>(text, "colorStatusChannel");
 			GetRPCManager().SendRPC("FuelControl", "HandleChatMessage", parameter, true, sender);
 		}
+    }
+	
+	void SetFuel(ref ChatCmd cmd, ref PlayerIdentity sender) {
+        Param2<string, string> parameter;
+        if (cmd.args.Count() == 0) {
+            parameter = new Param2<string, string>("A valid amount of fuel in Liters must be provided", "colorStatusChannel");
+            GetRPCManager().SendRPC("FuelControl", "HandleChatMessage", parameter, true, sender);
+            return;
+        }
+		
+
+		string stationName;
+		float amount;
+		if(cmd.args.Count() > 1) {
+			stationName = cmd.args.Get(0);
+			amount = cmd.args.Get(1).ToFloat();
+		} else {
+			amount = cmd.args.Get(0).ToFloat();
+		}
+
+        ref FuelStationGroup station;
+
+        if (stationName) {
+            station = GetFuelStationManager().FindStationByName(stationName);
+        } else {
+            array<Man> players = new array<Man>;
+            GetGame().GetWorld().GetPlayerList(players);
+            foreach (auto player: players) {
+                if (player.GetIdentity().GetId() == sender.GetId()) {
+                    auto playerLocation = player.GetPosition();
+                    station = GetFuelStationManager().FindStationForPump(playerLocation);
+                }
+            }
+        }
+
+        string text;
+        if (station) {
+			Print("[FuelControl] Executing SetFuel chat command @" + station.name);
+            station.fuelAmount = amount * 1000;
+            GetFuelStationManager().Save();
+            text = "Fuel available at " + station.name + ": " + amount;
+        } else {
+            text = "Could not find the fuel station";
+        }
+        parameter = new Param2<string, string>(text, "colorStatusChannel");
+        GetRPCManager().SendRPC("FuelControl", "HandleChatMessage", parameter, true, sender);
     }
 }
 
