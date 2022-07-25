@@ -1,11 +1,11 @@
 class CmdArgs {
     ref array<string> positional;
-    ref map<string, ref array<string>> mapped;
+    ref map<string, string> mapped;
     ref map<string, int> flags;
 
     void CmdArgs() {
         positional = new ref array<string>;
-        mapped = new ref map<string, ref array<string>>;
+        mapped = new ref map<string, string>;
         flags = new ref map<string, int>;
     }
 
@@ -15,21 +15,15 @@ class CmdArgs {
         int i;
         for (i = 0; i < tokens.Count(); i++) {
             auto current = tokens.Get(i);
-            if (current[0] == "-" && tokens.Get(i + 1) == "=") {
-                key = current[0].Substring(1, current[0].Length());
-                string value = tokens.Get(i + 2);
-
-                auto existing_values = args.mapped.Get(key);
-                if (!existing_values) {
-                    existing_values = new ref array<string>;
-                }
-                existing_values.Insert(value);
-                args.mapped.Insert(key, existing_values);
-                i = i + 2;
+            if (current.Substring(0, 2) == "--") {
+                key = current.Substring(2, current.Length());
+                string value = tokens.Get(i + 1);
+                args.mapped.Set(key, value);
+                i = i + 1;
             } else if (current[0] == "-") {
-                key = current[0].Substring(1, current[0].Length());
+                key = current.Substring(1, current.Length());
                 int existing_count = args.flags.Get(key);
-                args.flags.Insert(key, existing_count + 1);
+                args.flags.Set(key, existing_count + 1);
             } else {
                 args.positional.Insert(current);
             }
@@ -51,14 +45,6 @@ class CmdParser {
                 }
                 acc = acc + cmd[i];
             }
-        }
-
-        return null;
-    }
-
-    static ref Param2<string, string> TokenizeEq(string cmd) {
-        if (cmd.Length() > 0 && cmd[0] == "=") {
-            return new ref Param2<string, string>("=", cmd.Substring(1, cmd.Length()));
         }
 
         return null;
@@ -111,13 +97,6 @@ class CmdParser {
                 tokens.Insert(parseResult.param1);
                 processing = parseResult.param2;
             }
-
-            parseResult = TokenizeEq(processing);
-            if(parseResult) {
-                tokens.Insert(parseResult.param1);
-                processing = parseResult.param2;
-            }
-
 
             parseResult = TokenizeSpace(processing);
             if(parseResult) {

@@ -1,24 +1,25 @@
-class CmdGetFuel extends CmdHandler {
-
+class CmdStationDel extends CmdHandler {
     override bool CanHandle(ref CmdArgs cmd) {
-        return cmd.positional.Get(0) == "fc" && cmd.positional.Get(1) == "getfuel";
+        return cmd.positional.Get(0) == "fc" && cmd.positional.Get(1) == "station" && cmd.positional.Get(2) == "del";
     }
-    
+
     override void HandleCmd(ref CmdArgs cmd, ref PlayerIdentity sender) {
 		
-		auto stationName = cmd.positional.Get(2);
+		auto stationName = cmd.positional.Get(3);
 
         ref FuelStationGroup station;
 
+        auto manager = GetFuelStationManager();
+
         if (stationName) {
-            station = GetFuelStationManager().FindStationByName(stationName);
+            station = manager.FindStationByName(stationName);
         } else {
             array<Man> players = new array<Man>;
             GetGame().GetWorld().GetPlayerList(players);
             foreach (auto player: players) {
                 if (player.GetIdentity().GetId() == sender.GetId()) {
                     auto playerLocation = player.GetPosition();
-                    station = GetFuelStationManager().FindStationForPump(playerLocation);
+                    station = manager.FindStationForPump(playerLocation);
                     break;
                 }
             }
@@ -26,17 +27,12 @@ class CmdGetFuel extends CmdHandler {
 
         string text;
         if (station) {
-			Print("[FuelControl] Executing GetFuel chat command @" + station.name);
-            string amount;
-            if (station.fuelAmount >= 0) {
-                auto scaledAmount = station.fuelAmount / 1000;
-                amount = "" + scaledAmount + "L";
-            } else {
-                amount = "Infinite";
-            }
-            text = "Fuel available at " + station.name + ": " + amount;
+			Print("[FuelControl] Executing station del for " + station.name);
+            manager.stations.Remove(station.name);
+            manager.Save();
+            text = "Station " + station.name + " deleted";
         } else {
-            text = "Could not find the fuel station";
+            text = "Could not find the station";
         }
         auto parameter = new Param2<string, string>(text, "colorStatusChannel");
         GetRPCManager().SendRPC("FuelControl", "HandleChatMessage", parameter, true, sender);

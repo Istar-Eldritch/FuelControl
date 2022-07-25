@@ -16,48 +16,48 @@ All this features are configurable.
 
 ## Commands
 
-### `#fc addstation [x] [y] <station name>`
+### `#fc station add [--pos x,y] <station name>`
 Adds a station group at x and y position with the given name. If x and y are not provided, it will add an station at the player position.
 
 ```
-#fc addstation 13123 12314 "Cherno North"
+#fc station add --pos 13123,12314 "Chernogorsk East"
 ```
 
 ```
-#fc addstation "Cherno North"
+#fc station add "Chernogorsk East"
 ```
 
-### `#fc delstation [station name]`
+### `#fc station del [station name]`
 Deletes the station group with the given name. If the name is not provided not provided, it will delete the station at the player position.
 
 ```
-#fc delstation "Cherno North"
+#fc station del "Chernogorsk East"
 ```
 
 ```
-#fc addstation
+#fc station del
 ```
 
-### `#fc setfuel [station name] <value>`
-Sets the fuel of a station to the given value given in Liters.
-
-```
-#fc setfuel "Cherno North" 1000
-```
-
-```
-#fc setfuel 1000
-```
-
-### `#fc getfuel [station name]`
+### `#fc station info [station name]`
 Returns the fuel available at the station. If no name is provided it will use the player location.
 
 ```
-#fc getfuel "Cherno North"
+#fc station info "Cherno North"
 ```
 
 ```
-#fc getfuel
+#fc station info
+```
+
+### `#fc station edit [--fuel x] [--capacity y] [--name z] [station name]`
+Updates a station. Sets the fuel and capacity lin liters and updates the name.
+
+```
+#fc station edit --fuel 1000 --name Cherno "Chernogorsk East"
+```
+
+```
+#fc station edit --fuel 1000
 ```
 
 ## Configuration:
