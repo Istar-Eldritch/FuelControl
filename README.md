@@ -60,6 +60,17 @@ Updates a station. Sets the fuel and capacity lin liters and updates the name.
 #fc station edit --fuel 1000
 ```
 
+
+### `#fc status`
+Shows some general metrics about the fuel across all stations, currently:
+- Total fuel available.
+- Total fuel capacity.
+- Percentage of the reserves of fuel. (capacity / available)
+
+```
+#fc status
+```
+
 ## Configuration:
 In the profiles folder you'll find some default configurations.
 
