@@ -90,7 +90,7 @@ class CmdManager {
 
     string validCmds[5] = {
         "fc_addstation",
-        "fc_removestation",
+        "fc_delstation",
         "fc_setfuel",
         "fc_getstations",
         "fc_getfuel"
@@ -135,6 +135,9 @@ class CmdManager {
                     SetFuel(cmd, sender);
                 } else if (cmd.name == "fc_addstation") {
                     AddStation(cmd, sender);
+                } else if (cmd.name == "fc_delstation") {
+                    DelStation(cmd, sender);
+                    
                 }
                 return;
             }
@@ -331,6 +334,43 @@ class CmdManager {
         manager.stations.Insert(stationName, station);
         manager.Save();
         parameter = new Param2<string, string>("Station " + station.name + " added", "colorStatusChannel");
+        
+        
+        GetRPCManager().SendRPC("FuelControl", "HandleChatMessage", parameter, true, sender);
+    }
+
+    void DelStation(ref ChatCmd cmd, ref PlayerIdentity sender) {
+		
+		auto stationName = cmd.args.Get(0);
+
+        ref FuelStationGroup station;
+
+        auto manager = GetFuelStationManager();
+
+        if (stationName) {
+            station = manager.FindStationByName(stationName);
+        } else {
+            array<Man> players = new array<Man>;
+            GetGame().GetWorld().GetPlayerList(players);
+            foreach (auto player: players) {
+                if (player.GetIdentity().GetId() == sender.GetId()) {
+                    auto playerLocation = player.GetPosition();
+                    station = manager.FindStationForPump(playerLocation);
+                    break;
+                }
+            }
+        }
+
+        string text;
+        if (station) {
+			Print("[FuelControl] Executing DelStation chat command for " + station.name);
+            manager.stations.Remove(station.name);
+            manager.Save();
+            text = "Station " + station.name + " deleted";
+        } else {
+            text = "Could not find the fuel station";
+        }
+        auto parameter = new Param2<string, string>(text, "colorStatusChannel");
         GetRPCManager().SendRPC("FuelControl", "HandleChatMessage", parameter, true, sender);
     }
 }
