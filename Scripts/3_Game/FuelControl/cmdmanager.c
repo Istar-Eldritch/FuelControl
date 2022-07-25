@@ -128,7 +128,9 @@ class CmdManager {
 			    ref ChatCmd cmd = data.param1;
                 if (cmd.name == "fc_getfuel") {
                     GetFuel(cmd, sender);
-                }
+                } else if (cmd.name == "fc_getstations") {
+					GetStations(cmd, sender);
+				}
                 return;
             }
 		}
@@ -178,7 +180,7 @@ class CmdManager {
                 auto scaledAmount = station.fuelAmount / 1000;
                 amount = "" + scaledAmount + "L";
             } else {
-                amount = "Infinite"
+                amount = "Infinite";
             }
             text = "Fuel available at " + station.name + ": " + amount;
         } else {
@@ -186,6 +188,22 @@ class CmdManager {
         }
         auto parameter = new Param2<string, string>(text, "colorStatusChannel");
         GetRPCManager().SendRPC("FuelControl", "HandleChatMessage", parameter, true, sender);
+    }
+	
+	void GetStations(ref ChatCmd cmd, ref PlayerIdentity sender) {
+		
+		foreach(auto station: GetFuelStationManager().stations) {
+			string amount;
+			if (station.fuelAmount >= 0) {
+                auto scaledAmount = station.fuelAmount / 1000;
+                amount = "" + scaledAmount + "L";
+            } else {
+                amount = "Infinite";
+            }
+			string text = station.name + ": " + amount;
+			auto parameter = new Param2<string, string>(text, "colorStatusChannel");
+			GetRPCManager().SendRPC("FuelControl", "HandleChatMessage", parameter, true, sender);
+		}
     }
 }
 
