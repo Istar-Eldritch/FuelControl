@@ -14,6 +14,7 @@ modded class MissionBase {
         cmdManager.RegisterHandler(new ref CmdStationDel());
         cmdManager.RegisterHandler(new ref CmdStationInfo());
         cmdManager.RegisterHandler(new ref CmdStationEdit());
+		cmdManager.RegisterHandler(new ref CmdStationList());
 
 		cmdManager.RegisterHandler(new ref CmdStatus());
 		cmdManager.RegisterHandler(new ref CmdSpawn());
