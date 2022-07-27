@@ -71,6 +71,16 @@ Shows some general metrics about the fuel across all stations, currently:
 #fc status
 ```
 
+### `#fc spawn <amount>`
+Spreads the provided amount in liters randomly across all the stations with available capacity.
+- The fuel amount must be an integer, if a decimal point its provided it will be rounded down.
+- This functionality is affected by the `spawn_minimum` setting from `settings.json`
+- This functionality ignores stations with unlimited fuel.
+
+```
+#fc spawn 112
+```
+
 ## Configuration:
 In the profiles folder you'll find some default configurations.
 
@@ -80,6 +90,7 @@ This file is used to change general settings and toggle features on and off:
 ```js
 {
     "administrators": [], // A list of steam ids, separated by commas, allows for usage of the administration commands.
+    "spawn_minimum" 10, // During spawning, what is the minimum amount of fuel that should be added to a station (if available).
     "pump_car_refueling": 1, // Enables refueling a car if its close to a fuel pump. 1 = enabled, 0 = disabled
     "pump_barrel_refueling": 1, // Enables refueling a barrel if its close to a fuel pump. 1 = enabled, 0 = disabled
     "siphoning": 1, // Enables siphoning fuel from cars. 1 = enabled, 0 = disabled.

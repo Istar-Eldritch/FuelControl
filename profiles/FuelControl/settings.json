@@ -1,5 +1,6 @@
 {
     "administrators": [],
+    "spawn_minimum": 10,
     "pump_car_refueling": 1,
     "pump_barrel_refueling": 1,
     "siphoning": 1,

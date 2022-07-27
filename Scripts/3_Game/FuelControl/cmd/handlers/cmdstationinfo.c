@@ -52,6 +52,17 @@ class CmdStationInfo extends CmdHandler {
             }
             parameter = new Param2<string, string>("Fuel capacity: " + capacity, "colorStatusChannel");
             GetRPCManager().SendRPC("FuelControl", "HandleChatMessage", parameter, true, sender);
+
+            string availableCapacity;
+            float availableCap = station.AvailableCapacity();
+            if (availableCap >= 0) {
+                availableCapacity = "" + availableCap + "L";
+            } else {
+                availableCapacity = "Infinite";
+            }
+            parameter = new Param2<string, string>("Available capacity: " + availableCapacity, "colorStatusChannel");
+            GetRPCManager().SendRPC("FuelControl", "HandleChatMessage", parameter, true, sender);
+
         } else {
             parameter = new Param2<string, string>("Could not find the station", "colorStatusChannel");
             GetRPCManager().SendRPC("FuelControl", "HandleChatMessage", parameter, true, sender);

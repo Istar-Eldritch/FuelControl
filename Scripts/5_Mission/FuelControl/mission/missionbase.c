@@ -16,6 +16,7 @@ modded class MissionBase {
         cmdManager.RegisterHandler(new ref CmdStationEdit());
 
 		cmdManager.RegisterHandler(new ref CmdStatus());
+		cmdManager.RegisterHandler(new ref CmdSpawn());
 
 		GetRPCManager().AddRPC("FuelControl", "HandleChatCommand", cmdManager, SingleplayerExecutionType.Both);
 		GetRPCManager().AddRPC("FuelControl", "HandleChatMessage", cmdManager, SingleplayerExecutionType.Both);
