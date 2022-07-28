@@ -25,5 +25,11 @@ modded class MissionBase {
 		if (GetGame().IsClient()) {
 			settings.SyncSettings();
 		}
+
+		if (GetGame().IsServer()) {
+			if(settings.settings.spawn_enabled) {
+				GetFuelSpawner().Start();
+			}
+		}
 	}
 }

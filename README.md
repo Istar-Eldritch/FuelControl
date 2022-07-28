@@ -9,6 +9,7 @@ This mod provides tools to control your sever's fuel economy.
 - Refuel a car directly if its placed close to a fuel pump.
 - Refuel a barrel directly if its placed close to a fuel pump.
 - Siphon fuel out of a car fuel tank.
+- Automatically spawn fuel on configured stations.
 - Configurable liquid transfer rates for arbitrary containers (using class names)
 - Configurable consumption rates for arbitrary vehicles (using class names)
 
@@ -60,6 +61,17 @@ Updates a station. Sets the fuel and capacity lin liters and updates the name.
 #fc station edit --fuel 1000
 ```
 
+### `#fc station list [--min-fuel x] [--max-fuel y] [search on name]`
+Lists the stations that match the search criteria.
+
+```
+#fc station list Cherno
+```
+
+```
+#fc station list --min-fuel 10 --max-fuel 100
+```
+
 
 ### `#fc status`
 Shows some general metrics about the fuel across all stations, currently:
@@ -81,6 +93,10 @@ Spreads the provided amount in liters randomly across all the stations with avai
 #fc spawn 112
 ```
 
+## Dependencies
+
+- Comunity Framework: https://steamcommunity.com/sharedfiles/filedetails/?id=1559212036&searchtext=CF
+
 ## Configuration:
 In the profiles folder you'll find some default configurations.
 
@@ -90,7 +106,10 @@ This file is used to change general settings and toggle features on and off:
 ```js
 {
     "administrators": [], // A list of steam ids, separated by commas, allows for usage of the administration commands.
-    "spawn_minimum" 10, // During spawning, what is the minimum amount of fuel that should be added to a station (if available).
+    "spawn_enabled": true, // If the automated spawn is enabled.
+    "spawn_interval": 1800, // How often the spawn task runs in seconds. Defaults to 30 min
+    "spawn_amount": 1, // How much fuel in liters the spawn task spawns. Defaults to 1. 
+    "spawn_minimum" 10, // During spawning, what is the minimum amount of fuel in liters that should be added to a station (if available).
     "pump_car_refueling": 1, // Enables refueling a car if its close to a fuel pump. 1 = enabled, 0 = disabled
     "pump_barrel_refueling": 1, // Enables refueling a barrel if its close to a fuel pump. 1 = enabled, 0 = disabled
     "siphoning": 1, // Enables siphoning fuel from cars. 1 = enabled, 0 = disabled.

@@ -198,7 +198,6 @@ class FuelStationManager {
 			int idx = Math.RandomInt(0, filteredStations.Count());
 			auto sta = filteredStations.Get(idx);
 			auto capacity = sta.AvailableCapacity();
-			Print("[FuelControl] Spawning fuel on " + sta.name + " which has " + capacity  + "L available capacity");
 			float toAdd;
 			if (capacity == -1) {
 				if(amount <= minToAdd) {

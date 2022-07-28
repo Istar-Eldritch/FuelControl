@@ -16,6 +16,9 @@ class StationConfig {
 
 class Settings {
 	ref array<string> administrators = new ref array<string>;
+	int spawn_enabled = true;
+	int spawn_interval = 1800;
+	int spawn_amount = 1;
 	int spawn_minimum = 10;
 	bool pump_car_refueling = true;
 	bool pump_barrel_refueling = true;
