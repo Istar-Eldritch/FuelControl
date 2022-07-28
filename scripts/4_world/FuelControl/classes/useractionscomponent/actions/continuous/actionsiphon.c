@@ -55,7 +55,7 @@ class ActionSiphon : ActionContinuousBase {
 			return false;
 
 		CarScript car = CarScript.Cast( target.GetObject() );
-		if (!car || car.GetFluidFraction(CarFluid.FUEL) <= 0.2)
+		if (!car || car.GetFluidFraction(CarFluid.FUEL) <= (100 - config.settings.siphoning_limit) / 100)
 			return false;
 		
 		// Check this item can be used to put fuel inside
