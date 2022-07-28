@@ -55,7 +55,7 @@ class FuelStationGroup {
 	void AddFuel(float quantity) {
 		if((fuelAmount / 1000) != -1) {
 			fuelAmount = fuelAmount + quantity * 1000;
-			if (fuelAmount > fuelCapacity) {
+			if (fuelCapacity != -1000 && fuelAmount > fuelCapacity) {
 				fuelAmount = fuelCapacity;
 			}
 		}
