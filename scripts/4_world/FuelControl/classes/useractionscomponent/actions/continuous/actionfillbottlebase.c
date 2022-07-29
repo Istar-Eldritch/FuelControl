@@ -15,8 +15,8 @@ modded class ActionFillBottleBase: ActionContinuousBase {
 			if (station){
 				GetFuelStationManager().SendRequestStation(station.GetPosition());
 				// TODO: Find a better way to notify hte player the station has no fuel.
-				pumpHasFuel = station.HasFuel();
-				return true;
+				pumpHasFuel = !station.IsRuined() && station.HasFuel();
+				return !station.IsRuined();
 			}
 			return true;
 		}
@@ -27,7 +27,7 @@ modded class ActionFillBottleBase: ActionContinuousBase {
 		if (super.ActionConditionContinue( action_data )) {
 			FuelStation station = FuelStation.Cast(action_data.m_Target.GetObject());
 			if (station){
-				return station.HasFuel();
+				return !station.IsRuined() && station.HasFuel();
 			}
 			return true;
 		}

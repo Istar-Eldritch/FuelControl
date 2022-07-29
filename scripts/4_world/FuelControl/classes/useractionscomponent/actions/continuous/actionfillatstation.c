@@ -68,8 +68,9 @@ class ActionFillAtStation : ActionContinuousBase {
 		foreach(auto object : objects) {
 			FuelStation station = FuelStation.Cast(object);
 			if (station) {
-				pumpHasFuel = station.HasFuel();
-				nearbyStation = true;
+				
+				pumpHasFuel = !station.IsRuined() && station.HasFuel();
+				nearbyStation = !station.IsRuined();
 				break;
 			} else {
 				pumpHasFuel = false;

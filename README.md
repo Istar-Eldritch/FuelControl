@@ -114,7 +114,8 @@ This file is used to change general settings and toggle features on and off:
     "pump_barrel_refueling": 1, // Enables refueling a barrel if its close to a fuel pump. 1 = enabled, 0 = disabled
     "siphoning": 1, // Enables siphoning fuel from cars. 1 = enabled, 0 = disabled.
     "siphoning_limit": 98, // The percentage of fuel that is possible to siphon out of a car fuel tank.
-    "default_pumps_have_fuel": 0 // The behaviour of pumps that don't belong to a station. Defaults to  0.
+    "default_pumps_have_fuel": 0, // The behaviour of pumps that don't belong to a station. If set to 1, this pumps will have infinite fuel. Defaults to  0.
+    "pumps_get_ruined": 1 // If a pump gets ruined it won't produce fuel.
 }
 ```
 

@@ -8,5 +8,6 @@
     "pump_barrel_refueling": 1,
     "siphoning": 1,
     "siphoning_limit": 98,
-    "default_pumps_have_fuel": 0
+    "default_pumps_have_fuel": 0,
+    "pumps_get_ruined": 1
 }

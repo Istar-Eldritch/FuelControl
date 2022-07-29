@@ -1,9 +1,19 @@
 modded class FuelStation {
 	
 	protected FuelStationGroup group = null;
+	protected bool ruined = false;
 	
 	void FuelStation() {
+		RegisterNetSyncVariableBool("ruined");
+	}
 
+	override void EEKilled(Object killer) {
+		super.EEKilled(killer);
+		auto config = GetFuelControlSettings();
+		if(config.settings.pumps_get_ruined) {
+			ruined = true;
+			SetSynchDirty();
+		}
 	}
 	
 	bool HasFuel() {
@@ -30,6 +40,10 @@ modded class FuelStation {
 		if (group) {
 			group.RemoveFuel(quantity);
 		}
+	}
+	
+	override bool IsRuined() {
+		return ruined;
 	}
 
 };
