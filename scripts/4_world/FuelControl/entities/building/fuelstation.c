@@ -21,8 +21,9 @@ modded class FuelStation {
 		if (group) {
 			return group.HasFuel();
 		}
+		auto config = GetFuelControlSettings();
 
-		return true;
+		return config.settings.default_pumps_have_fuel;
 	}
 
 	void RemoveFuel(float quantity) {

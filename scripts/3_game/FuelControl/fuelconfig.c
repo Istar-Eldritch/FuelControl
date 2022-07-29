@@ -23,7 +23,8 @@ class Settings {
 	bool pump_car_refueling = true;
 	bool pump_barrel_refueling = true;
 	bool siphoning = true;
-	bool siphoning_limit = 98;
+	float siphoning_limit = 98;
+	bool default_pumps_have_fuel = 0;
 }
 
 
