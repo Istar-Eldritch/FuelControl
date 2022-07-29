@@ -9,9 +9,11 @@ This mod provides tools to control your sever's fuel economy.
 - Refuel a car directly if its placed close to a fuel pump.
 - Refuel a barrel directly if its placed close to a fuel pump.
 - Siphon fuel out of a car fuel tank.
+- Disable / Enable being able to use fuel pumps that were damaged / exploded.
 - Automatically spawn fuel on configured stations.
 - Configurable liquid transfer rates for arbitrary containers (using class names)
 - Configurable consumption rates for arbitrary vehicles (using class names)
+- Measure the fuel in a car or fuel pump with a long stick.
 
 All this features are configurable.
 
@@ -115,7 +117,8 @@ This file is used to change general settings and toggle features on and off:
     "siphoning": 1, // Enables siphoning fuel from cars. 1 = enabled, 0 = disabled.
     "siphoning_limit": 98, // The percentage of fuel that is possible to siphon out of a car fuel tank.
     "default_pumps_have_fuel": 0, // The behaviour of pumps that don't belong to a station. If set to 1, this pumps will have infinite fuel. Defaults to  0.
-    "pumps_get_ruined": 1 // If a pump gets ruined it won't produce fuel.
+    "pumps_get_ruined": 1, // If a pump gets ruined it won't produce fuel.
+    "measure_fuel_with_stick": 1 // If enabled, you can measure the fuel of cars and pumps with a long stick
 }
 ```
 

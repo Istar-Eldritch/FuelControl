@@ -26,6 +26,7 @@ class Settings {
 	float siphoning_limit = 98;
 	bool default_pumps_have_fuel = 0;
 	bool pumps_get_ruined = 1;
+	bool measure_fuel_with_stick = 1;
 }
 
 

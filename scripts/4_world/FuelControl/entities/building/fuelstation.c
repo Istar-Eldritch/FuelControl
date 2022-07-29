@@ -16,16 +16,29 @@ modded class FuelStation {
 		}
 	}
 	
+	float GetFuel() {
+		if (!group) {
+			FuelStationManager groupManager = GetFuelStationManager();
+			group = groupManager.FindStationForPump(this.GetPosition());
+		}
+		
+		if(group) {
+			return group.GetFuel();
+		}
+		
+		auto config = GetFuelControlSettings();
+
+		if(config.settings.default_pumps_have_fuel) {
+			return -1;
+		}
+
+		return 0;
+	}
+	
 	bool HasFuel() {
 		if (!group) {
 			FuelStationManager groupManager = GetFuelStationManager();
-			FuelStationGroup g = groupManager.FindStationForPump(this.GetPosition());
-			if (g) {
-				Print("[FuelControl] Pump at " + this.GetPosition() + " at " + g.name + " station");
-				group = g;
-			} else {
-				Print("[FuelControl] Pump at " + this.GetPosition() + " belongs to no station ");
-			}
+			group = groupManager.FindStationForPump(this.GetPosition());
 		}
 		
 		if (group) {

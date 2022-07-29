@@ -4,5 +4,6 @@ modded class ActionConstructor {
 		super.RegisterActions(actions);
 		actions.Insert(ActionFillAtStation);
 		actions.Insert(ActionSiphon);
+		actions.Insert(ActionMeasureFuel);
 	}
 };
