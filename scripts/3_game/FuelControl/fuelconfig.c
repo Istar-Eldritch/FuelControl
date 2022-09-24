@@ -14,7 +14,7 @@ class StationConfig {
 	}
 }
 
-class Settings {
+class FCSettings {
 	ref array<string> administrators = new ref array<string>;
 	int spawn_enabled = true;
 	int spawn_interval = 1800;
@@ -38,7 +38,7 @@ class FuelControlSettings {
 	static private const string CONSUMPTION_RATES_PATH = DIR_PATH + "\\consumption_rates.json";
 	static private const string LIQUID_TRANSFER_RATES_PATH = DIR_PATH + "\\liquid_transfer_rates.json";
 	
-	ref Settings settings = new ref Settings();
+	ref FCSettings settings = new ref FCSettings();
 	ref array<ref StationConfig> stations = new ref array<ref StationConfig>;
 	ref map<string, float> consumption_rates = new ref map<string, float>;
 	ref map<string, float> liquid_transfer_rates = new ref map<string, float>;
@@ -46,7 +46,7 @@ class FuelControlSettings {
 	void Load() {
 		if (FileExist(SETTINGS_PATH)){ //If config exist load File
 			Print("[FuelControl] Loading configuration");
-			JsonFileLoader<Settings>.JsonLoadFile(SETTINGS_PATH, settings );
+			JsonFileLoader<FCSettings>.JsonLoadFile(SETTINGS_PATH, settings );
 			JsonFileLoader<array<ref StationConfig>>.JsonLoadFile(STATIONS_PATH, stations );
 			JsonFileLoader<map<string, float>>.JsonLoadFile(CONSUMPTION_RATES_PATH, consumption_rates );
 			JsonFileLoader<map<string, float>>.JsonLoadFile(LIQUID_TRANSFER_RATES_PATH, liquid_transfer_rates );
@@ -114,7 +114,7 @@ class FuelControlSettings {
 			MakeDirectory(DIR_PATH);
 		}
 		
-		JsonFileLoader<Settings>.JsonSaveFile(SETTINGS_PATH, settings);
+		JsonFileLoader<FCSettings>.JsonSaveFile(SETTINGS_PATH, settings);
 		JsonFileLoader<array<ref StationConfig>>.JsonSaveFile(STATIONS_PATH, stations);
 		JsonFileLoader<map<string, float>>.JsonSaveFile(CONSUMPTION_RATES_PATH, consumption_rates );
 		JsonFileLoader<map<string, float>>.JsonSaveFile(LIQUID_TRANSFER_RATES_PATH, liquid_transfer_rates );
