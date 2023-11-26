@@ -60,7 +60,7 @@ class CmdParser {
                 }
                 acc = acc + cmd[i];
             }
-            return new ref Param2<string, string>(acc, cmd.Substring(acc.Length(), cmd.Length()));
+            return new ref Param2<string, string>(acc, cmd.Substring(acc.Length(), cmd.Length() - acc.Length()));
         }
 
         return null;
@@ -72,7 +72,7 @@ class CmdParser {
             string acc = "";
             for (i = 0; i < cmd.Length(); i++) {
                 if (cmd[i] != " ") {
-                    return new ref Param2<string, string>(acc, cmd.Substring(i, cmd.Length()));
+                    return new ref Param2<string, string>(acc, cmd.Substring(i, cmd.Length() - i));
                 }
                 acc = acc + cmd[i];
             }
