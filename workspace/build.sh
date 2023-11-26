@@ -14,12 +14,3 @@ mkdir -p "$FC_ADDONS_PATH"
 
 cmd.exe /c start /D "$WIN_DZ_TOOL_PATH" AddonBuilder.exe "P:\FuelControl\scripts" "$WIN_FC_ADDONS_PATH" -project="P:\\" -clear
 
-WIN_CF_ADDONS_PATH="$(wslvar "userprofile")\Documents\DayZData\Mods\@CF\addons"
-CF_ADDONS_PATH=$(wslpath "$WIN_CF_ADDONS_PATH")
-
-echo $CF_ADDONS_PATH
-rm -fr "$CF_ADDONS_PATH"
-mkdir -p "$CF_ADDONS_PATH"
-
-cmd.exe /c start /D "$WIN_DZ_TOOL_PATH" AddonBuilder.exe "P:\JM\CF\Scripts" "$WIN_CF_ADDONS_PATH" -project="P:\\" -clear
-

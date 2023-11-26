@@ -10,8 +10,12 @@ cmd.exe /c mklink /J "C:\Program Files (x86)\Steam\steamapps\common\DayZ\FuelCon
 
 cmd.exe /c mklink /J "P:\FuelControl" "$(wslpath -w "$SCRIPT_DIR/..")"
 
+# Community Framework
+
 cmd.exe /c mklink /J "C:\Program Files (x86)\Steam\steamapps\common\DayZ\JM" "$(wslpath -w "$SCRIPT_DIR/../../CommunityFramework/JM")"
 
 cmd.exe /c mklink /J "P:\JM" "$(wslpath -w "$SCRIPT_DIR/../../CommunityFramework/JM")"
+
+# Missions
 
 cmd.exe /c mklink /J "C:\Program Files (x86)\Steam\steamapps\common\DayZ\missions" "$(wslpath -w "$SCRIPT_DIR/missions")"
