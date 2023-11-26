@@ -16,12 +16,12 @@ class CmdArgs {
         for (i = 0; i < tokens.Count(); i++) {
             auto current = tokens.Get(i);
             if (current.Substring(0, 2) == "--") {
-                key = current.Substring(2, current.Length());
+                key = current.Substring(2, current.Length() - 2);
                 string value = tokens.Get(i + 1);
                 args.mapped.Set(key, value);
                 i = i + 1;
             } else if (current[0] == "-") {
-                key = current.Substring(1, current.Length());
+                key = current.Substring(1, current.Length() - 1);
                 int existing_count = args.flags.Get(key);
                 args.flags.Set(key, existing_count + 1);
             } else {
@@ -41,7 +41,7 @@ class CmdParser {
             string acc = "";
             for (i = 1; i < cmd.Length(); i++) {
                 if (cmd[i] == "\"") {
-                    return new ref Param2<string, string>(acc, cmd.Substring(i + 1, cmd.Length()));
+                    return new ref Param2<string, string>(acc, cmd.Substring(i + 1, cmd.Length() - (i + 1)));
                 }
                 acc = acc + cmd[i];
             }
