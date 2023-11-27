@@ -11,6 +11,7 @@ FC_PATH=$(wslpath "$WIN_FC_PATH")
 echo $FC_PATH
 rm -fr "$FC_PATH"
 mkdir -p "$FC_PATH/addons"
+cp -r "$SCRIPT_DIR/../keys" "$FC_PATH/keys"
 cp -r "$SCRIPT_DIR/../data" "$FC_PATH/data"
 cp -r "$SCRIPT_DIR/../profiles" "$FC_PATH/profiles"
 cp -r "$SCRIPT_DIR/../scripts" "$FC_PATH/src"
