@@ -194,7 +194,7 @@ class FuelStationManager {
 		}
 
 		float minToAdd = GetFuelControlSettings().settings.spawn_minimum;
-		while(amount > 0) {
+		while(amount > 0 && filteredStations.Count() > 0) {
 			int idx = Math.RandomInt(0, filteredStations.Count());
 			auto sta = filteredStations.Get(idx);
 			auto capacity = sta.AvailableCapacity();
