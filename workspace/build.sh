@@ -19,5 +19,4 @@ cp -r "$SCRIPT_DIR/../LICENSE" "$FC_PATH/LICENSE"
 cp -r "$SCRIPT_DIR/../README.md" "$FC_PATH/README.md"
 cp -r "$SCRIPT_DIR/../mod.cpp" "$FC_PATH/mod.cpp"
 
-cmd.exe /c start /D "$WIN_DZ_TOOL_PATH" AddonBuilder.exe "P:\FuelControl\scripts" "$WIN_FC_PATH\addons" -project="P:\\" -clear
-
+cmd.exe /c start /D "$WIN_DZ_TOOL_PATH" AddonBuilder.exe "P:\FuelControl\scripts" "$WIN_FC_PATH\addons" -project="P:" -clear -binarizeFullLogs -sign="$(wslvar "userprofile")\Documents\Keys\IstarEldritch.biprivatekey"
