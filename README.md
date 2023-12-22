@@ -156,6 +156,7 @@ This is a map of `{classname(string): float}`, defines the transfer rate of cont
     "Truck_01_Covered": 500.0,
     "Truck_01_Covered_Blue": 800.0,
     "Truck_01_Covered_Orange": 800.0,
+    "Offroad_02": 800.0,
 
     "Barrel_Blue": 1000.0,
     "Barrel_Green": 1000.0,
@@ -170,24 +171,26 @@ This is a map of `{classname(string): float}`, defines the transfer rate of cont
   }
 ```
 
-## `sonsumption_rates.json`
-This file defines the consumption rates of vehicles. Consumptions are set by default to 1. For example you could set 0.5 to half the consumption or 3 to triplicate it.
+## `vehicle_autonomy.json`
+This file defines the autonomy in Km a vehicle has with a full tank of fuel when driving at an average RPM. Driving at lower RPMs will increase autonomy while driving more aggresively will decrease it.
+If set to 0, the custom atonomy logic won't take place and instead the vanilla consumption rates will happen.
 ```js
 {
-    "CivilianSedan": 1,
-    "CivilianSedan_Black": 1,
-    "CivilianSedan_Wine": 1,
-    "Hatchback_02": 1,
-    "Hatchback_02_Blue": 1,
-    "Hatchback_02_Black": 1,
-    "OffroadHatchback": 1,
-    "OffroadHatchback_Blue": 1,
-    "OffroadHatchback_White":1,
-    "Sedan_02": 1,
-    "Sedan_02_Red": 1,
-    "Sedan_02_Grey": 1,
-    "Truck_01_Covered": 1,
-    "Truck_01_Covered_Blue": 1,
-    "Truck_01_Covered_Orange": 1
+    "OffroadHatchback_Blue": 25.0,
+    "OffroadHatchback": 25.0,
+    "Sedan_02": 25.0,
+    "Sedan_02_Red": 25.0,
+    "Truck_01_Covered_Blue": 25.0,
+    "Truck_01_Covered_Orange": 25.0,
+    "CivilianSedan_Black": 25.0,
+    "CivilianSedan": 25.0,
+    "CivilianSedan_Wine": 25.0,
+    "Sedan_02_Grey": 25.0,
+    "Hatchback_02": 25.0,
+    "Truck_01_Covered": 25.0,
+    "OffroadHatchback_White": 25.0,
+    "Hatchback_02_Blue": 25.0,
+    "Hatchback_02_Black": 25.0,
+    "Offroad_02": 25.0
 }
 ```

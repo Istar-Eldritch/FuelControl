@@ -1,33 +1,37 @@
 modded class CarScript {
 	
-	float fuelCapacity;
-	float lastFuelFraction;
-	float consumptionRate;
+	float lastFuelAmount;
+	float autonomy;
+	// During a dt teh amount of fuel may be so small the leak function doesn't compute it right.
+	// This is an acc across multiple updates.
+	float fuelDebt;
 		
 	override void SetActions() {
 		super.SetActions();
 		AddAction(ActionFillAtStation);
 		AddAction(ActionSiphon);
+		AddAction(ActionMeasureFuel);
 	}
 	
 	void AddFuel(float quantity) {
 		Fill(CarFluid.FUEL, quantity);
-		lastFuelFraction = GetFluidFraction(CarFluid.FUEL);
+		lastFuelAmount = GetFluidCapacity(CarFluid.FUEL) * GetFluidFraction(CarFluid.FUEL);
 	}
 	
 	void RemoveFuel(float quantity) {
 		Leak(CarFluid.FUEL, quantity);
-		lastFuelFraction = GetFluidFraction(CarFluid.FUEL);
+		lastFuelAmount = GetFluidCapacity(CarFluid.FUEL) * GetFluidFraction(CarFluid.FUEL);
 	}
 	
 	override void OnEngineStart() {
-		fuelCapacity = GetFluidCapacity( CarFluid.FUEL );
-		lastFuelFraction = GetFluidFraction( CarFluid.FUEL);
+		fuelDebt = 0;
+		float fuelFraction = GetFluidFraction( CarFluid.FUEL);
+		lastFuelAmount = GetFluidCapacity(CarFluid.FUEL) * fuelFraction;
 		FuelControlSettings settings = GetFuelControlSettings();
 		auto type = GetType();
-		consumptionRate = settings.consumption_rates.Get(type);
-		if (!consumptionRate) {
-			consumptionRate = 1;
+		autonomy = settings.vehicle_autonomy.Get(type);
+		if (!autonomy) {
+			autonomy = 0;
 		}
 
 		super.OnEngineStart();
@@ -35,22 +39,32 @@ modded class CarScript {
 	
 	override void OnUpdate(float dt) {
 		super.OnUpdate(dt);
-		float fuelFraction = GetFluidFraction( CarFluid.FUEL );
-		
-		// This will potentially affect refueling
-		if (consumptionRate != 1 && EngineIsOn() && fuelFraction != lastFuelFraction) {
-			float lastFuel = lastFuelFraction * fuelCapacity;
-			float fuel = fuelFraction * fuelCapacity;
-			float consumed = lastFuel - fuel;
-			if (consumed > 0) {
-				float shouldBeConsumed = consumed * consumptionRate;
-				float diffConsumed = consumed - shouldBeConsumed;
-				
-				if (diffConsumed < 0) {
-					RemoveFuel((diffConsumed * -1));
-				} else if (diffConsumed > 0) {
-					AddFuel(diffConsumed);
-				}
+
+		if (GetGame().IsServer() && autonomy > 0 && EngineIsOn()) {
+			float fuelFraction = GetFluidFraction( CarFluid.FUEL );
+			float currentFuelAmount = GetFluidCapacity(CarFluid.FUEL) * fuelFraction;
+			float fuelTankHealth = GetHealth01("FuelTank", "");
+			// Disable vanilla consumption if autonomy rate is defined and the fuel tank is healthty.
+			// Otherwise damaged tanks would not leak
+			if (currentFuelAmount < lastFuelAmount && fuelTankHealth > GameConstants.DAMAGE_DAMAGED_VALUE) {
+				float consumed = lastFuelAmount - currentFuelAmount;
+				AddFuel(consumed);
+			}
+			
+			float rpm = EngineGetRPM() / EngineGetRPMMax();
+			
+			
+			float speed = GetVelocity(this).Length(); // speed in m/s
+			float ds = dt * speed; // distance traveled in dt in m
+			
+			// fuel consumed in ds
+			float consumedFuel = (ds * GetFluidCapacity(CarFluid.FUEL) / autonomy / 1000 + fuelDebt) * (rpm + 0.5);
+
+			if (consumedFuel > 1e-3) {
+				RemoveFuel(consumedFuel);
+				fuelDebt = 0;
+			} else {
+				fuelDebt = consumedFuel;
 			}
 		}
 	}
