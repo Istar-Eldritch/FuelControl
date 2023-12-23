@@ -4,6 +4,8 @@ cmd.exe /c rmdir "C:\Program Files (x86)\Steam\steamapps\common\DayZ\FuelControl
 cmd.exe /c rmdir "P:\FuelControl"
 
 # Community Framework
+
+cmd.exe /c rmdir "P:\JM\COT"
 cmd.exe /c rmdir "C:\Program Files (x86)\Steam\steamapps\common\DayZ\JM"
 cmd.exe /c rmdir "P:\JM"
 
