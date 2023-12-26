@@ -1,0 +1,120 @@
+FrameWidgetClass rootFrame {
+ position 509.07901 234.666
+ size 250 136.45999
+ hexactpos 1
+ vexactpos 1
+ hexactsize 1
+ vexactsize 1
+ {
+  EditBoxWidgetClass name_edit {
+   visible 0
+   position 0 0
+   size 250 25
+   hexactpos 1
+   vexactpos 1
+   hexactsize 1
+   vexactsize 1
+   font "gui/fonts/metron-bold16"
+  }
+  TextWidgetClass name_txt {
+   ignorepointer 1
+   position 0 0
+   size 250 25
+   hexactpos 1
+   vexactpos 1
+   hexactsize 1
+   vexactsize 1
+   text "Station Name"
+   font "gui/fonts/metron16"
+  }
+  TextWidgetClass location_x_label {
+   ignorepointer 1
+   position 4.7878 40
+   size 20 20
+   hexactpos 1
+   vexactpos 1
+   hexactsize 1
+   vexactsize 1
+   text "x:"
+   font "gui/fonts/metron-bold12"
+  }
+  TextWidgetClass location_x_txt {
+   ignorepointer 1
+   position 25 40
+   size 100 20
+   hexactpos 1
+   vexactpos 1
+   hexactsize 1
+   vexactsize 1
+   text "0.000"
+   font "gui/fonts/metron12"
+  }
+  TextWidgetClass location_y_label {
+   visible 1
+   ignorepointer 1
+   position 127.72499 40
+   size 20 20
+   hexactpos 1
+   vexactpos 1
+   hexactsize 1
+   vexactsize 1
+   text "y:"
+   font "gui/fonts/metron-bold12"
+  }
+  TextWidgetClass location_y_txt {
+   ignorepointer 1
+   position 147.937 40
+   size 100 20
+   hexactpos 1
+   vexactpos 1
+   hexactsize 1
+   vexactsize 1
+   text "0.000"
+   font "gui/fonts/metron12"
+  }
+  TextWidgetClass capacity_label {
+   ignorepointer 1
+   position 4.7878 80
+   size 100 20
+   hexactpos 1
+   vexactpos 1
+   hexactsize 1
+   vexactsize 1
+   text "capacity (L):"
+   font "gui/fonts/metron-bold12"
+  }
+  TextWidgetClass capacity_txt {
+   ignorepointer 1
+   position 120 80
+   size 100 20
+   hexactpos 1
+   vexactpos 1
+   hexactsize 1
+   vexactsize 1
+   text "0.000"
+   font "gui/fonts/metron12"
+  }
+  TextWidgetClass available_label {
+   ignorepointer 1
+   position 6.22567 105.16299
+   size 110 20
+   hexactpos 1
+   vexactpos 1
+   hexactsize 1
+   vexactsize 1
+   text "available (L):"
+   font "gui/fonts/metron-bold12"
+  }
+  TextWidgetClass available_txt {
+   ignorepointer 1
+   position 120 105.16299
+   size 100 20
+   hexactpos 1
+   vexactpos 1
+   hexactsize 1
+   vexactsize 1
+   text "0.000"
+   font "gui/fonts/metron12"
+  }
+ }
+}

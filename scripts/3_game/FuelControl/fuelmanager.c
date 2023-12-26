@@ -1,3 +1,8 @@
+class StationSubscriber {
+
+	void OnUpdate(FuelStationGroup station) {}
+}
+
 // Script File
 
 class FuelStationGroup {
@@ -7,7 +12,7 @@ class FuelStationGroup {
 	float fuelCapacity;
 	// fuel amount in ml
 	float fuelAmount;
-	
+		
 	void FuelStationGroup(string _name, vector pos, float fuelCap, float fuel) {
 		name = _name;
 		position = pos;
@@ -76,7 +81,8 @@ class FuelStationManager {
 	float fullestStationFreeCapacity;
 	
 	ref map<string, ref FuelStationGroup> stations = new ref map<string, ref FuelStationGroup>;
-	
+	ref array<StationSubscriber> m_subscribers;
+
 	void FuelStationManager() {
 		if (GetGame().IsServer()) {
 			FuelControlSettings config = GetFuelControlSettings();
@@ -87,6 +93,15 @@ class FuelStationManager {
 				stations[station.name] = new ref FuelStationGroup(station.name, pos, station.capacity * 1000, station.fuel * 1000);
 			}
 		}
+		m_subscribers = new array<StationSubscriber>;
+	}
+	
+	void Subscribe(StationSubscriber subscriber) {
+		m_subscribers.Insert(subscriber);
+	}
+	
+	void DeSubscribe(StationSubscriber subscriber) {
+		m_subscribers.RemoveItem(subscriber);
 	}
 	
 	ref FuelStationGroup FindStationForPump(vector pumpLocation) {
@@ -119,12 +134,32 @@ class FuelStationManager {
 		config.Save();
 	}
 	
+	void SendRequestAllStations() {
+		auto currentTime = GetGame().GetTime();
+		if (currentTime - lastRequestTime > 1000) {
+			Print("Requesting all stations");
+			GetRPCManager().SendRPC("FuelControl", "RequestAllStations", null, true);
+			lastRequestTime = currentTime;
+		}
+	}
+	
 	void SendRequestStation(vector position) {
 		auto currentTime = GetGame().GetTime();
 		if (currentTime - lastRequestTime > 1000) {
 			Print("Requestion station at position " + position);
 			GetRPCManager().SendRPC("FuelControl", "RequestStation", new Param1<vector>(position), true);
 			lastRequestTime = currentTime;
+		}
+	}
+	
+	void RequestAllStations( CallType type, ref ParamsReadContext ctx, ref PlayerIdentity sender, ref Object target ) {
+		if (GetGame().IsServer()) {
+			Print("[FuelControl] Client is requesting all stations");
+			foreach (auto station: stations) {
+				if (station) {
+					GetRPCManager().SendRPC("FuelControl", "UpdateStation", new Param1<FuelStationGroup>(station), true, sender, target);
+				}
+			}
 		}
 	}
 	
@@ -145,6 +180,11 @@ class FuelStationManager {
 			ref FuelStationGroup station = data.param1;
 			Print("[FuelControl] Got update on station " + station.name + " from server");
 			stations[station.name] = new ref FuelStationGroup(station.name, station.position, station.fuelCapacity, station.fuelAmount);
+			foreach (auto subscriber: m_subscribers) {
+				if (subscriber) {
+					subscriber.OnUpdate(stations[station.name]);
+				}
+			}
 		}
 	}
 

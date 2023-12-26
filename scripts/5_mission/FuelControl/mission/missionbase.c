@@ -8,6 +8,7 @@ modded class MissionBase {
     FuelStationManager manager = GetFuelStationManager();
     GetRPCManager().AddRPC("FuelControl", "UpdateStation", manager, SingleplayerExecutionType.Both);
     GetRPCManager().AddRPC("FuelControl", "RequestStation", manager, SingleplayerExecutionType.Both);
+    GetRPCManager().AddRPC("FuelControl", "RequestAllStations", manager, SingleplayerExecutionType.Both);
 
     CmdManager cmdManager = GetCmdManager();
     cmdManager.RegisterHandler(new ref CmdStationAdd());
