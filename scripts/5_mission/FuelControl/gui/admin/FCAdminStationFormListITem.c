@@ -16,15 +16,15 @@ class FCAdminStationFormListItem: UIScriptedMenu {
 	
 	override Widget Init() {
 		layoutRoot = GetGame().GetWorkspace().CreateWidgets( "FuelControl/GUI/layouts/fc_admin_station_form_list_item.layout");
-		m_name_txt = layoutRoot.FindAnyWidget("name_txt");
+		m_name_txt = TextWidget.Cast(layoutRoot.FindAnyWidget("name_txt"));
 		m_name_txt.SetText(m_station.name);
-		m_name_edit = layoutRoot.FindAnyWidget("name_edit");
+		m_name_edit = EditBoxWidget.Cast(layoutRoot.FindAnyWidget("name_edit"));
 		
 
-		m_capacity_txt = layoutRoot.FindAnyWidget("capacity_txt");
-		m_available_txt = layoutRoot.FindAnyWidget("available_txt");
-		m_location_x_txt = layoutRoot.FindAnyWidget("location_x_txt");
-		m_location_y_txt = layoutRoot.FindAnyWidget("location_y_txt");
+		m_capacity_txt = TextWidget.Cast(layoutRoot.FindAnyWidget("capacity_txt"));
+		m_available_txt = TextWidget.Cast(layoutRoot.FindAnyWidget("available_txt"));
+		m_location_x_txt = TextWidget.Cast(layoutRoot.FindAnyWidget("location_x_txt"));
+		m_location_y_txt = TextWidget.Cast(layoutRoot.FindAnyWidget("location_y_txt"));
 
 		UpdateUI();
 

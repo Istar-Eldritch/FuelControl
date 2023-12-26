@@ -15,13 +15,25 @@ FrameWidgetClass rootFrame {
    hexactsize 1
    vexactsize 0
    {
-    ScrollWidgetClass station_list {
+    ScrollWidgetClass station_scroll {
      position 0 0
      size 1 1
      hexactpos 1
      vexactpos 1
      hexactsize 0
      vexactsize 0
+     "Scrollbar V" 1
+     {
+      PanelWidgetClass station_list {
+       ignorepointer 1
+       position 10 10
+       size 48 48
+       hexactpos 1
+       vexactpos 1
+       hexactsize 1
+       vexactsize 1
+      }
+     }
     }
    }
   }

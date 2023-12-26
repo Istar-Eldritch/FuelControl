@@ -29,7 +29,7 @@ FrameWidgetClass rootFrame {
   }
   TextWidgetClass location_x_label {
    ignorepointer 1
-   position 4.7878 40
+   position 4.7878 35
    size 20 20
    hexactpos 1
    vexactpos 1
@@ -40,7 +40,7 @@ FrameWidgetClass rootFrame {
   }
   TextWidgetClass location_x_txt {
    ignorepointer 1
-   position 25 40
+   position 25 35
    size 100 20
    hexactpos 1
    vexactpos 1
@@ -52,7 +52,7 @@ FrameWidgetClass rootFrame {
   TextWidgetClass location_y_label {
    visible 1
    ignorepointer 1
-   position 127.72499 40
+   position 127.72499 35
    size 20 20
    hexactpos 1
    vexactpos 1
@@ -63,7 +63,7 @@ FrameWidgetClass rootFrame {
   }
   TextWidgetClass location_y_txt {
    ignorepointer 1
-   position 147.937 40
+   position 147.937 35
    size 100 20
    hexactpos 1
    vexactpos 1
@@ -74,7 +74,7 @@ FrameWidgetClass rootFrame {
   }
   TextWidgetClass capacity_label {
    ignorepointer 1
-   position 4.7878 80
+   position 4.7878 60
    size 100 20
    hexactpos 1
    vexactpos 1
@@ -85,7 +85,7 @@ FrameWidgetClass rootFrame {
   }
   TextWidgetClass capacity_txt {
    ignorepointer 1
-   position 120 80
+   position 120 60
    size 100 20
    hexactpos 1
    vexactpos 1
@@ -96,7 +96,7 @@ FrameWidgetClass rootFrame {
   }
   TextWidgetClass available_label {
    ignorepointer 1
-   position 6.22567 105.16299
+   position 6.2257 85
    size 110 20
    hexactpos 1
    vexactpos 1
@@ -107,7 +107,7 @@ FrameWidgetClass rootFrame {
   }
   TextWidgetClass available_txt {
    ignorepointer 1
-   position 120 105.16299
+   position 120 85
    size 100 20
    hexactpos 1
    vexactpos 1
