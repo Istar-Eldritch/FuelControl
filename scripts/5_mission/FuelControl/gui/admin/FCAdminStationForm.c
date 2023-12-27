@@ -17,6 +17,11 @@ class FCAdminStationFormSubscriber: StationSubscriber {
 	}
 }
 
+const int FC_COLOR_RED = ARGB( 255, 200, 20, 20 );
+const int FC_COLOR_GREEN = ARGB( 255, 20, 200, 20 );
+const int FC_COLOR_ORANGE = ARGB( 255, 255, 165, 0 );
+const int FC_COLOR_BLUE = ARGB( 255, 20, 20, 200 );
+
 class FCAdminStationForm: UIScriptedMenu {
 	
 	protected ref ScrollWidget m_stationScroll;
@@ -86,6 +91,18 @@ class FCAdminStationForm: UIScriptedMenu {
 				m_stationList.AddChild(item_widget);
 				m_children.Insert(station.name, item);
 				m_stationList.SetSize(item_width, item_height * m_children.Count());
+				if (station.fuelAmount < 0) {
+					m_stationMap.AddUserMark(station.position, station.name, FC_COLOR_BLUE, "\\FuelControl\\GUI\\textures\\gas_station_blue.paa");
+				} else {
+					auto ratio = station.fuelAmount / station.fuelCapacity;
+					if (ratio > 0.5) {
+						m_stationMap.AddUserMark(station.position, station.name, FC_COLOR_GREEN, "\\FuelControl\\GUI\\textures\\gas_station_green.paa");	
+					} else if (ratio > 0.2) {
+						m_stationMap.AddUserMark(station.position, station.name, FC_COLOR_ORANGE, "\\FuelControl\\GUI\\textures\\gas_station_orange.paa");	
+					} else {
+						m_stationMap.AddUserMark(station.position, station.name, FC_COLOR_RED, "\\FuelControl\\GUI\\textures\\gas_station_red.paa");	
+					}
+				}
 			}
 		}
 	}
