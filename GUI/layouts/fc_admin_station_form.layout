@@ -37,22 +37,22 @@ FrameWidgetClass rootFrame {
     }
    }
   }
-  WindowWidgetClass WindowWidget0 {
+  PanelWidgetClass right_panel {
    ignorepointer 1
    position 250 0
-   size 1 1
+   size 1200 1080
    hexactpos 1
    vexactpos 1
-   hexactsize 0
-   vexactsize 0
+   hexactsize 1
+   vexactsize 1
    {
     MapWidgetClass station_map {
-     position 0 0
-     size 1 1
+     position 10 10
+     size 48 48
      hexactpos 1
      vexactpos 1
-     hexactsize 0
-     vexactsize 0
+     hexactsize 1
+     vexactsize 1
     }
    }
   }

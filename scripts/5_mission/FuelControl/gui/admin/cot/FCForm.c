@@ -11,7 +11,10 @@ class FCForm: JMFormBase
 	}
 	
 	override void OnInit() {
-		m_stationForm = new FCAdminStationForm;
+		float width;
+		float height;
+		layoutRoot.GetScreenSize(width, height);
+		m_stationForm = new FCAdminStationForm(width, height);
 		layoutRoot.AddChild(m_stationForm.Init());
 	}
 

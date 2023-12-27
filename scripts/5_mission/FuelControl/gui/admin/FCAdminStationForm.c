@@ -9,14 +9,10 @@ class FCAdminStationFormSubscriber: StationSubscriber {
 	}
 	
 	override void OnUpdate(FuelStationGroup station) {
-		//if (!m_pending_update) {
-			GetGame().GetCallQueue(CALL_CATEGORY_SYSTEM).CallLater(this.UpdateUI, 500, false, station);
-		//	m_pending_update = true;
-		//}
+		m_form.UpdateUI(station);
 	}
 	
 	void UpdateUI(FuelStationGroup station) {
-		//m_pending_update = false;
 		m_form.UpdateUI(station);
 	}
 }
@@ -25,6 +21,7 @@ class FCAdminStationForm: UIScriptedMenu {
 	
 	protected ref ScrollWidget m_stationScroll;
 	protected ref Widget m_stationList;
+	protected ref Widget m_rightPanel;
 	protected ref MapWidget m_stationMap;
 	
 	ref FuelStationManager m_stationManager;
@@ -32,7 +29,14 @@ class FCAdminStationForm: UIScriptedMenu {
 	
 	ref map<string, FCAdminStationFormListItem> m_children;
 	
-	void FCAdminStationForm() {
+	float m_height;
+	float m_width;
+	
+	void FCAdminStationForm(float width = -1, float height = -1) {
+		if (width > 0 && height > 0) {
+			m_width = width;
+			m_height = height;
+		}
 		m_children = new map<string, FCAdminStationFormListItem>;
 		m_stationManager = GetFuelStationManager();
 		m_subscriber = FCAdminStationFormSubscriber(this);
@@ -45,10 +49,24 @@ class FCAdminStationForm: UIScriptedMenu {
 	
 	override Widget Init() {
 		layoutRoot = GetGame().GetWorkspace().CreateWidgets( "FuelControl/GUI/layouts/fc_admin_station_form.layout");
-		m_stationScroll = ScrollWidget.Cast(layoutRoot.FindAnyWidget("sation_scroll"));
+		if(!m_width && !m_height) {
+			layoutRoot.GetScreenSize(m_width, m_height);
+		}
+		m_stationScroll = ScrollWidget.Cast(layoutRoot.FindAnyWidget("station_scroll"));
+		float scroll_width;
+		float scroll_height;
+		m_stationScroll.GetScreenSize(scroll_width, scroll_height);
 		m_stationScroll.VScrollToPos(0);
 		m_stationList = layoutRoot.FindAnyWidget("station_list");
+		
+		auto map_width = m_width - scroll_width - 30;
+		auto map_height = m_height - 20;
+		m_rightPanel = layoutRoot.FindAnyWidget("right_panel");
+		m_rightPanel.SetScreenSize(map_width, map_height);
+		m_rightPanel.SetPos(scroll_width + 10, 0);
 		m_stationMap = MapWidget.Cast(layoutRoot.FindAnyWidget("station_map"));
+		m_stationMap.SetScreenSize(map_width, map_height);
+		m_stationMap.SetPos(0, 0);
 		m_stationManager.SendRequestAllStations();
 		return layoutRoot;
 	}
