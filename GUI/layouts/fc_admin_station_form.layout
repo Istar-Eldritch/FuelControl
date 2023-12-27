@@ -7,16 +7,16 @@ FrameWidgetClass rootFrame {
  vexactsize 0
  {
   PanelWidgetClass left_panel {
-   ignorepointer 1
+   ignorepointer 0
    position 0 0
-   size 250 1
+   size 260 1
    hexactpos 1
    vexactpos 1
    hexactsize 1
    vexactsize 0
    {
     ScrollWidgetClass station_scroll {
-     position 0 0
+     position 0 60
      size 1 1
      hexactpos 1
      vexactpos 1
@@ -25,13 +25,50 @@ FrameWidgetClass rootFrame {
      "Scrollbar V" 1
      {
       PanelWidgetClass station_list {
-       ignorepointer 1
+       ignorepointer 0
        position 10 10
        size 48 48
        hexactpos 1
        vexactpos 1
        hexactsize 1
        vexactsize 1
+      }
+     }
+    }
+    EditBoxWidgetClass filter_box {
+     position 10 10
+     size 200 40
+     hexactpos 1
+     vexactpos 1
+     hexactsize 1
+     vexactsize 1
+     text "Filter..."
+     "Use default text" 1
+     "exact text" 1
+     font "gui/fonts/metron16"
+    }
+    ButtonWidgetClass new_btn {
+     position 5 18
+     size 25 25
+     halign right_ref
+     hexactpos 1
+     vexactpos 1
+     hexactsize 1
+     vexactsize 1
+     {
+      ImageWidgetClass new_img {
+       ignorepointer 1
+       size 20 20
+       halign center_ref
+       valign center_ref
+       hexactpos 1
+       vexactpos 1
+       hexactsize 1
+       vexactsize 1
+       imageTexture "{BD7321911F13FDFC}FuelControl/GUI/textures/plus_white.edds"
+       mode additive
+       "src alpha" 1
+       "stretch mode" stretch_w_h
       }
      }
     }

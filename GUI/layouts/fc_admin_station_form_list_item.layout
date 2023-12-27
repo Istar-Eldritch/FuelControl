@@ -1,120 +1,433 @@
-FrameWidgetClass rootFrame {
+ButtonWidgetClass rootFrame {
  position 509.07901 234.666
- size 250 136.45999
+ size 250 130
  hexactpos 1
  vexactpos 1
  hexactsize 1
  vexactsize 1
  {
-  EditBoxWidgetClass name_edit {
-   visible 0
-   position 0 0
-   size 250 25
-   hexactpos 1
-   vexactpos 1
-   hexactsize 1
-   vexactsize 1
-   font "gui/fonts/metron-bold16"
-  }
-  TextWidgetClass name_txt {
-   ignorepointer 1
-   position 0 0
-   size 250 25
-   hexactpos 1
-   vexactpos 1
-   hexactsize 1
-   vexactsize 1
-   text "Station Name"
-   font "gui/fonts/metron16"
-  }
-  TextWidgetClass location_x_label {
-   ignorepointer 1
-   position 4.7878 35
-   size 20 20
-   hexactpos 1
-   vexactpos 1
-   hexactsize 1
-   vexactsize 1
-   text "x:"
-   font "gui/fonts/metron-bold12"
-  }
-  TextWidgetClass location_x_txt {
-   ignorepointer 1
-   position 25 35
-   size 100 20
-   hexactpos 1
-   vexactpos 1
-   hexactsize 1
-   vexactsize 1
-   text "0.000"
-   font "gui/fonts/metron12"
-  }
-  TextWidgetClass location_y_label {
+  PanelWidgetClass info_panel {
    visible 1
    ignorepointer 1
-   position 127.72499 35
-   size 20 20
+   position 0 0
+   size 1 1
    hexactpos 1
    vexactpos 1
-   hexactsize 1
-   vexactsize 1
-   text "y:"
-   font "gui/fonts/metron-bold12"
+   hexactsize 0
+   vexactsize 0
+   {
+    TextWidgetClass name_txt {
+     ignorepointer 1
+     position 5 5
+     size 165 25
+     hexactpos 1
+     vexactpos 1
+     hexactsize 1
+     vexactsize 1
+     text "Station Name"
+     font "gui/fonts/metron16"
+    }
+    TextWidgetClass location_x_label {
+     ignorepointer 1
+     position 4.7878 35
+     size 20 20
+     hexactpos 1
+     vexactpos 1
+     hexactsize 1
+     vexactsize 1
+     text "x:"
+     font "gui/fonts/metron-bold12"
+    }
+    TextWidgetClass location_x_txt {
+     ignorepointer 1
+     position 25 35
+     size 100 20
+     hexactpos 1
+     vexactpos 1
+     hexactsize 1
+     vexactsize 1
+     text "0.000"
+     font "gui/fonts/metron12"
+    }
+    TextWidgetClass location_y_label {
+     visible 1
+     ignorepointer 1
+     position 127.72499 35
+     size 20 20
+     hexactpos 1
+     vexactpos 1
+     hexactsize 1
+     vexactsize 1
+     text "y:"
+     font "gui/fonts/metron-bold12"
+    }
+    TextWidgetClass location_y_txt {
+     ignorepointer 1
+     position 147.937 35
+     size 100 20
+     hexactpos 1
+     vexactpos 1
+     hexactsize 1
+     vexactsize 1
+     text "0.000"
+     font "gui/fonts/metron12"
+    }
+    TextWidgetClass capacity_label {
+     ignorepointer 1
+     position 4.7878 60
+     size 100 20
+     hexactpos 1
+     vexactpos 1
+     hexactsize 1
+     vexactsize 1
+     text "capacity (L):"
+     font "gui/fonts/metron-bold12"
+    }
+    TextWidgetClass capacity_txt {
+     ignorepointer 1
+     position 120 60
+     size 100 20
+     hexactpos 1
+     vexactpos 1
+     hexactsize 1
+     vexactsize 1
+     text "0.000"
+     font "gui/fonts/metron12"
+    }
+    TextWidgetClass available_label {
+     ignorepointer 1
+     position 6.2257 85
+     size 110 20
+     hexactpos 1
+     vexactpos 1
+     hexactsize 1
+     vexactsize 1
+     text "available (L):"
+     font "gui/fonts/metron-bold12"
+    }
+    TextWidgetClass available_txt {
+     ignorepointer 1
+     position 120 85
+     size 100 20
+     hexactpos 1
+     vexactpos 1
+     hexactsize 1
+     vexactsize 1
+     text "0.000"
+     font "gui/fonts/metron12"
+    }
+    PanelWidgetClass buttons {
+     ignorepointer 0
+     position 175 5
+     size 70 25
+     hexactpos 1
+     vexactpos 1
+     hexactsize 1
+     vexactsize 1
+     {
+      ButtonWidgetClass tp_btn {
+       position 0 2
+       size 20 20
+       hexactpos 1
+       vexactpos 1
+       hexactsize 1
+       vexactsize 1
+       {
+        ImageWidgetClass tp_img {
+         inheritalpha 1
+         ignorepointer 1
+         position 0 0
+         size 1.2 1.2
+         hexactpos 1
+         vexactpos 1
+         hexactsize 0
+         vexactsize 0
+         fixaspect inside
+         imageTexture "{048AF1B95EEA7602}FuelControl/GUI/textures/teleportation_white.edds"
+         mode additive
+         "src alpha" 1
+         "stretch mode" stretch_w_h
+        }
+       }
+      }
+      ButtonWidgetClass del_btn {
+       position 50 2
+       size 20 20
+       hexactpos 1
+       vexactpos 1
+       hexactsize 1
+       vexactsize 1
+       {
+        ImageWidgetClass del_img {
+         inheritalpha 1
+         ignorepointer 1
+         position 2 2
+         size 15 15
+         hexactpos 1
+         vexactpos 1
+         hexactsize 1
+         vexactsize 1
+         fixaspect inside
+         imageTexture "{8F3D410D97F02A53}FuelControl/GUI/textures/bin_white.edds"
+         mode additive
+         "src alpha" 1
+         "stretch mode" stretch_w_h
+        }
+       }
+      }
+      ButtonWidgetClass edit_btn {
+       position 25 2
+       size 20 20
+       hexactpos 1
+       vexactpos 1
+       hexactsize 1
+       vexactsize 1
+       {
+        ImageWidgetClass edit_img {
+         inheritalpha 1
+         ignorepointer 1
+         position 2 2
+         size 15 15
+         hexactpos 1
+         vexactpos 1
+         hexactsize 1
+         vexactsize 1
+         fixaspect inside
+         imageTexture "{F74E6443269677EE}FuelControl/GUI/textures/pencil_white.edds"
+         mode additive
+         "src alpha" 1
+         "stretch mode" stretch_w_h
+        }
+       }
+      }
+     }
+    }
+   }
   }
-  TextWidgetClass location_y_txt {
-   ignorepointer 1
-   position 147.937 35
-   size 100 20
+  PanelWidgetClass edit_panel {
+   visible 0
+   ignorepointer 0
+   position 0 0
+   size 1 1
    hexactpos 1
    vexactpos 1
-   hexactsize 1
-   vexactsize 1
-   text "0.000"
-   font "gui/fonts/metron12"
+   hexactsize 0
+   vexactsize 0
+   {
+    EditBoxWidgetClass name_edit {
+     visible 1
+     position 5 1
+     size 165 25
+     hexactpos 1
+     vexactpos 1
+     hexactsize 1
+     vexactsize 1
+     text "Station Name"
+     "Use default text" 0
+     "exact text" 1
+     font "gui/fonts/metron16"
+    }
+    TextWidgetClass location_x_label0 {
+     ignorepointer 1
+     position 4.7878 35
+     size 20 20
+     hexactpos 1
+     vexactpos 1
+     hexactsize 1
+     vexactsize 1
+     text "x:"
+     font "gui/fonts/metron-bold12"
+    }
+    EditBoxWidgetClass location_x_edit {
+     ignorepointer 0
+     position 25 31
+     size 100 20
+     hexactpos 1
+     vexactpos 1
+     hexactsize 1
+     vexactsize 1
+     text "0.000"
+     "exact text" 1
+     font "gui/fonts/metron12"
+    }
+    TextWidgetClass location_y_label0 {
+     visible 1
+     ignorepointer 1
+     position 127.72499 35
+     size 20 20
+     hexactpos 1
+     vexactpos 1
+     hexactsize 1
+     vexactsize 1
+     text "y:"
+     font "gui/fonts/metron-bold12"
+    }
+    EditBoxWidgetClass location_y_edit {
+     ignorepointer 0
+     position 147.937 31
+     size 100 20
+     hexactpos 1
+     vexactpos 1
+     hexactsize 1
+     vexactsize 1
+     text "0.000"
+     "exact text" 1
+     font "gui/fonts/metron12"
+    }
+    TextWidgetClass capacity_label0 {
+     ignorepointer 1
+     position 4.7878 60
+     size 100 20
+     hexactpos 1
+     vexactpos 1
+     hexactsize 1
+     vexactsize 1
+     text "capacity (L):"
+     font "gui/fonts/metron-bold12"
+    }
+    EditBoxWidgetClass capacity_edit {
+     ignorepointer 0
+     position 120 56
+     size 100 20
+     hexactpos 1
+     vexactpos 1
+     hexactsize 1
+     vexactsize 1
+     text "0.000"
+     "exact text" 1
+     font "gui/fonts/metron12"
+    }
+    TextWidgetClass available_label0 {
+     ignorepointer 1
+     position 6.2257 85
+     size 110 20
+     hexactpos 1
+     vexactpos 1
+     hexactsize 1
+     vexactsize 1
+     text "available (L):"
+     font "gui/fonts/metron-bold12"
+    }
+    EditBoxWidgetClass available_edit {
+     ignorepointer 0
+     position 120 81
+     size 100 20
+     hexactpos 1
+     vexactpos 1
+     hexactsize 1
+     vexactsize 1
+     text "0.000"
+     "exact text" 1
+     font "gui/fonts/metron12"
+    }
+    PanelWidgetClass edit_buttons {
+     ignorepointer 0
+     position 175 5
+     size 70 25
+     hexactpos 1
+     vexactpos 1
+     hexactsize 1
+     vexactsize 1
+     {
+      ButtonWidgetClass ok_edit_btn {
+       position 50 2
+       size 20 20
+       hexactpos 1
+       vexactpos 1
+       hexactsize 1
+       vexactsize 1
+       {
+        ImageWidgetClass check_img {
+         inheritalpha 1
+         ignorepointer 1
+         position 2 2
+         size 15 15
+         hexactpos 1
+         vexactpos 1
+         hexactsize 1
+         vexactsize 1
+         fixaspect inside
+         imageTexture "{35A238A0789CD6F6}FuelControl/GUI/textures/check_white.edds"
+         mode additive
+         "src alpha" 1
+         "stretch mode" stretch_w_h
+        }
+       }
+      }
+      ButtonWidgetClass cancel_edit_btn {
+       position 25 2
+       size 20 20
+       hexactpos 1
+       vexactpos 1
+       hexactsize 1
+       vexactsize 1
+       {
+        ImageWidgetClass cancel_img {
+         inheritalpha 1
+         ignorepointer 1
+         position 2 2
+         size 15 15
+         hexactpos 1
+         vexactpos 1
+         hexactsize 1
+         vexactsize 1
+         fixaspect inside
+         imageTexture "{B59CAD4A67A67A5E}FuelControl/GUI/textures/cancel_white.edds"
+         mode additive
+         "src alpha" 1
+         "stretch mode" stretch_w_h
+        }
+       }
+      }
+     }
+    }
+   }
   }
-  TextWidgetClass capacity_label {
-   ignorepointer 1
-   position 4.7878 60
-   size 100 20
+  PanelWidgetClass del_panel {
+   visible 0
+   ignorepointer 0
+   position 0 0
+   size 1 1
    hexactpos 1
    vexactpos 1
-   hexactsize 1
-   vexactsize 1
-   text "capacity (L):"
-   font "gui/fonts/metron-bold12"
-  }
-  TextWidgetClass capacity_txt {
-   ignorepointer 1
-   position 120 60
-   size 100 20
-   hexactpos 1
-   vexactpos 1
-   hexactsize 1
-   vexactsize 1
-   text "0.000"
-   font "gui/fonts/metron12"
-  }
-  TextWidgetClass available_label {
-   ignorepointer 1
-   position 6.2257 85
-   size 110 20
-   hexactpos 1
-   vexactpos 1
-   hexactsize 1
-   vexactsize 1
-   text "available (L):"
-   font "gui/fonts/metron-bold12"
-  }
-  TextWidgetClass available_txt {
-   ignorepointer 1
-   position 120 85
-   size 100 20
-   hexactpos 1
-   vexactpos 1
-   hexactsize 1
-   vexactsize 1
-   text "0.000"
-   font "gui/fonts/metron12"
+   hexactsize 0
+   vexactsize 0
+   {
+    TextWidgetClass del_txt {
+     ignorepointer 1
+     size 255 20
+     halign center_ref
+     valign center_ref
+     hexactpos 1
+     vexactpos 1
+     hexactsize 1
+     vexactsize 1
+     text "Delete?"
+     font "gui/fonts/metron-bold12"
+     "text halign" center
+     "text valign" center
+    }
+    ButtonWidgetClass ok_del_btn {
+     position 59.1055 85
+     size 50 30
+     hexactpos 1
+     vexactpos 1
+     hexactsize 1
+     vexactsize 1
+     text "Yes"
+     font "gui/fonts/metron-bold12"
+    }
+    ButtonWidgetClass cancel_del_btn {
+     position 136.58301 85
+     size 50 30
+     hexactpos 1
+     vexactpos 1
+     hexactsize 1
+     vexactsize 1
+     text "No"
+     font "gui/fonts/metron-bold12"
+    }
+   }
   }
  }
 }

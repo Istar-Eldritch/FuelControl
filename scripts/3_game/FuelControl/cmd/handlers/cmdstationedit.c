@@ -51,9 +51,7 @@ class CmdStationEdit extends CmdHandler {
             }
 
             if (newName) {
-                manager.stations.Remove(station.name);
                 station.name = newName;
-                manager.stations.Insert(station.name, station);
             }
 
             manager.Save();

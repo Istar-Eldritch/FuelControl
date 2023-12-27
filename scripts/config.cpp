@@ -1,6 +1,6 @@
 class CfgPatches
 {
-  class FuelControl
+  class FC_Scripts
   {
     units[]={};
     weapons[]={};
@@ -9,14 +9,15 @@ class CfgPatches
     {
       "DZ_Data",
       "DZ_Scripts",
-      "JM_CF_Scripts"
+      "JM_CF_Scripts",
+      "FC_GUI"
     };
   };
 };
 
 class CfgMods
 {
-  class FuelControl
+  class FC_Scripts
   {
     type = "mod";
 

@@ -12,11 +12,10 @@ echo $FC_PATH
 rm -fr "$FC_PATH"
 mkdir -p "$FC_PATH/addons"
 cp -r "$SCRIPT_DIR/../keys" "$FC_PATH/keys"
-cp -r "$SCRIPT_DIR/../data" "$FC_PATH/data"
 cp -r "$SCRIPT_DIR/../profiles" "$FC_PATH/profiles"
-cp -r "$SCRIPT_DIR/../scripts" "$FC_PATH/src"
 cp -r "$SCRIPT_DIR/../LICENSE" "$FC_PATH/LICENSE"
 cp -r "$SCRIPT_DIR/../README.md" "$FC_PATH/README.md"
 cp -r "$SCRIPT_DIR/../mod.cpp" "$FC_PATH/mod.cpp"
 
-cmd.exe /c start /D "$WIN_DZ_TOOL_PATH" AddonBuilder.exe "P:\FuelControl\scripts" "$WIN_FC_PATH\addons" -project="P:" -clear -binarizeFullLogs -sign="$(wslvar "userprofile")\Documents\Keys\IstarEldritch.biprivatekey"
+cmd.exe /c start /D "$WIN_DZ_TOOL_PATH" AddonBuilder.exe "P:\FuelControl\scripts" "$WIN_FC_PATH\addons" -project="P:" -prefix="FuelControl" -clear -binarizeFullLogs -sign="$(wslvar "userprofile")\Documents\Keys\IstarEldritch.biprivatekey"
+cmd.exe /c start /D "$WIN_DZ_TOOL_PATH" AddonBuilder.exe "P:\FuelControl\GUI" "$WIN_FC_PATH\addons" -project="P:" -prefix="FuelControl" -clear -binarizeFullLogs -sign="$(wslvar "userprofile")\Documents\Keys\IstarEldritch.biprivatekey"

@@ -1,0 +1,16 @@
+MetaFileClass {
+ Name "{F74E6443269677EE}FuelControl/GUI/textures/pencil_white.edds"
+ Author "desktop-c2tqomk"
+ ChangeDate 875818909
+ Configurations {
+  PNGResourceClass PC {
+   SourceFile "pencil_white.png"
+  }
+  PNGResourceClass XBOX_ONE : PC {
+  }
+  PNGResourceClass PS4 : PC {
+  }
+  PNGResourceClass LINUX : PC {
+  }
+ }
+}

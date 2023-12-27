@@ -1,0 +1,205 @@
+FrameWidgetClass rootFrame {
+ position 10 10
+ size 500 500
+ hexactpos 1
+ vexactpos 1
+ hexactsize 1
+ vexactsize 1
+ {
+  CheckBoxWidgetClass spawn_check {
+   position 0 0
+   size 200 25
+   hexactpos 1
+   vexactpos 1
+   hexactsize 1
+   vexactsize 1
+   text "Enable fuel spawn"
+  }
+  PanelWidgetClass spawn_interval_group {
+   ignorepointer 1
+   position 0 30
+   size 500 25
+   hexactpos 1
+   vexactpos 1
+   hexactsize 1
+   vexactsize 1
+   {
+    EditBoxWidgetClass spawn_interval_edit {
+     position 210 0
+     size 200 25
+     hexactpos 1
+     vexactpos 1
+     hexactsize 1
+     vexactsize 1
+     "Use default text" 0
+    }
+    TextWidgetClass spawn_interval_label {
+     ignorepointer 1
+     position 0 0
+     size 200 25
+     hexactpos 1
+     vexactpos 1
+     hexactsize 1
+     vexactsize 1
+     text "Spawn interval (s):"
+    }
+   }
+  }
+  PanelWidgetClass spawn_amount_group {
+   ignorepointer 1
+   position 0 60
+   size 500 25
+   hexactpos 1
+   vexactpos 1
+   hexactsize 1
+   vexactsize 1
+   {
+    EditBoxWidgetClass spawn_amount_edit {
+     position 210 0
+     size 200 25
+     hexactpos 1
+     vexactpos 1
+     hexactsize 1
+     vexactsize 1
+     "Use default text" 0
+    }
+    TextWidgetClass spawn_amount_label {
+     ignorepointer 1
+     position 0 0
+     size 200 25
+     hexactpos 1
+     vexactpos 1
+     hexactsize 1
+     vexactsize 1
+     text "Spawn amount (L):"
+    }
+   }
+  }
+  PanelWidgetClass spawn_minimum_group {
+   ignorepointer 1
+   position 0 90
+   size 500 25
+   hexactpos 1
+   vexactpos 1
+   hexactsize 1
+   vexactsize 1
+   {
+    EditBoxWidgetClass spawn_minimum_edit {
+     position 210 0
+     size 200 25
+     hexactpos 1
+     vexactpos 1
+     hexactsize 1
+     vexactsize 1
+     "Use default text" 0
+    }
+    TextWidgetClass spawn_minimum_label {
+     ignorepointer 1
+     position 0 0
+     size 200 25
+     hexactpos 1
+     vexactpos 1
+     hexactsize 1
+     vexactsize 1
+     text "Spawn minimum (L):"
+    }
+   }
+  }
+  CheckBoxWidgetClass pump_vehicle_refueling {
+   position 0 120
+   size 500 25
+   hexactpos 1
+   vexactpos 1
+   hexactsize 1
+   vexactsize 1
+   text "Enable pump to vehicle refueling"
+  }
+  CheckBoxWidgetClass pump_barrel_refueling {
+   position 0 150
+   size 500 25
+   hexactpos 1
+   vexactpos 1
+   hexactsize 1
+   vexactsize 1
+   text "Enable pump to barrel refueling"
+  }
+  CheckBoxWidgetClass pump_siphoning {
+   position 0 180
+   size 500 25
+   hexactpos 1
+   vexactpos 1
+   hexactsize 1
+   vexactsize 1
+   text "Enable vehicle siphoning"
+  }
+  PanelWidgetClass siphoning_limit_group {
+   ignorepointer 1
+   position 0 210
+   size 500 25
+   hexactpos 1
+   vexactpos 1
+   hexactsize 1
+   vexactsize 1
+   {
+    EditBoxWidgetClass siphoning_limit_edit {
+     clipchildren 1
+     position 210 0
+     size 200 25
+     hexactpos 1
+     vexactpos 1
+     hexactsize 1
+     vexactsize 1
+     "Use default text" 0
+    }
+    TextWidgetClass siphoning_limint_label {
+     ignorepointer 1
+     position 0 0
+     size 200 25
+     hexactpos 1
+     vexactpos 1
+     hexactsize 1
+     vexactsize 1
+     text "Siphoning limit (%):"
+    }
+   }
+  }
+  CheckBoxWidgetClass default_pumps_have_fuel {
+   position 0 240
+   size 500 25
+   hexactpos 1
+   vexactpos 1
+   hexactsize 1
+   vexactsize 1
+   text "Non grouped pumps have fuel"
+  }
+  CheckBoxWidgetClass pumps_get_ruined {
+   position 0 270
+   size 500 25
+   hexactpos 1
+   vexactpos 1
+   hexactsize 1
+   vexactsize 1
+   text "Pumps get ruined"
+  }
+  CheckBoxWidgetClass enable_measure_fuel_with_stick {
+   position 0 300
+   size 500 25
+   hexactpos 1
+   vexactpos 1
+   hexactsize 1
+   vexactsize 1
+   text "Enable measure fuel with stick"
+  }
+  ButtonWidgetClass submit {
+   position 0 10
+   size 100 40
+   halign center_ref
+   valign bottom_ref
+   hexactpos 1
+   vexactpos 1
+   hexactsize 1
+   vexactsize 1
+   text "Submit"
+  }
+ }
+}

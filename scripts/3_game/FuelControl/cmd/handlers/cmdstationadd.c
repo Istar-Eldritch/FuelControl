@@ -58,10 +58,12 @@ class CmdStationAdd extends CmdHandler {
             GetRPCManager().SendRPC("FuelControl", "HandleChatMessage", parameter, true, sender);
             return;
         }
+		
+		
+		string id = FuelStationManager.GenId(stationName);
+        station = new ref FuelStationGroup(id, stationName, vpos, -1 * 1000, -1 * 1000);
 
-        station = new ref FuelStationGroup(stationName, vpos, -1 * 1000, -1 * 1000);
-
-        manager.stations.Insert(stationName, station);
+        manager.stations.Insert(id, station);
         manager.Save();
         parameter = new Param2<string, string>("Station " + station.name + " added", "colorStatusChannel");
         

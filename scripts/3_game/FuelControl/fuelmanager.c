@@ -1,11 +1,14 @@
 class StationSubscriber {
 
 	void OnUpdate(FuelStationGroup station) {}
+	
+	void OnDelete(FuelStationGroup station) {}
 }
 
 // Script File
 
 class FuelStationGroup {
+	string id;
 	string name;
 	vector position;
 	// capacity in ml
@@ -13,7 +16,8 @@ class FuelStationGroup {
 	// fuel amount in ml
 	float fuelAmount;
 		
-	void FuelStationGroup(string _name, vector pos, float fuelCap, float fuel) {
+	void FuelStationGroup(string _id, string _name, vector pos, float fuelCap, float fuel) {
+		id = _id;
 		name = _name;
 		position = pos;
 		fuelCapacity = fuelCap;
@@ -82,6 +86,17 @@ class FuelStationManager {
 	
 	ref map<string, ref FuelStationGroup> stations = new ref map<string, ref FuelStationGroup>;
 	ref array<StationSubscriber> m_subscribers;
+	
+	static string GenId(string seed) {
+		CF_StringStream stream = new CF_StringStream(seed);
+		CF_TextReader reader = new CF_TextReader(stream);
+		CF_Base16Stream output = new CF_Base16Stream();
+		CF_SHA256.Process(reader, output);
+		string id = output.Encode();
+		reader.Close();
+		
+		return id;
+	}
 
 	void FuelStationManager() {
 		if (GetGame().IsServer()) {
@@ -90,7 +105,13 @@ class FuelStationManager {
 				vector pos;
 				pos[0] = station.x;
 				pos[2] = station.y;
-				stations[station.name] = new ref FuelStationGroup(station.name, pos, station.capacity * 1000, station.fuel * 1000);
+				string id;
+				if (station.id) {
+					id = station.id;
+				} else {
+					id = FuelStationManager.GenId(station.name);
+				}
+				stations[id] = new ref FuelStationGroup(id, station.name, pos, station.capacity * 1000, station.fuel * 1000);
 			}
 		}
 		m_subscribers = new array<StationSubscriber>;
@@ -127,8 +148,8 @@ class FuelStationManager {
 	void Save() {
 		FuelControlSettings config = GetFuelControlSettings();
 		config.stations = new ref array<ref StationConfig>;
-		foreach(auto name, auto st: stations) {
-			StationConfig stc = new ref StationConfig(st.position[0], st.position[2], st.name, st.fuelCapacity / 1000, st.fuelAmount / 1000);
+		foreach(auto id, auto st: stations) {
+			StationConfig stc = new ref StationConfig(st.id, st.position[0], st.position[2], st.name, st.fuelCapacity / 1000, st.fuelAmount / 1000);
 			config.stations.Insert(stc);
 		}
 		config.Save();
@@ -174,18 +195,59 @@ class FuelStationManager {
 		}
 	}
 	
+	void SendUpdateStation(FuelStationGroup station) {
+		Print("Sending update on station " + station.name + " to server");
+		stations[station.id] = new ref FuelStationGroup(station.id, station.name, station.position, station.fuelCapacity, station.fuelAmount);
+		foreach (auto subscriber: m_subscribers) {
+			if (subscriber) {
+				subscriber.OnUpdate(stations[station.id]);
+			}
+		}
+		GetRPCManager().SendRPC("FuelControl", "UpdateStation", new Param1<FuelStationGroup>(station), true);
+	}
+	
 	void UpdateStation( CallType type, ref ParamsReadContext ctx, ref PlayerIdentity sender, ref Object target ) {
 		Param1<FuelStationGroup> data;
-		if (GetGame().IsClient() && ctx.Read(data)) {
-			ref FuelStationGroup station = data.param1;
-			Print("[FuelControl] Got update on station " + station.name + " from server");
-			stations[station.name] = new ref FuelStationGroup(station.name, station.position, station.fuelCapacity, station.fuelAmount);
+
+		if (ctx.Read(data) && data.param1) {
+			FuelStationGroup station = data.param1;			
+			Print("[FuelControl] Got update on station " + station.name);
+			stations[station.id] = new ref FuelStationGroup(station.id, station.name, station.position, station.fuelCapacity, station.fuelAmount);
 			foreach (auto subscriber: m_subscribers) {
 				if (subscriber) {
-					subscriber.OnUpdate(stations[station.name]);
+					subscriber.OnUpdate(stations[station.id]);
+				}
+			}
+			Save();
+		}
+	}
+	
+	void SendDeleteStation(FuelStationGroup station) {
+		stations.Remove(station.id);
+		foreach (auto subscriber: m_subscribers) {
+			if (subscriber) {
+				subscriber.OnDelete(station);
+			}
+		}
+		Print("Sending delete request for station " + station.name + " to server");
+		GetRPCManager().SendRPC("FuelControl", "DeleteStation", new Param1<FuelStationGroup>(station), true);
+	}
+
+	void DeleteStation( CallType type, ref ParamsReadContext ctx, ref PlayerIdentity sender, ref Object target ) {
+		Param1<FuelStationGroup> data;
+
+		if (ctx.Read(data) && data.param1) {
+			FuelStationGroup station = data.param1;			
+			Print("[FuelControl] Got delete request for station " + station.name);
+			stations.Remove(station.id);
+			foreach (auto subscriber: m_subscribers) {
+				if (subscriber) {
+					subscriber.OnDelete(station);
 				}
 			}
 		}
+		
+		Save();
 	}
 
 	void UpdateStats() {

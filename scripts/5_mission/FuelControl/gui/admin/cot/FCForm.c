@@ -1,9 +1,13 @@
 #ifdef JM_COT
 class FCForm: JMFormBase
 {
-	protected ref FCAdminStationForm m_stationForm;
+	protected ref FCAdminForm m_adminForm;
 
 	private FCModule m_Module;
+	
+	void ~FCForm() {
+		delete m_adminForm;
+	}
 
 	protected override bool SetModule( JMRenderableModuleBase mdl )
 	{
@@ -11,11 +15,9 @@ class FCForm: JMFormBase
 	}
 	
 	override void OnInit() {
-		float width;
-		float height;
-		layoutRoot.GetScreenSize(width, height);
-		m_stationForm = new FCAdminStationForm(width, height);
-		layoutRoot.AddChild(m_stationForm.Init());
+		if (!m_adminForm) {
+			m_adminForm = new FCAdminForm(layoutRoot);
+		}
 	}
 
 	override void OnShow()

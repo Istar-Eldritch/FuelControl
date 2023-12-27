@@ -1,0 +1,73 @@
+FrameWidgetClass rootFrame {
+ position 0 0
+ size 1 1
+ hexactpos 1
+ vexactpos 1
+ hexactsize 0
+ vexactsize 0
+ {
+  PanelWidgetClass tab_panel {
+   ignorepointer 1
+   position 0 0
+   size 1 30
+   hexactpos 1
+   vexactpos 1
+   hexactsize 0
+   vexactsize 1
+   {
+    ButtonWidgetClass settings_btn {
+     position 610 0
+     size 150 1
+     valign center_ref
+     hexactpos 1
+     vexactpos 1
+     hexactsize 1
+     vexactsize 0
+     text "Other"
+     font "gui/fonts/metron-bold16"
+    }
+    ButtonWidgetClass stations_btn {
+     position 0 0
+     size 150 1
+     valign center_ref
+     hexactpos 1
+     vexactpos 1
+     hexactsize 1
+     vexactsize 0
+     text "Stations"
+     font "gui/fonts/metron-bold16"
+    }
+    ButtonWidgetClass consumption_btn {
+     position 160 0
+     size 230 1
+     valign center_ref
+     hexactpos 1
+     vexactpos 1
+     hexactsize 1
+     vexactsize 0
+     text "Vehicle Autonomy"
+     font "gui/fonts/metron-bold16"
+    }
+    ButtonWidgetClass transfer_btn {
+     position 400 0
+     size 200 1
+     valign center_ref
+     hexactpos 1
+     vexactpos 1
+     hexactsize 1
+     vexactsize 0
+     text "Transfer Rates"
+     font "gui/fonts/metron-bold16"
+    }
+   }
+  }
+  PanelWidgetClass content {
+   ignorepointer 1
+   size 906 673
+   hexactpos 1
+   vexactpos 1
+   hexactsize 1
+   vexactsize 1
+  }
+ }
+}

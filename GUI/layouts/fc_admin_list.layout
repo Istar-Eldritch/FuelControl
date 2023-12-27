@@ -1,0 +1,78 @@
+FrameWidgetClass layoutRoot {
+ position 0 0
+ size 1 1
+ hexactpos 1
+ vexactpos 1
+ hexactsize 0
+ vexactsize 0
+ {
+  ScrollWidgetClass scroll {
+   ignorepointer 0
+   position 0 0
+   size 906 673
+   hexactpos 1
+   vexactpos 1
+   hexactsize 1
+   vexactsize 1
+   "Scrollbar V" 1
+   {
+    PanelWidgetClass content {
+     ignorepointer 1
+     position 0 0
+     size 48 48
+     hexactpos 1
+     vexactpos 1
+     hexactsize 1
+     vexactsize 1
+    }
+   }
+  }
+  ButtonWidgetClass submit {
+   size 100 40
+   halign center_ref
+   valign bottom_ref
+   hexactpos 1
+   vexactpos 1
+   hexactsize 1
+   vexactsize 1
+   text "Submit"
+  }
+  ButtonWidgetClass new_btn {
+   position 220 7
+   size 25 25
+   hexactpos 1
+   vexactpos 1
+   hexactsize 1
+   vexactsize 1
+   {
+    ImageWidgetClass new_img {
+     ignorepointer 1
+     position 0 0
+     size 20 20
+     halign center_ref
+     valign center_ref
+     hexactpos 1
+     vexactpos 1
+     hexactsize 1
+     vexactsize 1
+     imageTexture "{BD7321911F13FDFC}FuelControl/GUI/textures/plus_white.edds"
+     mode additive
+     "src alpha" 1
+     "stretch mode" stretch_w_h
+    }
+   }
+  }
+  EditBoxWidgetClass filter {
+   position 0 0
+   size 200 40
+   hexactpos 1
+   vexactpos 1
+   hexactsize 1
+   vexactsize 1
+   text "Filter..."
+   "Use default text" 1
+   "exact text" 1
+   font "gui/fonts/metron16"
+  }
+ }
+}

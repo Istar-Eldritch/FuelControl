@@ -1,11 +1,13 @@
 class StationConfig {
+  string id;
   float x;
   float y;
   string name;
   float fuel = -1; // If negative then there is no limit on this station
   float capacity = -1;
 
-  void StationConfig(float xx, float yy, string _name, float _capacity, float _fuel) {
+  void StationConfig(string _id, float xx, float yy, string _name, float _capacity, float _fuel) {
+	id = _id;
     x = xx;
     y = yy;
     name = _name;
@@ -51,7 +53,6 @@ class FuelControlSettings {
     if (FileExist(SETTINGS_PATH)){ //If config exist load File
       Print("[FuelControl] Loading configuration");
       JsonFileLoader<FCSettings>.JsonLoadFile(SETTINGS_PATH, settings );
-      JsonFileLoader<array<ref StationConfig>>.JsonLoadFile(STATIONS_PATH, stations );
     } else if (GetGame().IsServer()) { //File does not exist use default settings and create file.
       DefaultSettings();
     }
@@ -80,6 +81,8 @@ class FuelControlSettings {
   
   void Save() {
     JsonFileLoader<array<ref StationConfig>>.JsonSaveFile(STATIONS_PATH, stations );
+	JsonFileLoader<FCSettings>.JsonSaveFile(SETTINGS_PATH, settings);
+	JsonFileLoader<map<string, float>>.JsonSaveFile(VEHICLE_AUTONOMY_PATH, vehicle_autonomy);
   }
 	
   void DefaultVehicleAutonomy() {
@@ -138,8 +141,8 @@ class FuelControlSettings {
   }
 	
   void DefaultStations() {
-    stations.Insert(new ref StationConfig(5861, 2210, "Cherno West", -1, -1));
-    stations.Insert(new ref StationConfig(6872, 3092, "Cherno East", -1, -1));
+    stations.Insert(new ref StationConfig(FuelStationManager.GenId("Cherno West"), 5861, 2210, "Cherno West", -1, -1));
+    stations.Insert(new ref StationConfig(FuelStationManager.GenId("Cherno East"), 6872, 3092, "Cherno East", -1, -1));
     Print("[FuelControl] Stations file doesn't exist, creating one");
     JsonFileLoader<array<ref StationConfig>>.JsonSaveFile(STATIONS_PATH, stations);
   }
@@ -149,9 +152,14 @@ class FuelControlSettings {
     JsonFileLoader<FCSettings>.JsonSaveFile(SETTINGS_PATH, settings);
   }
   
-  void SyncSettings() {
-    Print("[FuelControl] Requesting settings from server");
-    GetRPCManager().SendRPC("FuelControl", "GetSettings", null, true);
+  void SyncSettings(bool push = false) {
+	if (push) {
+		Print("[FuelControl] Sending update to server");
+		GetRPCManager().SendRPC("FuelControl", "GetSettings", new Param1<FuelControlSettings>(this), true);
+	} else {
+		Print("[FuelControl] Requesting settings from server");
+		GetRPCManager().SendRPC("FuelControl", "GetSettings", null, true);	
+	}
   }
   
   void GetSettings( CallType type, ref ParamsReadContext ctx, ref PlayerIdentity sender, ref Object target ) {
@@ -162,11 +170,13 @@ class FuelControlSettings {
       settings = config.settings;
       vehicle_autonomy = config.vehicle_autonomy;
       foreach(auto k, auto station: config.stations) {
-         stations.Insert(new ref StationConfig(station.x, station.y, station.name, station.capacity, station.fuel));
+         stations.Insert(new ref StationConfig(station.id, station.x, station.y, station.name, station.capacity, station.fuel));
       }
       liquid_transfer_rates = config.liquid_transfer_rates;
-      Print("[FuelControl] Got config from server");
-
+      Print("[FuelControl] Got config update");
+	  if (GetGame().IsServer()) {
+		Save();	
+	  }
     } else if (GetGame().IsServer()) {
       // If the sender is not sending an update, then send all the station information back to it.
       GetRPCManager().SendRPC("FuelControl", "GetSettings", new Param1<FuelControlSettings>(this), true, sender, target);

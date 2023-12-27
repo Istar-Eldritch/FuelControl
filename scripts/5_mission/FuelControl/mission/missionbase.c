@@ -9,6 +9,7 @@ modded class MissionBase {
     GetRPCManager().AddRPC("FuelControl", "UpdateStation", manager, SingleplayerExecutionType.Both);
     GetRPCManager().AddRPC("FuelControl", "RequestStation", manager, SingleplayerExecutionType.Both);
     GetRPCManager().AddRPC("FuelControl", "RequestAllStations", manager, SingleplayerExecutionType.Both);
+    GetRPCManager().AddRPC("FuelControl", "DeleteStation", manager, SingleplayerExecutionType.Both);
 
     CmdManager cmdManager = GetCmdManager();
     cmdManager.RegisterHandler(new ref CmdStationAdd());
@@ -22,6 +23,9 @@ modded class MissionBase {
 
     GetRPCManager().AddRPC("FuelControl", "HandleChatCommand", cmdManager, SingleplayerExecutionType.Both);
     GetRPCManager().AddRPC("FuelControl", "HandleChatMessage", cmdManager, SingleplayerExecutionType.Both);
+
+    FCTeleportManager teleportManager = FCGetTeleportManager();
+    GetRPCManager().AddRPC("FuelControl", "TeleportToStation", teleportManager, SingleplayerExecutionType.Both);
 
     if (GetGame().IsClient()) {
       settings.SyncSettings();

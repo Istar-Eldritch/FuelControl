@@ -1,5 +1,5 @@
 PanelWidgetClass FCForm {
- position 10 10
+ position 0 0
  size 1024 780
  hexactpos 1
  vexactpos 1
@@ -7,27 +7,14 @@ PanelWidgetClass FCForm {
  vexactsize 1
  scriptclass "FCForm"
  {
-  PanelWidgetClass padding_right {
+  FrameWidgetClass panel {
    ignorepointer 1
-   position 10 10
+   position 0 0
    size 1 1
-   halign right_ref
-   valign bottom_ref
    hexactpos 1
    vexactpos 1
    hexactsize 0
    vexactsize 0
-   {
-    FrameWidgetClass panel {
-     ignorepointer 1
-     position 0 0
-     size 1 1
-     hexactpos 1
-     vexactpos 1
-     hexactsize 0
-     vexactsize 0
-    }
-   }
   }
  }
 }
