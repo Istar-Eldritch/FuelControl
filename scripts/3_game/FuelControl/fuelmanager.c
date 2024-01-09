@@ -83,6 +83,7 @@ class FuelStationManager {
 	float totalCapacity;
 	string fullestStation;
 	float fullestStationFreeCapacity;
+	int last_save = 0;
 	
 	ref map<string, ref FuelStationGroup> stations = new ref map<string, ref FuelStationGroup>;
 	ref array<StationSubscriber> m_subscribers;
@@ -146,6 +147,14 @@ class FuelStationManager {
 	}
 	
 	void Save() {
+		int now = GetGame().GetTime();
+		if (last_save <= now + 1000) {
+			GetGame().GetCallQueue(CALL_CATEGORY_SYSTEM).CallLater(_Save, 1000);
+			last_save = now + 1000;
+		}
+	}
+	
+	void _Save() {
 		FuelControlSettings config = GetFuelControlSettings();
 		config.stations = new ref array<ref StationConfig>;
 		foreach(auto id, auto st: stations) {

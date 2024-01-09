@@ -80,9 +80,12 @@ class FuelControlSettings {
   }
   
   void Save() {
-    JsonFileLoader<array<ref StationConfig>>.JsonSaveFile(STATIONS_PATH, stations );
-	JsonFileLoader<FCSettings>.JsonSaveFile(SETTINGS_PATH, settings);
-	JsonFileLoader<map<string, float>>.JsonSaveFile(VEHICLE_AUTONOMY_PATH, vehicle_autonomy);
+	if (GetGame().IsServer()) {
+	    JsonFileLoader<array<ref StationConfig>>.JsonSaveFile(STATIONS_PATH, stations );
+		JsonFileLoader<FCSettings>.JsonSaveFile(SETTINGS_PATH, settings);
+		JsonFileLoader<map<string, float>>.JsonSaveFile(VEHICLE_AUTONOMY_PATH, vehicle_autonomy);
+		JsonFileLoader<map<string, float>>.JsonSaveFile(LIQUID_TRANSFER_RATES_PATH, liquid_transfer_rates);
+	}
   }
 	
   void DefaultVehicleAutonomy() {
@@ -169,9 +172,7 @@ class FuelControlSettings {
 
       settings = config.settings;
       vehicle_autonomy = config.vehicle_autonomy;
-      foreach(auto k, auto station: config.stations) {
-         stations.Insert(new ref StationConfig(station.id, station.x, station.y, station.name, station.capacity, station.fuel));
-      }
+      stations = config.stations;
       liquid_transfer_rates = config.liquid_transfer_rates;
       Print("[FuelControl] Got config update");
 	  if (GetGame().IsServer()) {

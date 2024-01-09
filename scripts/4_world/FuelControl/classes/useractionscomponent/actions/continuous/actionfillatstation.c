@@ -1,5 +1,5 @@
 class ActionFillAtStationCB : ActionContinuousBaseCB {
-	private const float TIME_TO_REPEAT = 0.5;
+	private const float TIME_TO_REPEAT = 0.25;
 
 	override void CreateActionComponent() {
 		FuelControlSettings settings = GetFuelControlSettings();

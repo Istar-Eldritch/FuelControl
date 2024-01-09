@@ -42,7 +42,6 @@ class CAFillAtStation : CAContinuousBase {
 			fuelCapacity = car.GetFluidCapacity( CarFluid.FUEL );
 			currentFuel = car.GetFluidFraction( CarFluid.FUEL );
 			currentFuel = currentFuel * fuelCapacity;
-	
 			m_EmptySpace = (fuelCapacity - currentFuel) * 1000;
 		} else if (barrel) {
 			fuelCapacity = barrel.GetQuantityMax();
@@ -50,6 +49,7 @@ class CAFillAtStation : CAContinuousBase {
 			m_EmptySpace = (fuelCapacity - currentFuel);
 		}
 		
+		m_AdjustedQuantityUsedPerSecond = action_data.m_Player.GetSoftSkillsManager().AddSpecialtyBonus( m_QuantityUsedPerSecond, m_Action.GetSpecialtyWeight(), true );
 		m_ItemQuantity = m_EmptySpace;
 
 	}
@@ -67,7 +67,7 @@ class CAFillAtStation : CAContinuousBase {
 		else {
 			if ( m_SpentQuantity_total < m_ItemQuantity )
 			{
-				m_AdjustedQuantityUsedPerSecond = action_data.m_Player.GetSoftSkillsManager().SubtractSpecialtyBonus( m_QuantityUsedPerSecond, m_Action.GetSpecialtyWeight(), true);
+
 				m_SpentQuantity += m_AdjustedQuantityUsedPerSecond * action_data.m_Player.GetDeltaT();
 				m_TimeElpased += action_data.m_Player.GetDeltaT();
 				
@@ -142,8 +142,10 @@ class CAFillAtStation : CAContinuousBase {
 				}
 
 				station.RemoveFuel(m_SpentQuantity);
-				// This is likely to be very ineficient. There should be a better way of doing this.
-				GetFuelStationManager().Save();
+				// This is likely to be very ineficient. There should be a better way of doing this
+				if (GetGame().IsServer()) {
+					GetFuelStationManager().Save();
+				}
 			}
 		}
 		m_SpentQuantity = 0;
