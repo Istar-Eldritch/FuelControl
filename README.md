@@ -14,183 +14,32 @@ This mod provides tools to control your sever's fuel economy.
 - Configurable liquid transfer rates for arbitrary containers (using class names)
 - Configurable consumption rates for arbitrary vehicles (using class names)
 - Measure the fuel in a car or fuel pump with a long stick.
+- Administration UI (If COT is installed)
 
-All this features are configurable.
-
-## Commands
-
-### `#fc station add [--pos x,y] <station name>`
-Adds a station group at x and y position with the given name. If x and y are not provided, it will add an station at the player position.
-
-```
-#fc station add --pos 13123,12314 "Chernogorsk East"
-```
-
-```
-#fc station add "Chernogorsk East"
-```
-
-### `#fc station del [station name]`
-Deletes the station group with the given name. If the name is not provided not provided, it will delete the station at the player position.
-
-```
-#fc station del "Chernogorsk East"
-```
-
-```
-#fc station del
-```
-
-### `#fc station info [station name]`
-Returns the fuel available at the station. If no name is provided it will use the player location.
-
-```
-#fc station info "Cherno North"
-```
-
-```
-#fc station info
-```
-
-### `#fc station edit [--fuel x] [--capacity y] [--name z] [station name]`
-Updates a station. Sets the fuel and capacity lin liters and updates the name.
-
-```
-#fc station edit --fuel 1000 --name Cherno "Chernogorsk East"
-```
-
-```
-#fc station edit --fuel 1000
-```
-
-### `#fc station list [--min-fuel x] [--max-fuel y] [search on name]`
-Lists the stations that match the search criteria.
-
-```
-#fc station list Cherno
-```
-
-```
-#fc station list --min-fuel 10 --max-fuel 100
-```
-
-
-### `#fc status`
-Shows some general metrics about the fuel across all stations, currently:
-- Total fuel available.
-- Total fuel capacity.
-- Percentage of the reserves of fuel. (capacity / available)
-
-```
-#fc status
-```
-
-### `#fc spawn <amount>`
-Spreads the provided amount in liters randomly across all the stations with available capacity.
-- The fuel amount must be an integer, if a decimal point its provided it will be rounded down.
-- This functionality is affected by the `spawn_minimum` setting from `settings.json`
-- This functionality ignores stations with unlimited fuel.
-
-```
-#fc spawn 112
-```
+All this features are configurable. Check Configuration or use the COT UI.
 
 ## Dependencies
 
-- Comunity Framework: https://steamcommunity.com/sharedfiles/filedetails/?id=1559212036&searchtext=CF
+- Community Framework: https://steamcommunity.com/sharedfiles/filedetails/?id=1559212036
+- [OPTIONAL for Admin UI] Commmunity Online tools: https://steamcommunity.com/sharedfiles/filedetails/?id=1564026768
+
+## Mod support:
+On discord server: https://discord.gg/xrJmPMfwqX
+Ask on channel #mod-support
+
+## Commands
+
+Check [Commands.md](https://github.com/Istar-Eldritch/FuelControl/blob/main/commands.md)
 
 ## Configuration:
-In the profiles folder you'll find some default configurations.
 
-## `settings.json`
+Check [configuration.md](https://github.com/Istar-Eldritch/FuelControl/blob/main/configuration.md)
 
-This file is used to change general settings and toggle features on and off:
-```js
-{
-    "administrators": [], // A list of steam ids, separated by commas, allows for usage of the administration commands.
-    "spawn_enabled": true, // If the automated spawn is enabled.
-    "spawn_interval": 1800, // How often the spawn task runs in seconds. Defaults to 30 min
-    "spawn_amount": 1, // How much fuel in liters the spawn task spawns. Defaults to 1. 
-    "spawn_minimum" 10, // During spawning, what is the minimum amount of fuel in liters that should be added to a station (if available).
-    "pump_car_refueling": 1, // Enables refueling a car if its close to a fuel pump. 1 = enabled, 0 = disabled
-    "pump_barrel_refueling": 1, // Enables refueling a barrel if its close to a fuel pump. 1 = enabled, 0 = disabled
-    "siphoning": 1, // Enables siphoning fuel from cars. 1 = enabled, 0 = disabled.
-    "siphoning_limit": 98, // The percentage of fuel that is possible to siphon out of a car fuel tank.
-    "default_pumps_have_fuel": 0, // The behaviour of pumps that don't belong to a station. If set to 1, this pumps will have infinite fuel. Defaults to  0.
-    "pumps_get_ruined": 1, // If a pump gets ruined it won't produce fuel.
-    "measure_fuel_with_stick": 1 // If enabled, you can measure the fuel of cars and pumps with a long stick
-}
-```
+## Building the mod.
 
-## `stations.json`
-This file is used to describe the fuel availability in each of the stations. Each station configuration looks like the following:
-```js
-{
-    "x": 314.600555, // x coordinate
-    "y": 9390.578125, // y coordinate
-    "name": "Tri Kresta", // helper name, must be unique. Used for logging and identification of the station.
-    "fuel": -1, // Defines how much fuel is available in this station. -1 means infinite. Set it to 0 to disable the station.
-    "capacity": -1 // Defines how much fuel this station can hold. -1 means infinite. This property is not used at the moment.
-}
-```
-The provided `stations.json` is an example configuration for the Chernarous map. If you are not using Chernarous, you'll have to create a file similar to the one provided with the locations of the fuel stations you want to configure.
-
-## `liquid_transfer_rates.json`
-This is a map of `{classname(string): float}`, defines the transfer rate of containers. When transfering between two different containrs, it will use the slower rate. Transfer rates are in ml/s.
-```js
-{
-    "Land_FuelStation_Feed": 1000.0,
-
-    "CivilianSedan": 500.0,
-    "CivilianSedan_Black": 500.0,
-    "CivilianSedan_Wine": 500.0,
-    "Hatchback_02": 500.0,
-    "Hatchback_02_Blue": 500.0,
-    "Hatchback_02_Black": 500.0,
-    "OffroadHatchback": 500.0,
-    "OffroadHatchback_Blue": 500.0,
-    "OffroadHatchback_White": 500.0,
-    "Sedan_02": 500.0,
-    "Sedan_02_Red": 500.0,
-    "Sedan_02_Grey": 500.0,
-    "Truck_01_Covered": 500.0,
-    "Truck_01_Covered_Blue": 800.0,
-    "Truck_01_Covered_Orange": 800.0,
-    "Offroad_02": 800.0,
-
-    "Barrel_Blue": 1000.0,
-    "Barrel_Green": 1000.0,
-    "Barrel_Red": 1000.0,
-    "Barrel_Yellow": 1000.0,
-
-    "CanisterGasoline": 500.0,
-    "Canteen": 100.0,
-    "Cauldron": 500.0,
-    "Pot": 300.0,
-    "WaterBottle": 100.0
-  }
-```
-
-## `vehicle_autonomy.json`
-This file defines the autonomy in Km a vehicle has with a full tank of fuel when driving at an average RPM. Driving at lower RPMs will increase autonomy while driving more aggresively will decrease it.
-If set to 0, the custom atonomy logic won't take place and instead the vanilla consumption rates will happen.
-```js
-{
-    "OffroadHatchback_Blue": 25.0,
-    "OffroadHatchback": 25.0,
-    "Sedan_02": 25.0,
-    "Sedan_02_Red": 25.0,
-    "Truck_01_Covered_Blue": 25.0,
-    "Truck_01_Covered_Orange": 25.0,
-    "CivilianSedan_Black": 25.0,
-    "CivilianSedan": 25.0,
-    "CivilianSedan_Wine": 25.0,
-    "Sedan_02_Grey": 25.0,
-    "Hatchback_02": 25.0,
-    "Truck_01_Covered": 25.0,
-    "OffroadHatchback_White": 25.0,
-    "Hatchback_02_Blue": 25.0,
-    "Hatchback_02_Black": 25.0,
-    "Offroad_02": 25.0
-}
-```
+Run `./workspace/build.sh`
+Run `AddonBuilder` from DayZ-Tools
+    - Configure it to include `.paa`
+    - Configure it to sign the pbo.
+    - Use FuelControl/GUI as the source with `FuelControl\GUI` as prefix.
+    - Use FuelControl/scripts as the source with `FuelControl\scripts` as prefix.
