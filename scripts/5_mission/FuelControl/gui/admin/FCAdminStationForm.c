@@ -240,7 +240,7 @@ class FCAdminStationForm: ScriptedWidgetEventHandler {
 				}
 			}
 		}
-		m_stationList.SetSize(item_width, item_height * m_children.Count());
+		m_stationList.SetSize(item_width, item_height * m_children.Count() + item_height / 2);
 		m_stationList.SetPos(0, 0);
 		m_stationList.Show(true);
 		UpdateSelected();
