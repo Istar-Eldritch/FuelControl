@@ -29,6 +29,7 @@ class FCSettings {
   bool default_pumps_have_fuel = 0;
   bool pumps_get_ruined = 1;
   bool measure_fuel_with_stick = 1;
+  bool pumps_require_electricity = 0;
 }
 
 
