@@ -30,10 +30,9 @@ class ActionFillAtStationCB : ActionContinuousBaseCB {
 
 class ActionFillAtStation : ActionContinuousBase {
 	
-	vector refillPointPos;
-	bool nearbyStation = false;
-	bool pumpHasFuel = false;
-	
+	protected FuelStation station;
+	protected CarScript vehicle;
+
 	void ActionFillAtStation() {
 		m_CallbackClass = ActionFillAtStationCB;
 		m_CommandUID = DayZPlayerConstants.CMD_ACTIONFB_EMPTY_VESSEL;
@@ -49,10 +48,14 @@ class ActionFillAtStation : ActionContinuousBase {
 	}
 	
 	override string GetText() {
-		if (pumpHasFuel) {
+		auto hasFuel = station.HasFuel();
+		auto hasEnergy = station.HasEnergy();
+		if (hasFuel && hasEnergy) {
 			return "#refuel";
-		} else {
+		} else if (!hasFuel) {
 			return "There is no fuel at this station";
+		} else {
+			return "Fuel pumps require energy to run";
 		}
 	}
 	
@@ -61,20 +64,44 @@ class ActionFillAtStation : ActionContinuousBase {
 		return ContinuousInteractActionInput;
 	}
 	
-	void CheckNearbyStations(vector pos) {
+	FuelStation CheckNearbyStations(vector pos) {
 		autoptr auto objects = new array<Object>;
 		autoptr auto proxycargos = new array<CargoBase>;
 		GetGame().GetObjectsAtPosition(pos, 5, objects, proxycargos);
+		FuelStation f;
+		float closest = 10;
 		foreach(auto object : objects) {
-			FuelStation station = FuelStation.Cast(object);
+			FuelStation s = FuelStation.Cast(object);
+			if (s) {
+				float d = vector.DistanceSq(pos, s.GetWorldPosition() );
+				if (d < closest) {
+					f  = s;
+					closest = d;
+				}
+			}
+		}
+		
+		return f;
+	}
+	
+	override void OnStartAnimationLoop(ActionData action_data) {
+		super.OnStartAnimationLoop(action_data);
+		if (GetGame().IsServer() && station && station.HasFuel() && station.HasEnergy()) {
+			station.SetWorking(true);
+			if (vehicle) {
+				vehicle.SetRefueling(true);
+			}
+		}
+	}
+	
+	override void OnEndAnimationLoop(ActionData action_data) {
+		super.OnEndAnimationLoop(action_data);
+		if (GetGame().IsServer()) {
 			if (station) {
-				
-				pumpHasFuel = !station.IsRuined() && station.HasFuel();
-				nearbyStation = !station.IsRuined();
-				break;
-			} else {
-				pumpHasFuel = false;
-				nearbyStation = false;
+				station.SetWorking(false);
+			}
+			if (vehicle) {
+				vehicle.SetRefueling(false);
 			}
 		}
 	}
@@ -90,11 +117,14 @@ class ActionFillAtStation : ActionContinuousBase {
 		if (!car && !barrel)
 			return false;
 		
+		vector refillPointPos;
+
 		if (config.settings.pump_car_refueling && car && car.GetFluidFraction(CarFluid.FUEL) < 0.98) {
 			array<string> selections = new array<string>;
 			target.GetObject().GetActionComponentNameList(target.GetComponentIndex(), selections);
-	
+
 			CarScript carS = CarScript.Cast(car);
+			vehicle = carS;
 			
 			if ( carS ) {
 				for (int s = 0; s < selections.Count(); s++) {
@@ -103,27 +133,28 @@ class ActionFillAtStation : ActionContinuousBase {
 						float dist = vector.DistanceSq(refillPointPos, player.GetPosition() );
 						float distanceFuel = carS.GetActionDistanceFuel() * carS.GetActionDistanceFuel();
 						if(dist < distanceFuel) {
-							GetFuelStationManager().SendRequestStation(refillPointPos);
-							CheckNearbyStations(refillPointPos);
-							return nearbyStation;		
+							if (station == null) {
+								station = CheckNearbyStations(refillPointPos);
+							}
+							return station != null;		
 						}
 					}
 				}
 			}
 		} else if (config.settings.pump_barrel_refueling && barrel && barrel.IsOpen() && Liquid.CanFillContainer(barrel, LIQUID_GASOLINE)) {
 			refillPointPos = barrel.GetPosition();
-			GetFuelStationManager().SendRequestStation(refillPointPos);
-			CheckNearbyStations(refillPointPos);
-			return nearbyStation;	
+			if (station == null) {
+				station = CheckNearbyStations(refillPointPos);
+			}
+			return station != null;	
 		}
 
 		return false;
 	}
 	
 	override bool ActionConditionContinue( ActionData action_data ) {
-		if (super.ActionConditionContinue( action_data )) {
-			CheckNearbyStations(refillPointPos);
-			return pumpHasFuel;
+		if (super.ActionConditionContinue( action_data ) && station) {
+			return station.HasFuel() && station.HasEnergy();
 		}
 		return false;
 	}

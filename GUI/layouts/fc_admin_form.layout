@@ -16,7 +16,7 @@ FrameWidgetClass rootFrame {
    vexactsize 1
    {
     ButtonWidgetClass settings_btn {
-     position 610 0
+     position 820 0
      size 150 1
      valign center_ref
      hexactpos 1
@@ -59,11 +59,23 @@ FrameWidgetClass rootFrame {
      text "Transfer Rates"
      font "gui/fonts/metron-bold16"
     }
+    ButtonWidgetClass powerbox_btn {
+     position 610 0
+     size 200 1
+     valign center_ref
+     hexactpos 1
+     vexactpos 1
+     hexactsize 1
+     vexactsize 0
+     text "Power Boxes"
+     font "gui/fonts/metron-bold16"
+    }
    }
   }
   PanelWidgetClass content {
    ignorepointer 1
-   size 906 673
+   position 0 -1.6047
+   size 1019.94 673
    hexactpos 1
    vexactpos 1
    hexactsize 1

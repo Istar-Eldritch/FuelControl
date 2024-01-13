@@ -41,10 +41,6 @@ class FCSelectStationSubscriber {
 		m_form = form;
 	}
 	
-	void ~FCSelectStationSubscriber() {
-		Print("Removing subscriber");
-	}
-	
 	void OnSelect(FuelStationGroup m_station) {
 		m_form.m_selectedStation = m_station;
 		m_form.UpdateSelected();
@@ -109,7 +105,7 @@ class FCAdminStationForm: ScriptedWidgetEventHandler {
 	void OnInit() {
 		m_children = new array<ref FCAdminStationFormListItem>;
 		m_stationManager = GetFuelStationManager();
-		m_stations = m_stationManager.stations.GetValueArray();
+		m_stations = m_stationManager.m_stations.GetValueArray();
 		m_subscriber = FCAdminStationFormSubscriber(this);
 		m_stationManager.Subscribe(m_subscriber);
 
@@ -125,7 +121,6 @@ class FCAdminStationForm: ScriptedWidgetEventHandler {
 		m_filterBox = EditBoxWidget.Cast(layoutRoot.FindAnyWidget("filter_box"));
 
 		CheckLoop();
-		m_stationManager.SendRequestAllStations();
 	}
 	
 	void FilterStations() {
@@ -219,7 +214,7 @@ class FCAdminStationForm: ScriptedWidgetEventHandler {
 			m_filterBox.ClearFlags(WidgetFlags.DISABLED);
 		}
 
-		m_stations = m_stationManager.stations.GetValueArray();
+		m_stations = m_stationManager.m_stations.GetValueArray();
 		FilterStations();
 		SortStations();
 		foreach (auto station: m_stations) {
@@ -263,7 +258,9 @@ class FCAdminStationForm: ScriptedWidgetEventHandler {
 	override bool OnClick(Widget w, int x, int y, int button) {
 		if (w == m_newBtn) {
 			string id;
-			m_newStation = new FuelStationGroup(id, "New station", GetGame().GetPlayer().GetWorldPosition(), -1, -1);
+			DayZPlayer player = GetGame().GetPlayer();
+			vector position = player.GetWorldPosition();
+			m_newStation = new FuelStationGroup(id, "New station", position, -1, -1);
 			m_selectedStation = m_newStation;
 			m_filterBox.SetText("");
 			UpdateUI();

@@ -1,10 +1,34 @@
 modded class CarScript {
 	
+	static const string VEHICLE_LOOP_SOUND = "IE_FC_VehicleRefueling_SoundSet";
+	protected EffectSound 	m_RefuelingSound;
+	
 	float lastFuelAmount;
 	float autonomy;
 	// During a dt teh amount of fuel may be so small the leak function doesn't compute it right.
 	// This is an acc across multiple updates.
 	float fuelDebt;
+	bool m_Refueling;
+	
+	void CarScript() {
+		RegisterNetSyncVariableBool("m_Refueling");
+	}
+	
+	override void OnVariablesSynchronized() {
+		super.OnVariablesSynchronized();
+		if (GetGame().IsClient()) {
+			if (m_Refueling) {
+				PlaySoundSetLoop(m_RefuelingSound, VEHICLE_LOOP_SOUND, 0, 0);
+			} else {
+				StopSoundSet(m_RefuelingSound);
+			}
+		}
+	}
+	
+	void SetRefueling(bool refueling) {
+		m_Refueling = refueling;
+		SetSynchDirty();
+	}
 		
 	override void SetActions() {
 		super.SetActions();

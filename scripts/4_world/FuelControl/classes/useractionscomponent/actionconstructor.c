@@ -4,6 +4,8 @@ modded class ActionConstructor {
 		actions.Insert(ActionFillAtStation);
 		actions.Insert(ActionSiphon);
 		actions.Insert(ActionMeasureFuel);
+		actions.Insert(IEActionTurnOn);
+		actions.Insert(IEActionTurnOff);
 		super.RegisterActions(actions);
 	}
 };

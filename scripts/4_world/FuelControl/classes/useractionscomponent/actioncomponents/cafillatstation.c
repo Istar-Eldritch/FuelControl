@@ -1,5 +1,4 @@
 class CAFillAtStation : CAContinuousBase {
-	
 	protected vector 				location;
 	protected PlayerBase 			m_Player;
 	protected float 				m_ItemQuantity;
@@ -11,7 +10,9 @@ class CAFillAtStation : CAContinuousBase {
 	protected float 				m_AdjustedQuantityUsedPerSecond;
 	protected float 				m_DefaultTimeStep;
 	protected ref Param1<float>		m_SpentUnits;
-	
+	protected FuelStation           station;
+	protected EffectSound 	m_StationSoundLoop;
+
 	void CAFillAtStation( float quantity_used_per_second, float time_to_progress ) {
 		m_QuantityUsedPerSecond = quantity_used_per_second;
 		m_DefaultTimeStep = time_to_progress;
@@ -48,10 +49,18 @@ class CAFillAtStation : CAContinuousBase {
 			currentFuel = barrel.GetQuantity();
 			m_EmptySpace = (fuelCapacity - currentFuel);
 		}
+
+		autoptr auto objects = new array<Object>;
+		autoptr auto proxycargos = new array<CargoBase>;
+		GetGame().GetObjectsAtPosition(location, 5, objects, proxycargos);
+		foreach(auto object : objects) {
+			station = FuelStation.Cast(object);
+			if (station != null)
+				break;
+		}
 		
 		m_AdjustedQuantityUsedPerSecond = action_data.m_Player.GetSoftSkillsManager().AddSpecialtyBonus( m_QuantityUsedPerSecond, m_Action.GetSpecialtyWeight(), true );
 		m_ItemQuantity = m_EmptySpace;
-
 	}
 	
 		//---------------------------------------------------------------------------
@@ -88,7 +97,7 @@ class CAFillAtStation : CAContinuousBase {
 			}
 		}
 	}
-	
+
 	//---------------------------------------------------------------------------
 	override int Cancel( ActionData action_data ) {
 		if ( !action_data.m_Player )
@@ -118,34 +127,20 @@ class CAFillAtStation : CAContinuousBase {
 		}
 		
 		
-		if ( GetGame().IsServer() ) {
-			
-			
-			autoptr auto objects = new array<Object>;
-			autoptr auto proxycargos = new array<CargoBase>;
-			GetGame().GetObjectsAtPosition(location, 5, objects, proxycargos);
-			FuelStation station;
-			foreach(auto object : objects) {
-				station = FuelStation.Cast(object);
-				if (station != null)
-					break;
+		if ( GetGame().IsServer() && station ) {
+			Object obj = action_data.m_Target.GetObject();
+			CarScript car = CarScript.Cast(obj);
+			Barrel_ColorBase barrel = Barrel_ColorBase.Cast(obj);
+			if (car) {
+				car.AddFuel(m_SpentQuantity / 1000 );
+			} else if(barrel) {
+				Liquid.FillContainer(barrel, LIQUID_GASOLINE, m_SpentQuantity);
 			}
-			
-			if(station) {
-				Object obj = action_data.m_Target.GetObject();
-				CarScript car = CarScript.Cast(obj);
-				Barrel_ColorBase barrel = Barrel_ColorBase.Cast(obj);
-				if (car) {
-					car.AddFuel(m_SpentQuantity / 1000 );
-				} else if(barrel) {
-					Liquid.FillContainer(barrel, LIQUID_GASOLINE, m_SpentQuantity);
-				}
 
-				station.RemoveFuel(m_SpentQuantity);
-				// This is likely to be very ineficient. There should be a better way of doing this
-				if (GetGame().IsServer()) {
-					GetFuelStationManager().Save();
-				}
+			station.RemoveFuel(m_SpentQuantity);
+			// This is likely to be very ineficient. There should be a better way of doing this
+			if (GetGame().IsServer()) {
+				GetFuelStationManager().Save();
 			}
 		}
 		m_SpentQuantity = 0;

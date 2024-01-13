@@ -14,6 +14,8 @@ This mod provides tools to control your sever's fuel economy.
 - Configurable liquid transfer rates for arbitrary containers (using class names)
 - Configurable consumption rates for arbitrary vehicles (using class names)
 - Measure the fuel in a car or fuel pump with a long stick.
+- Require stations to be powered with electricity (Requires battery with wire / generator & cable reel)
+- Configuration for how many energy units are consumed per liter of fuel.
 - Administration UI (If COT is installed)
 
 All this features are configurable. Check Configuration or use the COT UI.
@@ -34,6 +36,7 @@ Check [Commands.md](https://github.com/Istar-Eldritch/FuelControl/blob/main/comm
 ## Configuration:
 
 Check [configuration.md](https://github.com/Istar-Eldritch/FuelControl/blob/main/configuration.md)
+You can some example configurations [HERE](https://github.com/Istar-Eldritch/FuelControl/tree/main/profiles/FuelControl)
 
 ## Building the mod.
 

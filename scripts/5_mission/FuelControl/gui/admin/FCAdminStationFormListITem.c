@@ -163,18 +163,18 @@ class FCAdminStationFormListItem: ScriptedWidgetEventHandler {
 			} else if (w == m_ok_edit_btn) {
 				m_station.name = m_name_edit.GetText();
 				auto v = m_station.position;
-				v[0] = m_location_x_edit.GetText().ToInt();
+				v[0] = m_location_x_edit.GetText().ToFloat();
 				v[1] = 0;
-				v[2] = m_location_y_edit.GetText().ToInt();
+				v[2] = m_location_y_edit.GetText().ToFloat();
 				m_station.position = v;
-				m_station.fuelCapacity = m_capacity_edit.GetText().ToInt() * 1000;
-				m_station.fuelAmount = m_available_edit.GetText().ToInt() * 1000;
+				m_station.fuelCapacity = m_capacity_edit.GetText().ToFloat() * 1000;
+				m_station.fuelAmount = m_available_edit.GetText().ToFloat() * 1000;
 				bool isNew = false;
 				if (!m_station.id) {
 					m_station.id = FuelStationManager.GenId(m_station.name);
 					isNew = true;
 				}
-				GetFuelStationManager().SendUpdateStation(m_station);
+				GetFuelStationManager().UpdateStation(m_station, true);
 				if (isNew) {
 					m_onSelectSubscriber.OnCreate(m_station);
 				} else {
@@ -185,7 +185,7 @@ class FCAdminStationFormListItem: ScriptedWidgetEventHandler {
 				m_currentState = STATE_INFO;
 				UpdateUI();
 			} else if (w == m_ok_del_btn) {
-				GetFuelStationManager().SendDeleteStation(m_station);
+				GetFuelStationManager().DeleteStation(m_station, true);
 			} else if (m_onSelectSubscriber) {
 				m_onSelectSubscriber.OnSelect(m_station);
 			}

@@ -1,22 +1,23 @@
 modded class ActionFillBottleBase: ActionContinuousBase {
 
-	bool pumpHasFuel = true;
+	FuelStation m_station;
 	
 	override string GetText(){
-		if (pumpHasFuel){
-			return super.GetText();
+		if (m_station) {
+			if (!m_station.HasFuel()) {
+				return "There is no fuel at this station";
+			} else if (!m_station.HasEnergy())  {
+				return "Fuel pumps require energy to run";
+			}
 		}
-		return "There is no fuel at this station";
+		return super.GetText();		
 	}
 	
 	override bool ActionCondition( PlayerBase player, ActionTarget target, ItemBase item ) {
 		if (super.ActionCondition( player, target, item )) {
-			FuelStation station = FuelStation.Cast(target.GetObject());
-			if (station){
-				GetFuelStationManager().SendRequestStation(station.GetPosition());
-				// TODO: Find a better way to notify hte player the station has no fuel.
-				pumpHasFuel = !station.IsRuined() && station.HasFuel();
-				return !station.IsRuined();
+			m_station = FuelStation.Cast(target.GetObject());
+			if (m_station){
+				return !m_station.IsRuined();
 			}
 			return true;
 		}
@@ -25,13 +26,28 @@ modded class ActionFillBottleBase: ActionContinuousBase {
 	
 	override bool ActionConditionContinue( ActionData action_data ) {
 		if (super.ActionConditionContinue( action_data )) {
-			FuelStation station = FuelStation.Cast(action_data.m_Target.GetObject());
-			if (station){
-				return !station.IsRuined() && station.HasFuel();
+			if (m_station){
+				return !m_station.IsRuined() && m_station.HasFuel() && m_station.HasEnergy();
 			}
 			return true;
 		}
 		return false;
+	}
+	
+	override void OnStartAnimationLoop(ActionData action_data) {
+		super.OnStartAnimationLoop(action_data);
+		if (GetGame().IsServer() && m_station && m_station.HasFuel() && m_station.HasEnergy()) {
+			m_station.SetWorking(true);
+		}
+	}
+	
+	override void OnEndAnimationLoop(ActionData action_data) {
+		super.OnEndAnimationLoop(action_data);
+		if (GetGame().IsServer()) {
+			if (m_station) {
+				m_station.SetWorking(false);
+			}
+		}
 	}
 };
 

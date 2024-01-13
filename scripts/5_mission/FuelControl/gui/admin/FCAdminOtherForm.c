@@ -12,6 +12,9 @@ class FCAdminOtherForm: ScriptedWidgetEventHandler {
 	protected ref CheckBoxWidget m_default_pumps_have_fuel;
 	protected ref CheckBoxWidget m_pumps_get_ruined;
 	protected ref CheckBoxWidget m_enable_measure_fuel_with_stick;
+	protected ref CheckBoxWidget m_pumps_require_electricity;
+	protected ref EditBoxWidget m_pump_consumption_edit;
+
 	protected ref ButtonWidget m_submit;
 
 	void FCAdminOtherForm(Widget parent) {
@@ -28,8 +31,9 @@ class FCAdminOtherForm: ScriptedWidgetEventHandler {
 		m_default_pumps_have_fuel = CheckBoxWidget.Cast(layoutRoot.FindAnyWidget("default_pumps_have_fuel"));
 		m_pumps_get_ruined = CheckBoxWidget.Cast(layoutRoot.FindAnyWidget("pumps_get_ruined"));
 		m_enable_measure_fuel_with_stick = CheckBoxWidget.Cast(layoutRoot.FindAnyWidget("enable_measure_fuel_with_stick"));
+		m_pumps_require_electricity = CheckBoxWidget.Cast(layoutRoot.FindAnyWidget("pumps_require_electricity"));
+		m_pump_consumption_edit = EditBoxWidget.Cast(layoutRoot.FindAnyWidget("pump_consumption_edit"));
 		m_submit = ButtonWidget.Cast(layoutRoot.FindAnyWidget("submit"));
-		GetFuelControlSettings().SyncSettings();
 		UpdateUI();
 	}
 	
@@ -50,7 +54,9 @@ class FCAdminOtherForm: ScriptedWidgetEventHandler {
 		m_siphoning_limit_edit.SetText("" + settings.siphoning_limit);
 		m_default_pumps_have_fuel.SetChecked(settings.default_pumps_have_fuel);
 		m_pumps_get_ruined.SetChecked(settings.pumps_get_ruined);
+		m_pumps_require_electricity.SetChecked(settings.pumps_require_electricity);
 		m_enable_measure_fuel_with_stick.SetChecked(settings.measure_fuel_with_stick);
+		m_pump_consumption_edit.SetText("" + settings.pump_consumption);
 	}
 	
 	override bool OnClick(Widget w, int x, int y, int button) {
@@ -69,7 +75,8 @@ class FCAdminOtherForm: ScriptedWidgetEventHandler {
 			settings.default_pumps_have_fuel = m_default_pumps_have_fuel.IsChecked();
 			settings.pumps_get_ruined = m_pumps_get_ruined.IsChecked();
 			settings.measure_fuel_with_stick = m_enable_measure_fuel_with_stick.IsChecked();
-			
+			settings.pumps_require_electricity = m_pumps_require_electricity.IsChecked();
+			settings.pump_consumption = m_pump_consumption_edit.GetText().ToInt();
 			set_manager.settings = settings;
 			set_manager.SyncSettings(true);
 			

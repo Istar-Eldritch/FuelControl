@@ -26,11 +26,25 @@ This file is used to change general settings and toggle features on and off:
 This file is used to describe the fuel availability in each of the stations. Each station configuration looks like the following:
 ```js
 {
+    "id": "A0D594F949619811C1F2C2D27FF71785702D9310465B583EB25AE3D27ABD888B", // Uniquie identifier, can be anything as long as its unique. Will be generated if created with the UI.
     "x": 314.600555, // x coordinate
     "y": 9390.578125, // y coordinate
-    "name": "Tri Kresta", // helper name, must be unique. Used for logging and identification of the station.
+    "name": "Tri Kresta", // helper name. Used for logging and identification of the station.
     "fuel": -1, // Defines how much fuel is available in this station. -1 means infinite. Set it to 0 to disable the station.
     "capacity": -1 // Defines how much fuel this station can hold. -1 means infinite. This property is not used at the moment.
+}
+```
+The provided `stations.json` is an example configuration for the Chernarous map. If you are not using Chernarous, you'll have to create a file similar to the one provided with the locations of the fuel stations you want to configure.
+
+## `power_boxes.json`
+This file is used to describe the fuel availability in each of the stations. Each station configuration looks like the following:
+```js
+{
+    "id": "A0D594F949619811C1F2C2D27FF71785702D9310465B583EB25AE3D27ABD888B", // Uniquie identifier, can be anything as long as its unique. Will be generated if created with the UI.
+    "x": 4530.330078125, // x coordinate
+    "y": 9699.150390625, // y coordinate
+    "orientation": 60.0900993347168, // orientation / rotation of the model.
+    "name": "Airport" // A helper name to identify the station.
 }
 ```
 The provided `stations.json` is an example configuration for the Chernarous map. If you are not using Chernarous, you'll have to create a file similar to the one provided with the locations of the fuel stations you want to configure.

@@ -1,36 +1,30 @@
-class FCKV {
-	string key;
-	string value;
-}
 
 class FCAdminListItemForm: ScriptedWidgetEventHandler {
 	ref Widget layoutRoot;
-	protected ref EditBoxWidget m_key_box;
-	protected ref EditBoxWidget m_value_box;
 	protected ref ButtonWidget m_delete;
-	ref FCKV m_o;
+	ref array<ref EditBoxWidget> m_edit_boxes;
+	ref array<string> m_o;
 	protected ref FCAdminListForm m_handler;
 	int m_id;
 	
-	void FCAdminListItemForm(Widget parent, FCAdminListForm handler, int id, FCKV o) {
+	void FCAdminListItemForm(Widget parent, FCAdminListForm handler, int id, array<string> o, int columns) {
 		m_o = o;
 		m_id = id;
 		m_handler = handler;
-		layoutRoot = GetGame().GetWorkspace().CreateWidgets("FuelControl/GUI/layouts/fc_admin_key_value.layout", parent);
+		layoutRoot = GetGame().GetWorkspace().CreateWidgets("FuelControl/GUI/layouts/fc_admin_list_item" + columns + ".layout", parent);
 		layoutRoot.SetHandler(this);
-		m_key_box = EditBoxWidget.Cast(layoutRoot.FindAnyWidget("key"));
-		m_key_box.SetText(o.key);
-		m_value_box = EditBoxWidget.Cast(layoutRoot.FindAnyWidget("value"));
-		m_value_box.SetText(o.value);
+		m_edit_boxes = new array<ref EditBoxWidget>;
+		for (int i = 0; i < columns; i++) {
+			auto box = EditBoxWidget.Cast(layoutRoot.FindAnyWidget("column" + i));
+			box.SetText(o.Get(i));
+			m_edit_boxes.Insert(box);
+		}
+		
 		m_delete = ButtonWidget.Cast(layoutRoot.FindAnyWidget("del_btn"));
 	}
 	
-	string GetKey() {
-		return m_key_box.GetText();
-	}
-	
-	string GetValue() {
-		return m_value_box.GetText();
+	string Get(int column) {
+		return m_edit_boxes.Get(column).GetText();
 	}
 	
 	override bool OnClick(Widget w, int x, int y, int button) {
@@ -54,14 +48,15 @@ class FCAdminListForm: ScriptedWidgetEventHandler {
 	protected ref Widget m_content;
 	protected ref ButtonWidget m_submit;
 	protected ref ButtonWidget m_new;
-	protected ref array<ref FCKV> m_data;
+	protected ref array<ref array<string>> m_data;
 	protected ref array<ref FCAdminListItemForm> m_children;
-
+	protected int m_columns;
 	protected ref EditBoxWidget m_filterBox;
 		
-	protected ref FCKV m_new_item;
+	protected ref array<string> m_new_item;
 	
 	void FCAdminListForm(Widget parent) {
+		m_columns = GetColumns();
 		int color = ARGB(255, 255, 255, 255);
 		layoutRoot = GetGame().GetWorkspace().CreateWidgets("FuelControl/GUI/layouts/fc_admin_list.layout", parent);
 		layoutRoot.SetHandler(this);
@@ -77,17 +72,21 @@ class FCAdminListForm: ScriptedWidgetEventHandler {
 		UpdateUI();
 	}
 	
+	int GetColumns() {
+		return 2;
+	}
+	
 	void ~FCAdminListForm() {
 		delete m_children;
 		delete layoutRoot;
 	}
 	
-	array<ref FCKV> GetData() {
-		array<ref FCKV> data = new array<ref FCKV>;
+	array<ref array<string>> GetData() {
+		array<ref array<string>> data = new array<ref array<string>>;
 		return data;
 	}
 
-	void SortKV() {
+	void SortColumns() {
 		bool swapped = true;
 		int counter = 0;
 		int swaps = 0;
@@ -95,7 +94,7 @@ class FCAdminListForm: ScriptedWidgetEventHandler {
 		     while (counter < m_data.Count() - 1) {
 				auto current = m_data.Get(counter);
 				auto next = m_data.Get(counter + 1);
-		     	if (current.key > next.key) {
+		     	if (current[0] > next[0]) {
 					m_data.Set(counter, next);
 					m_data.Set(counter + 1, current);
 	                swaps = swaps + 1;
@@ -111,13 +110,13 @@ class FCAdminListForm: ScriptedWidgetEventHandler {
 		}
 	}
 	
-	array<ref FCKV> FilterKV(array<ref FCKV> input) {
+	array<ref array<string>> FilterKV(array<ref array<string>> input) {
 		string filter = m_filterBox.GetText();
 		filter.ToLower();
 		if (filter != "") {
-			auto newArray = new array<ref FCKV>;
+			auto newArray = new array<ref array<string>>;
 			foreach (auto kv: input) {
-				string key = kv.key;
+				string key = kv[0];
 				key.ToLower();
 				if (key.Contains(filter)) {
 					newArray.Insert(kv);
@@ -149,12 +148,12 @@ class FCAdminListForm: ScriptedWidgetEventHandler {
 
 		float content_height = 0;
 		
-		SortKV();
+		SortColumns();
 		auto data = FilterKV(m_data);
 		
 		int id = 0;
 		if (m_new_item) {
-			FCAdminListItemForm new_item = FCAdminListItemForm(m_content, this, id, m_new_item);
+			FCAdminListItemForm new_item = FCAdminListItemForm(m_content, this, id, m_new_item, m_columns);
 			id++;
 			new_item.layoutRoot.SetPos(0, 0);
 			m_children.Insert(new_item);
@@ -162,7 +161,7 @@ class FCAdminListForm: ScriptedWidgetEventHandler {
 		}
 		
 		foreach (auto fckv: data) {
-			FCAdminListItemForm container = new FCAdminListItemForm(m_content, this, id, fckv);
+			FCAdminListItemForm container = new FCAdminListItemForm(m_content, this, id, fckv, m_columns);
 			container.layoutRoot.SetPos(0, content_height);
 			m_children.Insert(container);
 			content_height = content_height + 30;
@@ -194,14 +193,24 @@ class FCAdminListForm: ScriptedWidgetEventHandler {
 	
 	void OnUpdate(FCAdminListItemForm item) {
 		if (m_new_item && item.m_id == 0) {
-			m_new_item.key = item.GetKey();
-			m_new_item.value = item.GetValue();
+			for (int i = 0; i < m_columns; i++) {
+				m_new_item[i] = item.Get(i);
+			}
 		} else {
 			auto d = m_data.Get(item.m_id);
-			d.key = item.GetKey();
-			d.value = item.GetValue();
+			for (int ii = 0; ii < m_columns; ii++) {
+				d[ii] = item.Get(ii);
+			}
 			m_data.Set(item.m_id, d);
 		}
+	}
+	
+	void OnNew() {
+		m_new_item = new array<string>();
+		for (int i = 0; i < m_columns; i++) {
+			m_new_item.Insert("--");
+		}
+		UpdateUI();
 	}
 
 	override bool OnClick(Widget w, int x, int y, int button) {
@@ -209,10 +218,7 @@ class FCAdminListForm: ScriptedWidgetEventHandler {
 			OnSubmit();
 			return true;
 		} else if (w == m_new) {
-			m_new_item = new FCKV();
-			m_new_item.key = "New_Key";
-			m_new_item.value = "New_Value";
-			UpdateUI();
+			OnNew();
 			return true;
 		}
         return false;
@@ -227,26 +233,29 @@ class FCAdminListForm: ScriptedWidgetEventHandler {
 }
 
 class FCAdminAutonomyForm: FCAdminListForm {
+	override int GetColumns() {
+		return 2;
+	}
 	override void OnSubmit() {
 		FuelControlSettings st = GetFuelControlSettings();
 		map<string, float> values = new map<string, float>;
 		if (m_new_item) {
-			values.Set(m_new_item.key, m_new_item.value.ToFloat());
+			values.Set(m_new_item[0], m_new_item[1].ToFloat());
 		}
 		foreach (auto kv: m_data) {
-			values.Set(kv.key, kv.value.ToFloat());
+			values.Set(kv[0], kv[1].ToFloat());
 		}
 		st.vehicle_autonomy = values;
 		st.SyncSettings(true);
 		super.OnSubmit();
 	}
 	
-	override array<ref FCKV> GetData() {
-		array<ref FCKV> data = new array<ref FCKV>;
+	override array<ref array<string>> GetData() {
+		array<ref array<string>> data = new array<ref array<string>>;
 		foreach (auto key, auto value: GetFuelControlSettings().vehicle_autonomy) {
-			auto fckv = new FCKV();
-			fckv.key = key;
-			fckv.value = "" + value;
+			auto fckv = new array<string>();
+			fckv.Insert(key);
+			fckv.Insert("" + value);
 			data.Insert(fckv);
 		}
 		return data;
@@ -254,27 +263,78 @@ class FCAdminAutonomyForm: FCAdminListForm {
 }
 
 class FCAdminTransferRatesForm: FCAdminListForm {
+	override int GetColumns() {
+		return 2;
+	}
 	override void OnSubmit() {
 		FuelControlSettings st = GetFuelControlSettings();
 		map<string, float> values = new map<string, float>;
 		if (m_new_item) {
-			values.Set(m_new_item.key, m_new_item.value.ToFloat());
+			values.Set(m_new_item[0], m_new_item[1].ToFloat());
 		}
 		foreach (auto kv: m_data) {
-			values.Set(kv.key, kv.value.ToFloat());
+			values.Set(kv[0], kv[1].ToFloat());
 		}
 		st.liquid_transfer_rates = values;
 		st.SyncSettings(true);
 		super.OnSubmit();
 	}
 	
-	override array<ref FCKV> GetData() {
-		array<ref FCKV> data = new array<ref FCKV>;
+	override array<ref array<string>> GetData() {
+		array<ref array<string>> data = new array<ref array<string>>;
 		foreach (auto key, auto value: GetFuelControlSettings().liquid_transfer_rates) {
-			auto fckv = new FCKV();
-			fckv.key = key;
-			fckv.value = "" + value;
+			auto fckv = new array<string>();
+			fckv.Insert(key);
+			fckv.Insert("" + value);
 			data.Insert(fckv);
+		}
+		return data;
+	}
+}
+
+class FCAdminPowerBoxForm: FCAdminListForm {
+	override int GetColumns() {
+		return 4;
+	}
+	override void OnSubmit() {
+		FuelControlSettings st = GetFuelControlSettings();
+		array<ref IE_FC_PowerBoxConfig> values = new array<ref IE_FC_PowerBoxConfig>;
+		if (m_new_item) {
+			auto id = FuelStationManager.GenId(m_new_item[0]);
+			auto config = new IE_FC_PowerBoxConfig(id, m_new_item[1].ToFloat(), m_new_item[2].ToFloat(), m_new_item[3].ToFloat(), m_new_item[0]);
+			values.Insert(config);
+		}
+		foreach (auto kv: m_data) {
+			auto dd = kv[4];
+			auto conf = new IE_FC_PowerBoxConfig(dd, kv[1].ToFloat(), kv[2].ToFloat(), kv[3].ToFloat(), kv[0]);
+			values.Insert(conf);
+		}
+		st.power_boxes = values;
+		st.SyncSettings(true);
+		super.OnSubmit();
+	}
+	
+	override void OnNew() {
+		m_new_item = new array<string>();
+		m_new_item.Insert("--");
+		auto position = GetPlayer().GetWorldPosition();
+		m_new_item.Insert("" + position[0]);
+		m_new_item.Insert("" + position[2]);
+		auto orientation = GetPlayer().GetOrientation();
+		m_new_item.Insert("" + orientation[0]);
+		UpdateUI();
+	}
+	
+	override array<ref array<string>> GetData() {
+		array<ref array<string>> data = new array<ref array<string>>;
+		foreach (auto box: GetFuelControlSettings().power_boxes) {
+			auto d = new array<string>();
+			d.Insert(box.name);
+			d.Insert("" + box.x);
+			d.Insert("" + box.y);
+			d.Insert("" + box.orientation);
+			d.Insert(box.id);
+			data.Insert(d);
 		}
 		return data;
 	}
