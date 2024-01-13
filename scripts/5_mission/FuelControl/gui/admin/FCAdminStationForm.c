@@ -202,8 +202,11 @@ class FCAdminStationForm: ScriptedWidgetEventHandler {
 
 		m_stationMap.ClearUserMarks();
 		
+		float item_width;
+		float item_height;
 		if (m_newStation) {
 			m_newStationWidget = new FCAdminStationFormListItem(m_stationList, m_newStation, m_selectedStationSubscriber);
+			m_newStationWidget.layoutRoot.GetScreenSize(item_width, item_height);
 			m_newStationWidget.m_currentState = FCAdminStationFormListItem.STATE_EDIT;
 			m_newStationWidget.UpdateUI();
 			m_newBtn.SetFlags(WidgetFlags.DISABLED);
@@ -219,8 +222,6 @@ class FCAdminStationForm: ScriptedWidgetEventHandler {
 		m_stations = m_stationManager.stations.GetValueArray();
 		FilterStations();
 		SortStations();
-		float item_width;
-		float item_height;
 		foreach (auto station: m_stations) {
 			auto item = new FCAdminStationFormListItem(m_stationList, station, m_selectedStationSubscriber);
 			m_children.Insert(item);
