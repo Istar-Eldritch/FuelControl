@@ -33,6 +33,7 @@ class ActionFillAtStation : ActionContinuousBase {
 	vector refillPointPos;
 	bool nearbyStation = false;
 	bool pumpHasFuel = false;
+	bool pumpHasEnergy = false;
 	
 	void ActionFillAtStation() {
 		m_CallbackClass = ActionFillAtStationCB;
@@ -49,8 +50,10 @@ class ActionFillAtStation : ActionContinuousBase {
 	}
 	
 	override string GetText() {
-		if (pumpHasFuel) {
+		if (pumpHasFuel && pumpHasEnergy) {
 			return "#refuel";
+		} else if (!pumpHasEnergy) {
+			return "Fuel pumps require energy to run";
 		} else {
 			return "There is no fuel at this station";
 		}
@@ -70,6 +73,7 @@ class ActionFillAtStation : ActionContinuousBase {
 			if (station) {
 				
 				pumpHasFuel = !station.IsRuined() && station.HasFuel();
+				pumpHasEnergy = station.HasEnergy();
 				nearbyStation = !station.IsRuined();
 				break;
 			} else {
@@ -123,7 +127,7 @@ class ActionFillAtStation : ActionContinuousBase {
 	override bool ActionConditionContinue( ActionData action_data ) {
 		if (super.ActionConditionContinue( action_data )) {
 			CheckNearbyStations(refillPointPos);
-			return pumpHasFuel;
+			return pumpHasFuel && pumpHasEnergy;
 		}
 		return false;
 	}

@@ -201,5 +201,14 @@ FrameWidgetClass rootFrame {
    vexactsize 1
    text "Submit"
   }
+  CheckBoxWidgetClass pumps_require_electricity {
+   position 0 330
+   size 500 25
+   hexactpos 1
+   vexactpos 1
+   hexactsize 1
+   vexactsize 1
+   text "Pumps require electricity"
+  }
  }
 }
