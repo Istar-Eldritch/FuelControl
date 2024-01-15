@@ -45,3 +45,23 @@ class CfgMods
     };
   };
 };
+
+class CfgVehicles {
+
+	class House;
+	class IEFCElectricBox: House
+	{
+		scope=2;
+		displayName="Electric Box";
+		descriptionShort="Allows to power fuel stations";
+		model="FuelControl\GUI\models\electric_box.p3d";
+		useEntityHierarchy="true";
+		class EnergyManager
+		{
+			hasIcon=1;
+			autoSwitchOff=1;
+			attachmentAction=1;
+      isPassiveDevice=1;
+		};
+	};
+}
