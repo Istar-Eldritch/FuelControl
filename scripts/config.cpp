@@ -61,7 +61,9 @@ class CfgVehicles {
 			hasIcon=1;
 			autoSwitchOff=1;
 			attachmentAction=1;
-      isPassiveDevice=1;
+			energyUsagePerSecond=2;
+			cordTextureFile="DZ\gear\camping\Data\plug_black_CO.paa";
+      updateInterval=1;
 		};
 	};
 }

@@ -50,7 +50,12 @@ modded class FuelStation {
 	}
 	
 	bool HasEnergy() {
-		return true;
+		if (!group) {
+			FuelStationManager groupManager = GetFuelStationManager();
+			group = groupManager.FindStationForPump(this.GetPosition());
+		}
+
+		return group.HasEnergy();
 	}
 	
 	override bool IsRuined() {

@@ -15,6 +15,7 @@ class FuelStationGroup {
 	float fuelCapacity;
 	// fuel amount in ml
 	float fuelAmount;
+	bool m_hasPower;
 		
 	void FuelStationGroup(string _id, string _name, vector pos, float fuelCap, float fuel) {
 		id = _id;
@@ -22,6 +23,7 @@ class FuelStationGroup {
 		position = pos;
 		fuelCapacity = fuelCap;
 		fuelAmount = fuel;
+		m_hasPower = false;
 	}
 
 	// Returns the amount of fuel in this station (in Liters)
@@ -68,6 +70,14 @@ class FuelStationGroup {
 				fuelAmount = fuelCapacity;
 			}
 		}
+	}
+	
+	bool HasEnergy() {
+		return m_hasPower;
+	}
+
+	void SetHasEnergy(bool hasEnergy) {
+		m_hasPower = hasEnergy;
 	}
 }
 
@@ -219,9 +229,9 @@ class FuelStationManager {
 		Param1<FuelStationGroup> data;
 
 		if (ctx.Read(data) && data.param1) {
-			FuelStationGroup station = data.param1;			
+			ref FuelStationGroup station = data.param1;			
 			Print("[FuelControl] Got update on station " + station.name);
-			stations[station.id] = new ref FuelStationGroup(station.id, station.name, station.position, station.fuelCapacity, station.fuelAmount);
+			stations[station.id] = station;
 			foreach (auto subscriber: m_subscribers) {
 				if (subscriber) {
 					subscriber.OnUpdate(stations[station.id]);

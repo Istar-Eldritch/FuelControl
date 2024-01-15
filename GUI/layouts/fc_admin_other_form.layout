@@ -210,5 +210,36 @@ FrameWidgetClass rootFrame {
    vexactsize 1
    text "Pumps require electricity"
   }
+  PanelWidgetClass pump_consumption_group {
+   ignorepointer 1
+   position 0 360
+   size 500 25
+   hexactpos 1
+   vexactpos 1
+   hexactsize 1
+   vexactsize 1
+   {
+    EditBoxWidgetClass pump_consumption_edit {
+     clipchildren 1
+     position 210 0
+     size 200 25
+     hexactpos 1
+     vexactpos 1
+     hexactsize 1
+     vexactsize 1
+     "Use default text" 0
+    }
+    TextWidgetClass pump_consumption_label {
+     ignorepointer 1
+     position 0 0
+     size 200 25
+     hexactpos 1
+     vexactpos 1
+     hexactsize 1
+     vexactsize 1
+     text "Pump consumption:"
+    }
+   }
+  }
  }
 }

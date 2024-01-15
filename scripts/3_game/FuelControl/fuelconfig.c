@@ -30,6 +30,7 @@ class FCSettings {
   bool pumps_get_ruined = 1;
   bool measure_fuel_with_stick = 1;
   bool pumps_require_electricity = 0;
+  int pump_consumption = 2;
 }
 
 
