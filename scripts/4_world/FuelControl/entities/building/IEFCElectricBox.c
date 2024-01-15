@@ -6,6 +6,22 @@ class StationPowerSource: House {
 		Print("Init power source");
 	}
 
+	override bool IsInventoryVisible() {
+		return true;
+	}
+	
+	override bool IsHealthVisible() {
+		return true;
+	}
+
+	override bool CanPutIntoHands(EntityAI player) {
+		return true;
+	}
+
+	override bool CanPutInCargo(EntityAI parent) {
+		return true;
+	}
+
     override void OnSwitchOn() {
 		FuelControlSettings settings =  GetFuelControlSettings();
 	}

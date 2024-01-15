@@ -65,5 +65,76 @@ class CfgVehicles {
 			cordTextureFile="DZ\gear\camping\Data\plug_black_CO.paa";
       updateInterval=1;
 		};
+    class DamageSystem
+		{
+			class GlobalHealth
+			{
+				class Health
+				{
+					hitpoints=100;
+					healthLevels[]=
+					{
+						
+						{
+							1,
+							{}
+						},
+						
+						{
+							0.69999999,
+							{}
+						},
+						
+						{
+							0.5,
+							{}
+						},
+						
+						{
+							0.30000001,
+							{}
+						},
+						
+						{
+							0,
+							{}
+						}
+					};
+				};
+			};
+			class GlobalArmor
+			{
+				class Projectile
+				{
+					class Health
+					{
+						damage=1;
+					};
+					class Blood
+					{
+						damage=0;
+					};
+					class Shock
+					{
+						damage=0;
+					};
+				};
+				class FragGrenade
+				{
+					class Health
+					{
+						damage=1;
+					};
+					class Blood
+					{
+						damage=0;
+					};
+					class Shock
+					{
+						damage=0;
+					};
+				};
+			};
+		};
 	};
 }
