@@ -5,7 +5,7 @@ class FCTeleportManager {
 		auto currentTime = GetGame().GetTime();
 		if (currentTime - lastRequestTime > 1000) {
 			Print("[FuelControl] Requesting teleport to station " + station.name);
-			GetRPCManager().SendRPC("FuelControl", "TeleportToStation", new Param1<FuelStationGroup>(station), true);
+			GetRPCManager().SendRPC("IE_FC", "TeleportToStation", new Param1<FuelStationGroup>(station), true);
 			lastRequestTime = currentTime;
 		}
 	}

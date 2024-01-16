@@ -1,9 +1,7 @@
 modded class FuelStation {
 	
-	protected FuelStationGroup group = null;
-	
 	void FuelStation() {
-		RegisterNetSyncVariableBool("m_ruined");
+		Print("FuelStation Constructor");
 	}
 	
 	override void OnVariablesSynchronized() {
@@ -11,55 +9,61 @@ modded class FuelStation {
 	}
 	
 	float GetFuel() {
-		if (!group) {
-			FuelStationManager groupManager = GetFuelStationManager();
-			group = groupManager.FindStationForPump(this.GetPosition());
-		}
-		
-		if(group) {
-			return group.GetFuel();
-		}
-		
 		auto config = GetFuelControlSettings();
 
 		if(config.settings.default_pumps_have_fuel) {
 			return -1;
 		}
 
+		FuelStationManager groupManager = GetFuelStationManager();
+		FuelStationGroup group = groupManager.FindStationForPump(this.GetPosition());
+		
+		if(group) {
+			return group.GetFuel();
+		}
+
 		return 0;
 	}
 	
 	bool HasFuel() {
-		if (!group) {
-			FuelStationManager groupManager = GetFuelStationManager();
-			group = groupManager.FindStationForPump(this.GetPosition());
-		}
+		FuelStationManager groupManager = GetFuelStationManager();
+		FuelStationGroup group = groupManager.FindStationForPump(this.GetPosition());
 		
 		if (group) {
 			return group.HasFuel();
 		}
+
 		auto config = GetFuelControlSettings();
 
 		return config.settings.default_pumps_have_fuel;
 	}
 
 	void RemoveFuel(float quantity) {
-		if (group) {
-			group.RemoveFuel(quantity);
-		}
+		FuelStationManager groupManager = GetFuelStationManager();
+		FuelStationGroup group = groupManager.FindStationForPump(this.GetPosition());
+		group.RemoveFuel(quantity);
+		groupManager.SyncStation(group, true);
 	}
 	
 	bool HasEnergy() {
-		if (!group) {
-			FuelStationManager groupManager = GetFuelStationManager();
-			group = groupManager.FindStationForPump(this.GetPosition());
-		}
+		auto config = GetFuelControlSettings();
 
-		return group.HasEnergy();
+		if (config.settings.pumps_require_electricity) {
+			FuelStationManager groupManager = GetFuelStationManager();
+			FuelStationGroup group = groupManager.FindStationForPump(this.GetPosition());
+	
+			if (group) {
+				return group.HasEnergy();
+			} else {
+				return false;
+			}
+		} else {
+			return true;
+		}
 	}
 	
 	override bool IsRuined() {
-		if (IsRuined()) {
+		if (super.IsRuined()) {
 			auto config = GetFuelControlSettings();
 			return config.settings.pumps_get_ruined;
 		}

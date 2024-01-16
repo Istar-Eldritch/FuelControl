@@ -49,13 +49,18 @@ class CfgMods
 class CfgVehicles {
 
 	class House;
-	class IEFCElectricBox: House
+	class IE_FC_ElectricalBox: House
 	{
 		scope=2;
 		displayName="Electric Box";
 		descriptionShort="Allows to power fuel stations";
-		model="FuelControl\GUI\models\electric_box.p3d";
-		useEntityHierarchy="true";
+		model="FuelControl\GUI\models\IE_FC_ElectricalBox_Model.p3d";
+    rotationFlags=2;
+		slopeTolerance=0.40000001;
+		yawPitchRollLimit[]={45,45,45};
+		weight=45000;
+		itemSize[]={1,1};
+		itemBehaviour=0;
 		class EnergyManager
 		{
 			hasIcon=1;
@@ -138,3 +143,27 @@ class CfgVehicles {
 		};
 	};
 }
+
+class CfgModels
+{
+	class Default
+	{
+		sections[] = {};
+		sectionsInherit="";
+		skeletonName = "";
+	};
+	class IE_FC_ElectricalBox_Model:Default
+	{
+		sections[]=
+		{
+      "body"
+		};
+/*<potential axis>
+boundingbox_max
+boundingbox_min
+ce_center
+ce_radius
+invview
+</potential axis>*/
+	};//</Modelclass>
+};//</CfgModels>

@@ -159,15 +159,15 @@ class FuelControlSettings {
   
   void SyncSettings(bool push = false) {
 	if (push) {
-		Print("[FuelControl] Sending update to server");
-		GetRPCManager().SendRPC("FuelControl", "GetSettings", new Param1<FuelControlSettings>(this), true);
+		Print("[FuelControl] Sending update");
+		GetRPCManager().SendRPC("IE_FC", "FuelControlSettingsOnSyncRPC", new Param1<FuelControlSettings>(this), true);
 	} else {
-		Print("[FuelControl] Requesting settings from server");
-		GetRPCManager().SendRPC("FuelControl", "GetSettings", null, true);	
+		Print("[FuelControl] Requesting settings");
+		GetRPCManager().SendRPC("IE_FC", "FuelControlSettingsOnSyncRPC", null, true);	
 	}
   }
   
-  void GetSettings( CallType type, ref ParamsReadContext ctx, ref PlayerIdentity sender, ref Object target ) {
+  void FuelControlSettingsOnSyncRPC( CallType type, ref ParamsReadContext ctx, ref PlayerIdentity sender, ref Object target ) {
     Param1<FuelControlSettings> data;
     if (ctx.Read(data)) {
       ref FuelControlSettings config = data.param1;
@@ -178,11 +178,14 @@ class FuelControlSettings {
       liquid_transfer_rates = config.liquid_transfer_rates;
       Print("[FuelControl] Got config update");
 	  if (GetGame().IsServer()) {
+		// The server saves and sends an update to all the clients
 		Save();	
+		SyncSettings(true);
 	  }
     } else if (GetGame().IsServer()) {
+	  Print("[FuelControl] Got config update request");
       // If the sender is not sending an update, then send all the station information back to it.
-      GetRPCManager().SendRPC("FuelControl", "GetSettings", new Param1<FuelControlSettings>(this), true, sender, target);
+      GetRPCManager().SendRPC("IE_FC", "FuelControlSettingsOnSyncRPC", new Param1<FuelControlSettings>(this), true, sender, target);
     }
   }
   
@@ -192,7 +195,9 @@ static ref FuelControlSettings g_FuelControlSettings;
 static ref FuelControlSettings GetFuelControlSettings() {
     if (!g_FuelControlSettings) {
       g_FuelControlSettings = new ref FuelControlSettings();
-      g_FuelControlSettings.Load();
+	  if(GetGame().IsServer()) {
+      	g_FuelControlSettings.Load();
+	  }
 
       Print("[FuelControl] Loaded settings");
     }

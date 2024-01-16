@@ -1,9 +1,9 @@
-class StationPowerSource: House {
+class IE_FC_StationPowerSource: BuildingSuper {
 	
 	protected FuelStationGroup group = null;
-	
-	void StationPowerSource() {
-		Print("Init power source");
+
+	void IE_FC_StationPowerSource() {
+		Print("PowerSource constructor");
 	}
 
 	override bool IsInventoryVisible() {
@@ -56,4 +56,4 @@ class StationPowerSource: House {
 	}
 }
 
-class IEFCElectricBox: StationPowerSource {}
+class IE_FC_ElectricalBox: IE_FC_StationPowerSource {}

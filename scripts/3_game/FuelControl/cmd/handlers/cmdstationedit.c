@@ -60,6 +60,6 @@ class CmdStationEdit extends CmdHandler {
             text = "Could not find the fuel station";
         }
         parameter = new Param2<string, string>(text, "colorStatusChannel");
-        GetRPCManager().SendRPC("FuelControl", "HandleChatMessage", parameter, true, sender);
+        GetRPCManager().SendRPC("IE_FC", "HandleChatMessage", parameter, true, sender);
     }
 }

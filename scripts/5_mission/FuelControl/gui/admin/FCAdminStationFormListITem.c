@@ -174,7 +174,7 @@ class FCAdminStationFormListItem: ScriptedWidgetEventHandler {
 					m_station.id = FuelStationManager.GenId(m_station.name);
 					isNew = true;
 				}
-				GetFuelStationManager().SendUpdateStation(m_station);
+				GetFuelStationManager().UpdateStation(m_station, true);
 				if (isNew) {
 					m_onSelectSubscriber.OnCreate(m_station);
 				} else {
@@ -185,7 +185,7 @@ class FCAdminStationFormListItem: ScriptedWidgetEventHandler {
 				m_currentState = STATE_INFO;
 				UpdateUI();
 			} else if (w == m_ok_del_btn) {
-				GetFuelStationManager().SendDeleteStation(m_station);
+				GetFuelStationManager().DeleteStation(m_station, true);
 			} else if (m_onSelectSubscriber) {
 				m_onSelectSubscriber.OnSelect(m_station);
 			}

@@ -79,6 +79,7 @@ class FuelStationGroup {
 	void SetHasEnergy(bool hasEnergy) {
 		m_hasPower = hasEnergy;
 	}
+	
 }
 
 class FuelStationManager {
@@ -95,7 +96,7 @@ class FuelStationManager {
 	float fullestStationFreeCapacity;
 	int last_save = 0;
 	
-	ref map<string, ref FuelStationGroup> stations = new ref map<string, ref FuelStationGroup>;
+	ref map<string, ref FuelStationGroup> m_stations = new ref map<string, ref FuelStationGroup>;
 	ref array<StationSubscriber> m_subscribers;
 	
 	static string GenId(string seed) {
@@ -110,6 +111,7 @@ class FuelStationManager {
 	}
 
 	void FuelStationManager() {
+		Print("StationManager constructor");
 		if (GetGame().IsServer()) {
 			FuelControlSettings config = GetFuelControlSettings();
 			foreach(auto station: config.stations) {
@@ -122,10 +124,41 @@ class FuelStationManager {
 				} else {
 					id = FuelStationManager.GenId(station.name);
 				}
-				stations[id] = new ref FuelStationGroup(id, station.name, pos, station.capacity * 1000, station.fuel * 1000);
+				m_stations[id] = new FuelStationGroup(id, station.name, pos, station.capacity * 1000, station.fuel * 1000);
 			}
 		}
 		m_subscribers = new array<StationSubscriber>;
+	}
+	
+	void UpdateStation(FuelStationGroup station, bool sync = false) {
+		m_stations.Set(station.id, station);
+		foreach (auto subscriber: m_subscribers) {
+			if (subscriber) {
+				subscriber.OnUpdate(station);
+			}
+		}
+		
+		if (GetGame().IsServer()) {
+			Save();
+		}
+		if (sync) {
+			SyncStation(station, true);
+		}
+	}
+	
+	void DeleteStation(FuelStationGroup station, bool sync = false) {
+		m_stations.Remove(station.id);
+		foreach (auto subscriber: m_subscribers) {
+			if (subscriber) {
+				subscriber.OnDelete(station);
+			}
+		}
+		if (GetGame().IsServer()) {
+			Save();
+		}
+		if (sync) {
+			SyncDeleteStation(station);
+		}
 	}
 	
 	void Subscribe(StationSubscriber subscriber) {
@@ -136,8 +169,8 @@ class FuelStationManager {
 		m_subscribers.RemoveItem(subscriber);
 	}
 	
-	ref FuelStationGroup FindStationForPump(vector pumpLocation) {
-		foreach(auto station: stations){
+	FuelStationGroup FindStationForPump(vector pumpLocation) {
+		foreach(auto station: m_stations){
 			if (station && Math.IsPointInCircle(station.position, STATION_RADIOUS, pumpLocation)) {
 				return station;
 			}
@@ -146,8 +179,8 @@ class FuelStationManager {
 		return null;
 	}
 
-	ref FuelStationGroup FindStationByName(string name) {
-		foreach(auto station: stations){
+	FuelStationGroup FindStationByName(string name) {
+		foreach(auto station: m_stations){
 			if (station && station.name == name) {
 				return station;
 			}
@@ -167,103 +200,99 @@ class FuelStationManager {
 	void _Save() {
 		FuelControlSettings config = GetFuelControlSettings();
 		config.stations = new ref array<ref StationConfig>;
-		foreach(auto id, auto st: stations) {
+		foreach(auto id, auto st: m_stations) {
 			StationConfig stc = new ref StationConfig(st.id, st.position[0], st.position[2], st.name, st.fuelCapacity / 1000, st.fuelAmount / 1000);
 			config.stations.Insert(stc);
 		}
 		config.Save();
 	}
 	
-	void SendRequestAllStations() {
-		auto currentTime = GetGame().GetTime();
-		if (currentTime - lastRequestTime > 1000) {
-			Print("Requesting all stations");
-			GetRPCManager().SendRPC("FuelControl", "RequestAllStations", null, true);
-			lastRequestTime = currentTime;
+	void SyncAll(bool push = false) {
+		if (push) {
+			Print("[FuelControl] Sending update with all stations");
+			JsonSerializer ser = new JsonSerializer;
+			string data;
+			ser.WriteToString(m_stations.GetValueArray(), false, data);
+			GetRPCManager().SendRPC("IE_FC", "FuelStationManagerSyncAll", new Param1<string>(data), true);
+		} else {
+			Print("[FuelControl] Requesting update with all stations");
+			GetRPCManager().SendRPC("IE_FC", "FuelStationManagerSyncAll", null, true);	
 		}
 	}
 	
-	void SendRequestStation(vector position) {
-		auto currentTime = GetGame().GetTime();
-		if (currentTime - lastRequestTime > 1000) {
-			Print("Requestion station at position " + position);
-			GetRPCManager().SendRPC("FuelControl", "RequestStation", new Param1<vector>(position), true);
-			lastRequestTime = currentTime;
-		}
-	}
-	
-	void RequestAllStations( CallType type, ref ParamsReadContext ctx, ref PlayerIdentity sender, ref Object target ) {
-		if (GetGame().IsServer()) {
-			Print("[FuelControl] Client is requesting all stations");
+	void FuelStationManagerSyncAll( CallType type, ref ParamsReadContext ctx, ref PlayerIdentity sender, ref Object target ) {
+		JsonSerializer ser = new JsonSerializer;
+		Param1<string> data;
+		if (ctx.Read(data)) {
+			Print("[FuelControl] Got update with all stations");
+			string error;
+			array<FuelStationGroup> stations = new array<FuelStationGroup>;
+			ser.ReadFromString(stations, data.param1, error);
+			if (error) {
+				Print("ERROR: " + error);
+			}
+			m_stations = new map<string, ref FuelStationGroup>;
 			foreach (auto station: stations) {
-				if (station) {
-					GetRPCManager().SendRPC("FuelControl", "UpdateStation", new Param1<FuelStationGroup>(station), true, sender, target);
-				}
+				m_stations.Set(station.id, station);
 			}
+			if (GetGame().IsServer()) {
+				Save();
+				SyncAll(true);
+			}
+		} else if (GetGame().IsServer()) {
+			Print("[FuelControl] Client is requesting all stations");
+			string dat;
+			ser.WriteToString(m_stations.GetValueArray(), false, dat);
+			GetRPCManager().SendRPC("IE_FC", "FuelStationManagerSyncAll", new Param1<string>(dat), true, sender, target);	
 		}
 	}
 	
-	void RequestStation( CallType type, ref ParamsReadContext ctx, ref PlayerIdentity sender, ref Object target ) {
-		Param1<vector> data;
-		if (GetGame().IsServer() && ctx.Read(data)) {
-			vector position = data.param1;
-			Print("[FuelControl] Client is requesting station for pump at " + position);
-			auto station = FindStationForPump(position);
-			if (station)
-				GetRPCManager().SendRPC("FuelControl", "UpdateStation", new Param1<FuelStationGroup>(station), true, sender, target);
+	void SyncStation(FuelStationGroup station, bool push = false) {
+		Print("[FuelControl] Sending update on station " + station.name);
+		JsonSerializer ser = new JsonSerializer;
+		string data;
+		ser.WriteToString(station, false, data);
+		GetRPCManager().SendRPC("IE_FC", "FuelStationManagerSyncStation", new Param2<string, bool>(data, push), true);
+	}
+	
+	void FuelStationManagerSyncStation( CallType type, ref ParamsReadContext ctx, ref PlayerIdentity sender, ref Object target ) {
+		Param2<string, bool> data;
+		if (ctx.Read(data)) {
+			string error;
+			FuelStationGroup station;
+			JsonSerializer ser = new JsonSerializer;
+			ser.ReadFromString(station, data.param1, error);
+			bool isUpdate = data.param2;
+			if (isUpdate) {
+				Print("[FuelControl] Got update on station " + station.name);
+				UpdateStation(station, GetGame().IsServer());
+			} else {
+				Print("[FuelControl] Got update request on station " + station.name);
+				GetRPCManager().SendRPC("IE_FC", "FuelStationManagerSyncStation", new Param2<string, bool>(data.param1, true), true, sender, target);
+			}
+		} else {
+			Print("[FuelControl] We can't sync a station if there is no information about a station. Likely a bug");
 		}
 	}
 	
-	void SendUpdateStation(FuelStationGroup station) {
-		Print("Sending update on station " + station.name + " to server");
-		stations[station.id] = new ref FuelStationGroup(station.id, station.name, station.position, station.fuelCapacity, station.fuelAmount);
-		foreach (auto subscriber: m_subscribers) {
-			if (subscriber) {
-				subscriber.OnUpdate(stations[station.id]);
-			}
-		}
-		GetRPCManager().SendRPC("FuelControl", "UpdateStation", new Param1<FuelStationGroup>(station), true);
-	}
-	
-	void UpdateStation( CallType type, ref ParamsReadContext ctx, ref PlayerIdentity sender, ref Object target ) {
-		Param1<FuelStationGroup> data;
-
-		if (ctx.Read(data) && data.param1) {
-			ref FuelStationGroup station = data.param1;			
-			Print("[FuelControl] Got update on station " + station.name);
-			stations[station.id] = station;
-			foreach (auto subscriber: m_subscribers) {
-				if (subscriber) {
-					subscriber.OnUpdate(stations[station.id]);
-				}
-			}
-			Save();
-		}
-	}
-	
-	void SendDeleteStation(FuelStationGroup station) {
-		stations.Remove(station.id);
-		foreach (auto subscriber: m_subscribers) {
-			if (subscriber) {
-				subscriber.OnDelete(station);
-			}
-		}
-		Print("Sending delete request for station " + station.name + " to server");
-		GetRPCManager().SendRPC("FuelControl", "DeleteStation", new Param1<FuelStationGroup>(station), true);
+	void SyncDeleteStation(FuelStationGroup station) {
+		Print("[FuelControl] Sending delete request for station " + station.name);
+		JsonSerializer ser = new JsonSerializer;
+		string data;
+		ser.WriteToString(station, false, data);
+		GetRPCManager().SendRPC("IE_FC", "FuelStationManagerSyncDeleteStation", new Param1<string>(data), true);
 	}
 
-	void DeleteStation( CallType type, ref ParamsReadContext ctx, ref PlayerIdentity sender, ref Object target ) {
-		Param1<FuelStationGroup> data;
+	void FuelStationManagerSyncDeleteStation( CallType type, ref ParamsReadContext ctx, ref PlayerIdentity sender, ref Object target ) {
+		Param1<string> data;
 
-		if (ctx.Read(data) && data.param1) {
-			FuelStationGroup station = data.param1;			
+		if (ctx.Read(data)) {
+			FuelStationGroup station = new FuelStationGroup("", "", "0 0 0", 0, 0);
+			JsonSerializer ser = new JsonSerializer;
+			string error;
+			ser.ReadFromString(station, data.param1, error);
 			Print("[FuelControl] Got delete request for station " + station.name);
-			stations.Remove(station.id);
-			foreach (auto subscriber: m_subscribers) {
-				if (subscriber) {
-					subscriber.OnDelete(station);
-				}
-			}
+			DeleteStation(station, GetGame().IsServer());
 		}
 		
 		Save();
@@ -273,7 +302,7 @@ class FuelStationManager {
 		totalFuel = 0;
 		totalCapacity = 0;
 
-		foreach(auto station: stations) {
+		foreach(auto station: m_stations) {
             if (totalFuel != -1) {
                 if (station.GetFuel() >= 0) {
                     totalFuel = totalFuel + station.GetFuel();
@@ -307,7 +336,7 @@ class FuelStationManager {
 		// }
 
 		ref array<ref FuelStationGroup> filteredStations = new ref array<ref FuelStationGroup>;
-		foreach(auto station: stations) {
+		foreach(auto station: m_stations) {
 			float availableCapacity = station.AvailableCapacity();
 			if (availableCapacity == -1 || availableCapacity > 0) {
 				filteredStations.Insert(station);

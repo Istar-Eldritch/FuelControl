@@ -21,7 +21,7 @@ class CmdStationList extends CmdHandler {
             maxFuel = sMaxFuel.ToFloat();
         }
 
-        foreach(auto station: GetFuelStationManager().stations) {
+        foreach(auto station: GetFuelStationManager().m_stations) {
             float fuel = station.GetFuel();
             bool hasMinFuel = fuel == -1 || fuel >= minFuel;
             bool hasMaxFuel = maxFuel == -1 || fuel <= maxFuel;
@@ -31,7 +31,7 @@ class CmdStationList extends CmdHandler {
 			}
             if (hasMinFuel && hasMaxFuel && matchesName) {
                 parameter = new Param2<string, string>(station.name + ": " + fuel + "L", "colorStatusChannel");
-                GetRPCManager().SendRPC("FuelControl", "HandleChatMessage", parameter, true, sender);
+                GetRPCManager().SendRPC("IE_FC", "HandleChatMessage", parameter, true, sender);
             }
         }
     }

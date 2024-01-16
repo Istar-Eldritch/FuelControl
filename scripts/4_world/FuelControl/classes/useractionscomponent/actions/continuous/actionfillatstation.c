@@ -107,7 +107,8 @@ class ActionFillAtStation : ActionContinuousBase {
 						float dist = vector.DistanceSq(refillPointPos, player.GetPosition() );
 						float distanceFuel = carS.GetActionDistanceFuel() * carS.GetActionDistanceFuel();
 						if(dist < distanceFuel) {
-							GetFuelStationManager().SendRequestStation(refillPointPos);
+							FuelStationManager manager = GetFuelStationManager();
+							manager.FindStationForPump(refillPointPos);
 							CheckNearbyStations(refillPointPos);
 							return nearbyStation;		
 						}
@@ -116,7 +117,6 @@ class ActionFillAtStation : ActionContinuousBase {
 			}
 		} else if (config.settings.pump_barrel_refueling && barrel && barrel.IsOpen() && Liquid.CanFillContainer(barrel, LIQUID_GASOLINE)) {
 			refillPointPos = barrel.GetPosition();
-			GetFuelStationManager().SendRequestStation(refillPointPos);
 			CheckNearbyStations(refillPointPos);
 			return nearbyStation;	
 		}

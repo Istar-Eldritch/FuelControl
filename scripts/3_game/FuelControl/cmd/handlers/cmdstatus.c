@@ -17,7 +17,7 @@ class CmdStatus extends CmdHandler {
             fuel = "Infinite";
         }
         parameter = new Param2<string, string>("Total fuel available: " + fuel, "colorStatusChannel");
-        GetRPCManager().SendRPC("FuelControl", "HandleChatMessage", parameter, true, sender);
+        GetRPCManager().SendRPC("IE_FC", "HandleChatMessage", parameter, true, sender);
 
         string capacity;
         if (manager.totalCapacity >= 0) {
@@ -26,12 +26,12 @@ class CmdStatus extends CmdHandler {
             capacity = "Infinite";
         }
         parameter = new Param2<string, string>("Total capacity available: " + capacity, "colorStatusChannel");
-        GetRPCManager().SendRPC("FuelControl", "HandleChatMessage", parameter, true, sender);
+        GetRPCManager().SendRPC("IE_FC", "HandleChatMessage", parameter, true, sender);
 
         if (manager.totalFuel >= 0 && manager.totalCapacity > 0) {
 			float percentage = manager.totalFuel / manager.totalCapacity * 100;
             parameter = new Param2<string, string>("Reserves are at " + Math.Round(percentage) + "%", "colorStatusChannel");
-            GetRPCManager().SendRPC("FuelControl", "HandleChatMessage", parameter, true, sender);
+            GetRPCManager().SendRPC("IE_FC", "HandleChatMessage", parameter, true, sender);
         }
     }
 }

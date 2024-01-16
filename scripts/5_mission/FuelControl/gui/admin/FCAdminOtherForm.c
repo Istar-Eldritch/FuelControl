@@ -34,7 +34,6 @@ class FCAdminOtherForm: ScriptedWidgetEventHandler {
 		m_pumps_require_electricity = CheckBoxWidget.Cast(layoutRoot.FindAnyWidget("pumps_require_electricity"));
 		m_pump_consumption_edit = EditBoxWidget.Cast(layoutRoot.FindAnyWidget("pump_consumption_edit"));
 		m_submit = ButtonWidget.Cast(layoutRoot.FindAnyWidget("submit"));
-		GetFuelControlSettings().SyncSettings();
 		UpdateUI();
 	}
 	

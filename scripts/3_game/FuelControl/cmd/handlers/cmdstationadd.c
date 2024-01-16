@@ -7,7 +7,7 @@ class CmdStationAdd extends CmdHandler {
         Param2<string, string> parameter;
         if (cmd.positional.Count() == 3) {
             parameter = new Param2<string, string>("The name of the station must be provided", "colorStatusChannel");
-            GetRPCManager().SendRPC("FuelControl", "HandleChatMessage", parameter, true, sender);
+            GetRPCManager().SendRPC("IE_FC", "HandleChatMessage", parameter, true, sender);
             return;
         }
 		
@@ -47,7 +47,7 @@ class CmdStationAdd extends CmdHandler {
         station = manager.FindStationByName(stationName);
         if (station) {
             parameter = new Param2<string, string>("A station with that name already exists", "colorStatusChannel");
-            GetRPCManager().SendRPC("FuelControl", "HandleChatMessage", parameter, true, sender);
+            GetRPCManager().SendRPC("IE_FC", "HandleChatMessage", parameter, true, sender);
             return;
         }
 
@@ -55,7 +55,7 @@ class CmdStationAdd extends CmdHandler {
         station = GetFuelStationManager().FindStationForPump(vpos);
         if (station) {
             parameter = new Param2<string, string>("A station in this position already exists: " + station.name, "colorStatusChannel");
-            GetRPCManager().SendRPC("FuelControl", "HandleChatMessage", parameter, true, sender);
+            GetRPCManager().SendRPC("IE_FC", "HandleChatMessage", parameter, true, sender);
             return;
         }
 		
@@ -63,10 +63,9 @@ class CmdStationAdd extends CmdHandler {
 		string id = FuelStationManager.GenId(stationName);
         station = new ref FuelStationGroup(id, stationName, vpos, -1 * 1000, -1 * 1000);
 
-        manager.stations.Insert(id, station);
-        manager.Save();
+		manager.UpdateStation(station, true);
         parameter = new Param2<string, string>("Station " + station.name + " added", "colorStatusChannel");
         
-        GetRPCManager().SendRPC("FuelControl", "HandleChatMessage", parameter, true, sender);
+        GetRPCManager().SendRPC("IE_FC", "HandleChatMessage", parameter, true, sender);
     }
 }

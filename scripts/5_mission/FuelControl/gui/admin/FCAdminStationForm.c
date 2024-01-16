@@ -109,7 +109,7 @@ class FCAdminStationForm: ScriptedWidgetEventHandler {
 	void OnInit() {
 		m_children = new array<ref FCAdminStationFormListItem>;
 		m_stationManager = GetFuelStationManager();
-		m_stations = m_stationManager.stations.GetValueArray();
+		m_stations = m_stationManager.m_stations.GetValueArray();
 		m_subscriber = FCAdminStationFormSubscriber(this);
 		m_stationManager.Subscribe(m_subscriber);
 
@@ -125,7 +125,6 @@ class FCAdminStationForm: ScriptedWidgetEventHandler {
 		m_filterBox = EditBoxWidget.Cast(layoutRoot.FindAnyWidget("filter_box"));
 
 		CheckLoop();
-		m_stationManager.SendRequestAllStations();
 	}
 	
 	void FilterStations() {
@@ -219,7 +218,7 @@ class FCAdminStationForm: ScriptedWidgetEventHandler {
 			m_filterBox.ClearFlags(WidgetFlags.DISABLED);
 		}
 
-		m_stations = m_stationManager.stations.GetValueArray();
+		m_stations = m_stationManager.m_stations.GetValueArray();
 		FilterStations();
 		SortStations();
 		foreach (auto station: m_stations) {

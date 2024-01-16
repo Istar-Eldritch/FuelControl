@@ -3,13 +3,12 @@ modded class MissionBase {
   void MissionBase() {
     Print("[FuelControl] Creating mission base");
     FuelControlSettings settings = GetFuelControlSettings();
-    GetRPCManager().AddRPC("FuelControl", "GetSettings", settings, SingleplayerExecutionType.Both);
+    GetRPCManager().AddRPC("IE_FC", "FuelControlSettingsOnSyncRPC", settings, SingleplayerExecutionType.Both);
 
     FuelStationManager manager = GetFuelStationManager();
-    GetRPCManager().AddRPC("FuelControl", "UpdateStation", manager, SingleplayerExecutionType.Both);
-    GetRPCManager().AddRPC("FuelControl", "RequestStation", manager, SingleplayerExecutionType.Both);
-    GetRPCManager().AddRPC("FuelControl", "RequestAllStations", manager, SingleplayerExecutionType.Both);
-    GetRPCManager().AddRPC("FuelControl", "DeleteStation", manager, SingleplayerExecutionType.Both);
+    GetRPCManager().AddRPC("IE_FC", "FuelStationManagerSyncStation", manager, SingleplayerExecutionType.Both);
+    GetRPCManager().AddRPC("IE_FC", "FuelStationManagerSyncAll", manager, SingleplayerExecutionType.Both);
+    GetRPCManager().AddRPC("IE_FC", "FuelStationManagerSyncDeleteStation", manager, SingleplayerExecutionType.Both);
 
     CmdManager cmdManager = GetCmdManager();
     cmdManager.RegisterHandler(new ref CmdStationAdd());
@@ -21,14 +20,15 @@ modded class MissionBase {
     cmdManager.RegisterHandler(new ref CmdStatus());
     cmdManager.RegisterHandler(new ref CmdSpawn());
 
-    GetRPCManager().AddRPC("FuelControl", "HandleChatCommand", cmdManager, SingleplayerExecutionType.Both);
-    GetRPCManager().AddRPC("FuelControl", "HandleChatMessage", cmdManager, SingleplayerExecutionType.Both);
+    GetRPCManager().AddRPC("IE_FC", "HandleChatCommand", cmdManager, SingleplayerExecutionType.Both);
+    GetRPCManager().AddRPC("IE_FC", "HandleChatMessage", cmdManager, SingleplayerExecutionType.Both);
 
     FCTeleportManager teleportManager = FCGetTeleportManager();
-    GetRPCManager().AddRPC("FuelControl", "TeleportToStation", teleportManager, SingleplayerExecutionType.Both);
+    GetRPCManager().AddRPC("IE_FC", "TeleportToStation", teleportManager, SingleplayerExecutionType.Both);
 
     if (GetGame().IsClient()) {
       settings.SyncSettings();
+	  manager.SyncAll();
     }
 
     if (GetGame().IsServer()) {

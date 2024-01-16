@@ -31,7 +31,7 @@ class CmdStationInfo extends CmdHandler {
 			Print("[FuelControl] Executing station info for " + station.name);
 
             parameter = new Param2<string, string>("Name: " + station.name, "colorStatusChannel");
-            GetRPCManager().SendRPC("FuelControl", "HandleChatMessage", parameter, true, sender);
+            GetRPCManager().SendRPC("IE_FC", "HandleChatMessage", parameter, true, sender);
 
             string amount;
             if (station.fuelAmount >= 0) {
@@ -41,7 +41,7 @@ class CmdStationInfo extends CmdHandler {
                 amount = "Infinite";
             }
             parameter = new Param2<string, string>("Fuel Available: " + amount, "colorStatusChannel");
-            GetRPCManager().SendRPC("FuelControl", "HandleChatMessage", parameter, true, sender);
+            GetRPCManager().SendRPC("IE_FC", "HandleChatMessage", parameter, true, sender);
 
             string capacity;
             if (station.fuelCapacity >= 0) {
@@ -51,7 +51,7 @@ class CmdStationInfo extends CmdHandler {
                 capacity = "Infinite";
             }
             parameter = new Param2<string, string>("Fuel capacity: " + capacity, "colorStatusChannel");
-            GetRPCManager().SendRPC("FuelControl", "HandleChatMessage", parameter, true, sender);
+            GetRPCManager().SendRPC("IE_FC", "HandleChatMessage", parameter, true, sender);
 
             string availableCapacity;
             float availableCap = station.AvailableCapacity();
@@ -61,11 +61,11 @@ class CmdStationInfo extends CmdHandler {
                 availableCapacity = "Infinite";
             }
             parameter = new Param2<string, string>("Available capacity: " + availableCapacity, "colorStatusChannel");
-            GetRPCManager().SendRPC("FuelControl", "HandleChatMessage", parameter, true, sender);
+            GetRPCManager().SendRPC("IE_FC", "HandleChatMessage", parameter, true, sender);
 
         } else {
             parameter = new Param2<string, string>("Could not find the station", "colorStatusChannel");
-            GetRPCManager().SendRPC("FuelControl", "HandleChatMessage", parameter, true, sender);
+            GetRPCManager().SendRPC("IE_FC", "HandleChatMessage", parameter, true, sender);
         }
 
     }

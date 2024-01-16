@@ -15,10 +15,10 @@ class CmdSpawn extends CmdHandler {
             amount = samount.ToFloat();
             manager.Spawn(amount);
             parameter = new Param2<string, string>("Done", "colorStatusChannel");
-            GetRPCManager().SendRPC("FuelControl", "HandleChatMessage", parameter, true, sender);
+            GetRPCManager().SendRPC("IE_FC", "HandleChatMessage", parameter, true, sender);
         } else {
             parameter = new Param2<string, string>("The amount of fuel to be spawned must be provided", "colorStatusChannel");
-            GetRPCManager().SendRPC("FuelControl", "HandleChatMessage", parameter, true, sender);
+            GetRPCManager().SendRPC("IE_FC", "HandleChatMessage", parameter, true, sender);
         }
 		
     }

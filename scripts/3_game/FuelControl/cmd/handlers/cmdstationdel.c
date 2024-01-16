@@ -28,13 +28,12 @@ class CmdStationDel extends CmdHandler {
         string text;
         if (station) {
 			Print("[FuelControl] Executing station del for " + station.name);
-            manager.stations.Remove(station.name);
-            manager.Save();
+			manager.DeleteStation(station, true);
             text = "Station " + station.name + " deleted";
         } else {
             text = "Could not find the station";
         }
         auto parameter = new Param2<string, string>(text, "colorStatusChannel");
-        GetRPCManager().SendRPC("FuelControl", "HandleChatMessage", parameter, true, sender);
+        GetRPCManager().SendRPC("IE_FC", "HandleChatMessage", parameter, true, sender);
     }
 }

@@ -33,7 +33,6 @@ class ActionMeasureFuel: ActionSingleUseBase {
         }
 		
 		if ( station && item ) {
-			GetFuelStationManager().SendRequestStation(target.GetObject().GetPosition());
 			return true;
 		}
 
