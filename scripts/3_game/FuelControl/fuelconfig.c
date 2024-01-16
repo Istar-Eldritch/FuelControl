@@ -2,14 +2,16 @@ class StationConfig {
   string id;
   float x;
   float y;
+  float orientation;
   string name;
   float fuel = -1; // If negative then there is no limit on this station
   float capacity = -1;
 
-  void StationConfig(string _id, float xx, float yy, string _name, float _capacity, float _fuel) {
+  void StationConfig(string _id, float xx, float yy, string _name, float _capacity, float _fuel, float _orientation) {
 	id = _id;
     x = xx;
     y = yy;
+	orientation = _orientation;
     name = _name;
     fuel = _fuel;
     capacity = _capacity;
@@ -146,8 +148,8 @@ class FuelControlSettings {
   }
 	
   void DefaultStations() {
-    stations.Insert(new ref StationConfig(FuelStationManager.GenId("Cherno West"), 5861, 2210, "Cherno West", -1, -1));
-    stations.Insert(new ref StationConfig(FuelStationManager.GenId("Cherno East"), 6872, 3092, "Cherno East", -1, -1));
+    stations.Insert(new ref StationConfig(FuelStationManager.GenId("Cherno West"), 5861, 2210, "Cherno West", -1, -1, 0));
+    stations.Insert(new ref StationConfig(FuelStationManager.GenId("Cherno East"), 6872, 3092, "Cherno East", -1, -1, 0));
     Print("[FuelControl] Stations file doesn't exist, creating one");
     JsonFileLoader<array<ref StationConfig>>.JsonSaveFile(STATIONS_PATH, stations);
   }

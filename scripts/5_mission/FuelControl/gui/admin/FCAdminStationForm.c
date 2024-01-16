@@ -262,7 +262,10 @@ class FCAdminStationForm: ScriptedWidgetEventHandler {
 	override bool OnClick(Widget w, int x, int y, int button) {
 		if (w == m_newBtn) {
 			string id;
-			m_newStation = new FuelStationGroup(id, "New station", GetGame().GetPlayer().GetWorldPosition(), -1, -1);
+			DayZPlayer player = GetGame().GetPlayer();
+			vector position = player.GetWorldPosition();
+			vector orientation = player.GetOrientation();
+			m_newStation = new FuelStationGroup(id, "New station", position, -1, -1, orientation[0]);
 			m_selectedStation = m_newStation;
 			m_filterBox.SetText("");
 			UpdateUI();

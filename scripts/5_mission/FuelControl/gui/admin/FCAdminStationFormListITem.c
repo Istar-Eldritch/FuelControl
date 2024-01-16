@@ -5,6 +5,7 @@ class FCAdminStationFormListItem: ScriptedWidgetEventHandler {
 	protected ref TextWidget m_name_txt;
 	protected ref TextWidget m_location_x_txt;
 	protected ref TextWidget m_location_y_txt;
+	protected ref TextWidget m_orientation_txt;
 	protected ref TextWidget m_capacity_txt;
 	protected ref TextWidget m_available_txt;
 	protected ref ButtonWidget m_tp_btn;
@@ -15,6 +16,7 @@ class FCAdminStationFormListItem: ScriptedWidgetEventHandler {
 	protected ref EditBoxWidget m_name_edit;
 	protected ref EditBoxWidget m_location_x_edit;
 	protected ref EditBoxWidget m_location_y_edit;
+	protected ref EditBoxWidget m_orientation_edit;
 	protected ref EditBoxWidget m_capacity_edit;
 	protected ref EditBoxWidget m_available_edit;
 	protected ref ButtonWidget m_ok_edit_btn;
@@ -54,6 +56,7 @@ class FCAdminStationFormListItem: ScriptedWidgetEventHandler {
 		m_available_txt = TextWidget.Cast(layoutRoot.FindAnyWidget("available_txt"));
 		m_location_x_txt = TextWidget.Cast(layoutRoot.FindAnyWidget("location_x_txt"));
 		m_location_y_txt = TextWidget.Cast(layoutRoot.FindAnyWidget("location_y_txt"));
+		m_orientation_txt = TextWidget.Cast(layoutRoot.FindAnyWidget("orientation_txt"));
 		m_tp_btn = ButtonWidget.Cast(layoutRoot.FindAnyWidget("tp_btn"));
 		m_edit_btn = ButtonWidget.Cast(layoutRoot.FindAnyWidget("edit_btn"));
 		m_del_btn = ButtonWidget.Cast(layoutRoot.FindAnyWidget("del_btn"));
@@ -64,6 +67,7 @@ class FCAdminStationFormListItem: ScriptedWidgetEventHandler {
 		m_available_edit = EditBoxWidget.Cast(layoutRoot.FindAnyWidget("available_edit"));
 		m_location_x_edit = EditBoxWidget.Cast(layoutRoot.FindAnyWidget("location_x_edit"));
 		m_location_y_edit = EditBoxWidget.Cast(layoutRoot.FindAnyWidget("location_y_edit"));
+		m_orientation_edit = EditBoxWidget.Cast(layoutRoot.FindAnyWidget("orientation_edit"));
 		m_ok_edit_btn = ButtonWidget.Cast(layoutRoot.FindAnyWidget("ok_edit_btn"));
 		m_cancel_edit_btn = ButtonWidget.Cast(layoutRoot.FindAnyWidget("cancel_edit_btn"));
 		
@@ -99,6 +103,7 @@ class FCAdminStationFormListItem: ScriptedWidgetEventHandler {
 		
 		m_location_x_txt.SetText("" + m_station.position[0]);
 		m_location_y_txt.SetText("" + m_station.position[2]);
+		m_orientation_txt.SetText("" + m_station.m_orientation);
 	}
 	
 	void _SetupEditPanel() {
@@ -123,6 +128,7 @@ class FCAdminStationFormListItem: ScriptedWidgetEventHandler {
 
 		m_location_x_edit.SetText("" + m_station.position[0]);
 		m_location_y_edit.SetText("" + m_station.position[2]);
+		m_orientation_edit.SetText("" + m_station.m_orientation);
 	}
 	
 	void _SetupDelPanel() {
@@ -167,6 +173,7 @@ class FCAdminStationFormListItem: ScriptedWidgetEventHandler {
 				v[1] = 0;
 				v[2] = m_location_y_edit.GetText().ToInt();
 				m_station.position = v;
+				m_station.m_orientation = m_orientation_edit.GetText().ToFloat();
 				m_station.fuelCapacity = m_capacity_edit.GetText().ToInt() * 1000;
 				m_station.fuelAmount = m_available_edit.GetText().ToInt() * 1000;
 				bool isNew = false;
