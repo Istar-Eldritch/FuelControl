@@ -1,11 +1,32 @@
 class IE_FC_StationPowerSource: BuildingSuper {
 	
-	protected FuelStationGroup group = null;
 
 	void IE_FC_StationPowerSource() {
-		Print("PowerSource constructor");
+		if (GetGame().IsServer()) {
+			FuelStationManager groupManager = GetFuelStationManager();
+			FuelStationGroup station = groupManager.FindStationForPump(GetPosition());
+			if (station) {
+				auto existing = station.GetPowerSource();
+				if (existing) {
+					Delete();
+				} else {
+					GetGame().GetCallQueue(CALL_CATEGORY_SYSTEM).Call(PlaceOnStationPoint);
+				}
+			}
+		}
 	}
-
+	
+	void PlaceOnStationPoint() {
+		FuelStationManager groupManager = GetFuelStationManager();
+		FuelStationGroup station = groupManager.FindStationForPump(GetPosition());
+		if (station) {
+			SetPosition(FCTeleportManager.SnapToGround(station.position));
+			vector orientation = "0 0 0";
+			orientation[0] = station.m_orientation;
+			SetOrientation(orientation);
+		}
+	}
+	
 	override bool IsInventoryVisible() {
 		return true;
 	}
@@ -21,28 +42,6 @@ class IE_FC_StationPowerSource: BuildingSuper {
 	override bool CanPutInCargo(EntityAI parent) {
 		return true;
 	}
-
-    override void OnSwitchOn() {
-		FuelControlSettings settings =  GetFuelControlSettings();
-	}
-	
-	override void OnWorkStart() {
-		if (!group) {
-			FuelStationManager groupManager = GetFuelStationManager();
-			group = groupManager.FindStationForPump(this.GetPosition());
-		}
-		if (group)
-			group.SetHasEnergy(true);
-	}
-	
-	override void OnWorkStop() {
-		if (!group) {
-			FuelStationManager groupManager = GetFuelStationManager();
-			group = groupManager.FindStationForPump(this.GetPosition());
-		}
-		if (group)
-			group.SetHasEnergy(false);
-	}
 	
 	override bool IsElectricAppliance() {
 		return true;
@@ -51,8 +50,8 @@ class IE_FC_StationPowerSource: BuildingSuper {
 	override void SetActions()
 	{
 		super.SetActions();
-		AddAction(IEActionTurnOn);
-		AddAction(IEActionTurnOff);
+		RemoveAction(IEActionTurnOn);
+		RemoveAction(IEActionTurnOff);
 	}
 }
 

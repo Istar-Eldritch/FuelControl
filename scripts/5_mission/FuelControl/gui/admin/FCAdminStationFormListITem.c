@@ -169,13 +169,13 @@ class FCAdminStationFormListItem: ScriptedWidgetEventHandler {
 			} else if (w == m_ok_edit_btn) {
 				m_station.name = m_name_edit.GetText();
 				auto v = m_station.position;
-				v[0] = m_location_x_edit.GetText().ToInt();
+				v[0] = m_location_x_edit.GetText().ToFloat();
 				v[1] = 0;
-				v[2] = m_location_y_edit.GetText().ToInt();
+				v[2] = m_location_y_edit.GetText().ToFloat();
 				m_station.position = v;
 				m_station.m_orientation = m_orientation_edit.GetText().ToFloat();
-				m_station.fuelCapacity = m_capacity_edit.GetText().ToInt() * 1000;
-				m_station.fuelAmount = m_available_edit.GetText().ToInt() * 1000;
+				m_station.fuelCapacity = m_capacity_edit.GetText().ToFloat() * 1000;
+				m_station.fuelAmount = m_available_edit.GetText().ToFloat() * 1000;
 				bool isNew = false;
 				if (!m_station.id) {
 					m_station.id = FuelStationManager.GenId(m_station.name);

@@ -15,9 +15,10 @@ class FuelStationGroup {
 	float fuelCapacity;
 	// fuel amount in ml
 	float fuelAmount;
-	bool m_hasPower;
 	// Used to rotate the power source
 	float m_orientation;
+	
+	array<int> m_source_id;
 		
 	void FuelStationGroup(string _id, string _name, vector pos, float fuelCap, float fuel, float orientation) {
 		id = _id;
@@ -25,8 +26,8 @@ class FuelStationGroup {
 		position = pos;
 		fuelCapacity = fuelCap;
 		fuelAmount = fuel;
-		m_hasPower = false;
 		m_orientation = orientation;
+		m_source_id = null;
 	}
 
 	// Returns the amount of fuel in this station (in Liters)
@@ -63,6 +64,13 @@ class FuelStationGroup {
 				fuelAmount = 0;
 			}
 		}
+		
+		auto source = GetPowerSource();
+		if (source) {
+			auto consumption = GetFuelControlSettings().settings.pump_consumption;
+			source.GetCompEM().ConsumeEnergy(consumption * quantity / 1000);
+			
+		}
 	}
 
 	// Add the provided quantity of fuel (in Liters)
@@ -75,12 +83,28 @@ class FuelStationGroup {
 		}
 	}
 	
-	bool HasEnergy() {
-		return m_hasPower;
+	bool HasEnergy(float amount = -1) {
+		auto source = GetPowerSource();
+		if (amount == -1) {
+			amount = GetFuelControlSettings().settings.pump_consumption;
+		}
+		if (source) {
+			return source.GetCompEM().CanWork(amount);
+		}
+		return false;
 	}
-
-	void SetHasEnergy(bool hasEnergy) {
-		m_hasPower = hasEnergy;
+	
+	IE_FC_StationPowerSource GetPowerSource() {
+		autoptr auto objects = new array<Object>;
+		autoptr auto proxycargos = new array<CargoBase>;
+		GetGame().GetObjectsAtPosition(position, FuelStationManager.STATION_RADIOUS, objects, proxycargos);
+		foreach(auto object : objects) {
+			IE_FC_StationPowerSource source = IE_FC_StationPowerSource.Cast(object);
+			if (source) {
+				return source;
+			}
+		}
+		return null;
 	}
 	
 }
@@ -134,15 +158,23 @@ class FuelStationManager {
 	}
 	
 	void UpdateStation(FuelStationGroup station, bool sync = false) {
+		auto old = m_stations.Get(station.id);
 		m_stations.Set(station.id, station);
 		foreach (auto subscriber: m_subscribers) {
 			if (subscriber) {
 				subscriber.OnUpdate(station);
 			}
 		}
-		
+
 		if (GetGame().IsServer()) {
 			Save();
+			auto powersource = station.GetPowerSource();
+			if (powersource) {
+				powersource.SetPosition(FCTeleportManager.SnapToGround(station.position));
+				vector orientation = "0 0 0";
+				orientation[0] = station.m_orientation;
+				powersource.SetOrientation(orientation);
+			}
 		}
 		if (sync) {
 			SyncStation(station, true);
@@ -224,29 +256,14 @@ class FuelStationManager {
 	}
 	
 	void FuelStationManagerSyncAll( CallType type, ref ParamsReadContext ctx, ref PlayerIdentity sender, ref Object target ) {
-		JsonSerializer ser = new JsonSerializer;
-		Param1<string> data;
-		if (ctx.Read(data)) {
-			Print("[FuelControl] Got update with all stations");
-			string error;
-			array<FuelStationGroup> stations = new array<FuelStationGroup>;
-			ser.ReadFromString(stations, data.param1, error);
-			if (error) {
-				Print("ERROR: " + error);
-			}
-			m_stations = new map<string, ref FuelStationGroup>;
-			foreach (auto station: stations) {
-				m_stations.Set(station.id, station);
-			}
-			if (GetGame().IsServer()) {
-				Save();
-				SyncAll(true);
-			}
-		} else if (GetGame().IsServer()) {
+		if (GetGame().IsServer()) {
 			Print("[FuelControl] Client is requesting all stations");
-			string dat;
-			ser.WriteToString(m_stations.GetValueArray(), false, dat);
-			GetRPCManager().SendRPC("IE_FC", "FuelStationManagerSyncAll", new Param1<string>(dat), true, sender, target);	
+			JsonSerializer ser = new JsonSerializer;
+			foreach (auto id, auto station: m_stations) {
+				string data;
+				ser.WriteToString(station, false, data);
+				GetRPCManager().SendRPC("IE_FC", "FuelStationManagerSyncStation", new Param2<string, bool>(data, true), true, sender, target);	
+			}
 		}
 	}
 	

@@ -55,20 +55,14 @@ class CfgVehicles {
 		displayName="Electric Box";
 		descriptionShort="Allows to power fuel stations";
 		model="FuelControl\GUI\models\IE_FC_ElectricalBox_Model.p3d";
-    rotationFlags=2;
-		slopeTolerance=0.40000001;
-		yawPitchRollLimit[]={45,45,45};
-		weight=45000;
-		itemSize[]={1,1};
-		itemBehaviour=0;
 		class EnergyManager
 		{
 			hasIcon=1;
-			autoSwitchOff=1;
 			attachmentAction=1;
-			energyUsagePerSecond=2;
+			energyUsagePerSecond=0.00001;
+			switchOnAtSpawn=1;
 			cordTextureFile="DZ\gear\camping\Data\plug_black_CO.paa";
-      updateInterval=1;
+      		updateInterval=1;
 		};
     class DamageSystem
 		{

@@ -2,7 +2,7 @@ class StationConfig {
   string id;
   float x;
   float y;
-  float orientation;
+  float orientation = 0;
   string name;
   float fuel = -1; // If negative then there is no limit on this station
   float capacity = -1;
