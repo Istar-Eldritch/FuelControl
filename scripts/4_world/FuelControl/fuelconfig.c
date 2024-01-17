@@ -7,14 +7,29 @@ class StationConfig {
   float fuel = -1; // If negative then there is no limit on this station
   float capacity = -1;
 
-  void StationConfig(string _id, float xx, float yy, string _name, float _capacity, float _fuel, float _orientation) {
+  void StationConfig(string _id, float xx, float yy, string _name, float _capacity, float _fuel) {
+	id = _id;
+    x = xx;
+    y = yy;
+    name = _name;
+    fuel = _fuel;
+    capacity = _capacity;
+  }
+}
+
+class IE_FC_PowerBoxConfig {
+  string id;
+  float x;
+  float y;
+  float orientation = 0;
+  string name;
+
+  void IE_FC_PowerBoxConfig(string _id, float xx, float yy, float _orientation, string _name) {
 	id = _id;
     x = xx;
     y = yy;
 	orientation = _orientation;
     name = _name;
-    fuel = _fuel;
-    capacity = _capacity;
   }
 }
 
@@ -41,11 +56,13 @@ class FuelControlSettings {
   static private const string DIR_PATH = "$profile:FuelControl";
   static private const string SETTINGS_PATH = DIR_PATH + "\\settings.json";
   static private const string STATIONS_PATH = DIR_PATH + "\\stations.json";
+  static private const string POWER_BOX_PATH = DIR_PATH + "\\power_boxes.json";
   static private const string VEHICLE_AUTONOMY_PATH = DIR_PATH + "\\vehicle_autonomy.json";
   static private const string LIQUID_TRANSFER_RATES_PATH = DIR_PATH + "\\liquid_transfer_rates.json";
   
   ref FCSettings settings = new ref FCSettings();
   ref array<ref StationConfig> stations = new ref array<ref StationConfig>;
+  ref array<ref IE_FC_PowerBoxConfig> power_boxes = new ref array<ref IE_FC_PowerBoxConfig>;
   ref map<string, float> vehicle_autonomy = new ref map<string, float>;
   ref map<string, float> liquid_transfer_rates = new ref map<string, float>;
   
@@ -66,6 +83,13 @@ class FuelControlSettings {
       JsonFileLoader<array<ref StationConfig>>.JsonLoadFile(STATIONS_PATH, stations );
     } else if (GetGame().IsServer()) { //File does not exist use default settings and create file.
       DefaultStations();
+    }
+		
+	if (FileExist(POWER_BOX_PATH)){ //If config exist load File
+      Print("[FuelControl] Loading power box configuration");
+      JsonFileLoader<array<ref IE_FC_PowerBoxConfig>>.JsonLoadFile(POWER_BOX_PATH, power_boxes );
+    } else if (GetGame().IsServer()) { //File does not exist use default settings and create file.
+      DefaultPowerBoxes();
     }
 		
 	if (FileExist(VEHICLE_AUTONOMY_PATH)){ //If config exist load File
@@ -89,6 +113,7 @@ class FuelControlSettings {
 		JsonFileLoader<FCSettings>.JsonSaveFile(SETTINGS_PATH, settings);
 		JsonFileLoader<map<string, float>>.JsonSaveFile(VEHICLE_AUTONOMY_PATH, vehicle_autonomy);
 		JsonFileLoader<map<string, float>>.JsonSaveFile(LIQUID_TRANSFER_RATES_PATH, liquid_transfer_rates);
+		JsonFileLoader<array<ref IE_FC_PowerBoxConfig>>.JsonSaveFile(POWER_BOX_PATH, power_boxes);
 	}
   }
 	
@@ -148,10 +173,15 @@ class FuelControlSettings {
   }
 	
   void DefaultStations() {
-    stations.Insert(new ref StationConfig(FuelStationManager.GenId("Cherno West"), 5861, 2210, "Cherno West", -1, -1, 0));
-    stations.Insert(new ref StationConfig(FuelStationManager.GenId("Cherno East"), 6872, 3092, "Cherno East", -1, -1, 0));
+    stations.Insert(new ref StationConfig(FuelStationManager.GenId("Berezino"), 12977.8, 10076, "Berezino", -1, -1));
     Print("[FuelControl] Stations file doesn't exist, creating one");
     JsonFileLoader<array<ref StationConfig>>.JsonSaveFile(STATIONS_PATH, stations);
+  }
+	
+  void DefaultPowerBoxes() {
+	power_boxes.Insert(new ref IE_FC_PowerBoxConfig(FuelStationManager.GenId("Berezino"), 12977.8, 10076, -170, "Berezino",));
+    Print("[FuelControl] Power boxes file doesn't exist, creating one");
+    JsonFileLoader<array<ref IE_FC_PowerBoxConfig>>.JsonSaveFile(POWER_BOX_PATH, power_boxes);
   }
 
   void DefaultSettings() {
@@ -178,6 +208,7 @@ class FuelControlSettings {
       vehicle_autonomy = config.vehicle_autonomy;
       stations = config.stations;
       liquid_transfer_rates = config.liquid_transfer_rates;
+	  power_boxes = config.power_boxes;
       Print("[FuelControl] Got config update");
 	  if (GetGame().IsServer()) {
 		// The server saves and sends an update to all the clients

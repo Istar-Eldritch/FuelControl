@@ -15,19 +15,13 @@ class FuelStationGroup {
 	float fuelCapacity;
 	// fuel amount in ml
 	float fuelAmount;
-	// Used to rotate the power source
-	float m_orientation;
 	
-	array<int> m_source_id;
-		
-	void FuelStationGroup(string _id, string _name, vector pos, float fuelCap, float fuel, float orientation) {
+	void FuelStationGroup(string _id, string _name, vector pos, float fuelCap, float fuel) {
 		id = _id;
 		name = _name;
 		position = pos;
 		fuelCapacity = fuelCap;
 		fuelAmount = fuel;
-		m_orientation = orientation;
-		m_source_id = null;
 	}
 
 	// Returns the amount of fuel in this station (in Liters)
@@ -151,7 +145,7 @@ class FuelStationManager {
 				} else {
 					id = FuelStationManager.GenId(station.name);
 				}
-				m_stations[id] = new FuelStationGroup(id, station.name, pos, station.capacity * 1000, station.fuel * 1000, station.orientation);
+				m_stations[id] = new FuelStationGroup(id, station.name, pos, station.capacity * 1000, station.fuel * 1000);
 			}
 		}
 		m_subscribers = new array<StationSubscriber>;
@@ -168,13 +162,6 @@ class FuelStationManager {
 
 		if (GetGame().IsServer()) {
 			Save();
-			auto powersource = station.GetPowerSource();
-			if (powersource) {
-				powersource.SetPosition(FCTeleportManager.SnapToGround(station.position));
-				vector orientation = "0 0 0";
-				orientation[0] = station.m_orientation;
-				powersource.SetOrientation(orientation);
-			}
 		}
 		if (sync) {
 			SyncStation(station, true);
@@ -236,7 +223,7 @@ class FuelStationManager {
 		FuelControlSettings config = GetFuelControlSettings();
 		config.stations = new ref array<ref StationConfig>;
 		foreach(auto id, auto st: m_stations) {
-			StationConfig stc = new ref StationConfig(st.id, st.position[0], st.position[2], st.name, st.fuelCapacity / 1000, st.fuelAmount / 1000, st.m_orientation);
+			StationConfig stc = new ref StationConfig(st.id, st.position[0], st.position[2], st.name, st.fuelCapacity / 1000, st.fuelAmount / 1000);
 			config.stations.Insert(stc);
 		}
 		config.Save();
@@ -307,7 +294,7 @@ class FuelStationManager {
 		Param1<string> data;
 
 		if (ctx.Read(data)) {
-			FuelStationGroup station = new FuelStationGroup("", "", "0 0 0", 0, 0, 0);
+			FuelStationGroup station = new FuelStationGroup("", "", "0 0 0", 0, 0);
 			JsonSerializer ser = new JsonSerializer;
 			string error;
 			ser.ReadFromString(station, data.param1, error);

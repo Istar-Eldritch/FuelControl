@@ -61,7 +61,7 @@ class CmdStationAdd extends CmdHandler {
 		
 		
 		string id = FuelStationManager.GenId(stationName);
-        station = new ref FuelStationGroup(id, stationName, vpos, -1 * 1000, -1 * 1000, 0);
+        station = new ref FuelStationGroup(id, stationName, vpos, -1 * 1000, -1 * 1000);
 
 		manager.UpdateStation(station, true);
         parameter = new Param2<string, string>("Station " + station.name + " added", "colorStatusChannel");

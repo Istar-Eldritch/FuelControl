@@ -7,15 +7,18 @@ class FCAdminForm: ScriptedWidgetEventHandler {
 	protected ref ButtonWidget m_stations_btn;
 	protected ref ButtonWidget m_consumption_btn;
 	protected ref ButtonWidget m_transfer_btn;
+	protected ref ButtonWidget m_powerbox_btn;
 	protected ref FCAdminStationForm m_stationForm;
 	protected ref FCAdminOtherForm m_otherForm;
 	protected ref FCAdminAutonomyForm m_autonomyForm;
 	protected ref FCAdminTransferRatesForm m_transferRatesForm;
+	protected ref FCAdminPowerBoxForm m_powerBoxForm;
 	
 	const int SELECT_STATIONS = 0;
 	const int SELECT_SETTINGS = 1;
 	const int SELECT_CONSUMPTION = 2;
 	const int SELECT_TRANSFER = 3;
+	const int SELECT_POWER_BOXES = 4;
 	
 	int m_selectedTab = SELECT_STATIONS;
 	
@@ -32,10 +35,12 @@ class FCAdminForm: ScriptedWidgetEventHandler {
 		m_otherForm = new FCAdminOtherForm(m_content);
 		m_autonomyForm = new FCAdminAutonomyForm(m_content);
 		m_transferRatesForm = new FCAdminTransferRatesForm(m_content);
+		m_powerBoxForm = new FCAdminPowerBoxForm(m_content);
 		m_stations_btn = ButtonWidget.Cast(layoutRoot.FindAnyWidget("stations_btn"));
 		m_settings_btn = ButtonWidget.Cast(layoutRoot.FindAnyWidget("settings_btn"));
 		m_consumption_btn = ButtonWidget.Cast(layoutRoot.FindAnyWidget("consumption_btn"));
 		m_transfer_btn = ButtonWidget.Cast(layoutRoot.FindAnyWidget("transfer_btn"));
+		m_powerbox_btn = ButtonWidget.Cast(layoutRoot.FindAnyWidget("powerbox_btn"));
 		UpdateUI();
 	}
 	
@@ -57,7 +62,7 @@ class FCAdminForm: ScriptedWidgetEventHandler {
 		m_otherForm.layoutRoot.Show(false);
 		m_autonomyForm.layoutRoot.Show(false);
 		m_transferRatesForm.layoutRoot.Show(false);
-		
+		m_powerBoxForm.layoutRoot.Show(false);
 
 		switch (m_selectedTab) {
 			case SELECT_STATIONS:
@@ -76,6 +81,9 @@ class FCAdminForm: ScriptedWidgetEventHandler {
 				m_transferRatesForm.layoutRoot.Show(true);
 				m_transferRatesForm.UpdateUI();
 				break;
+			case SELECT_POWER_BOXES:
+				m_powerBoxForm.layoutRoot.Show(true);
+				m_powerBoxForm.UpdateUI();
 		}
 	}
 
@@ -88,6 +96,8 @@ class FCAdminForm: ScriptedWidgetEventHandler {
 			m_selectedTab = SELECT_CONSUMPTION;
 		} else if (w == m_transfer_btn) {
 			m_selectedTab = SELECT_TRANSFER;
+		} else if (w == m_powerbox_btn) {
+			m_selectedTab = SELECT_POWER_BOXES;
 		} else {
             return false;
         }

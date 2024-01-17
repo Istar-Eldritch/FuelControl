@@ -264,8 +264,7 @@ class FCAdminStationForm: ScriptedWidgetEventHandler {
 			string id;
 			DayZPlayer player = GetGame().GetPlayer();
 			vector position = player.GetWorldPosition();
-			vector orientation = player.GetOrientation();
-			m_newStation = new FuelStationGroup(id, "New station", position, -1, -1, orientation[0]);
+			m_newStation = new FuelStationGroup(id, "New station", position, -1, -1);
 			m_selectedStation = m_newStation;
 			m_filterBox.SetText("");
 			UpdateUI();

@@ -37,4 +37,26 @@ modded class MissionBase {
       }
     }
   }
+	
+  override void OnMissionLoaded() {
+	if(GetGame().IsServer()) {
+		GetGame().GetCallQueue(CALL_CATEGORY_SYSTEM).CallLater(GeneratePowerSources, 1000);
+	}
+  }
+	
+  void GeneratePowerSources() {
+	  Print("[FuelControl] Generating power sources");
+	  auto settings = GetFuelControlSettings();
+	  // Spawn power boxes
+	  foreach (auto box: settings.power_boxes) {
+		  vector pos;
+		  pos[0] = box.x;
+		  pos[2] = box.y;
+		  int powerSourceFlags = ECE_CREATEPHYSICS || ECE_PLACE_ON_SURFACE;
+		  auto obj = GetGame().CreateObjectEx("IE_FC_ElectricalBox", FCTeleportManager.SnapToGround(pos), powerSourceFlags);
+		  vector powerSourceOrientation = "0 0 0";
+		  powerSourceOrientation[0] = box.orientation;
+		  obj.SetOrientation(powerSourceOrientation);
+	  }
+  }
 }
