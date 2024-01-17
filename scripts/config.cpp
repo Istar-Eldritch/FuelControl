@@ -161,3 +161,31 @@ invview
 </potential axis>*/
 	};//</Modelclass>
 };//</CfgModels>
+
+class CfgSoundShaders {
+
+	class baseCharacter_SoundShader;
+	class ElectricalBox_SoundShader: baseCharacter_SoundShader {
+		range = 20;
+		samples[]=
+		{
+			
+			{
+				"FuelControl\GUI\sounds\electricity_hum",
+				1
+			}
+		};
+		volume=1;
+	};
+}
+
+class CfgSoundSets {
+
+	class baseCharacter_SoundSet;
+	class ElectricalBoxOnLoop_SoundSet: baseCharacter_SoundSet {
+		soundShaders[]=
+		{
+			"ElectricalBox_SoundShader"
+		};
+	};
+}
