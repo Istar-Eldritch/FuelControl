@@ -81,7 +81,7 @@ class ActionFillAtStation : ActionContinuousBase {
 			}
 		}
 		
-		return null;
+		return f;
 	}
 	
 	override void OnStartAnimationLoop(ActionData action_data) {
