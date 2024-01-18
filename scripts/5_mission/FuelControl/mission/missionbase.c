@@ -26,6 +26,8 @@ modded class MissionBase {
     FCTeleportManager teleportManager = FCGetTeleportManager();
     GetRPCManager().AddRPC("IE_FC", "TeleportToStation", teleportManager, SingleplayerExecutionType.Both);
 
+	GetRPCManager().AddRPC("IE_FC", "FuelStationSoundUpdate", this, SingleplayerExecutionType.Both);
+
     if (GetGame().IsClient()) {
       settings.SyncSettings();
 	  manager.SyncAll();
@@ -59,4 +61,21 @@ modded class MissionBase {
 		  obj.SetOrientation(powerSourceOrientation);
 	  }
   }
+	
+	void FuelStationSoundUpdate( CallType type, ref ParamsReadContext ctx, ref PlayerIdentity sender, ref Object target ) {
+	    Param2<vector, bool> data;
+	    if (ctx.Read(data)) {
+			autoptr auto objects = new array<Object>;
+			autoptr auto proxycargos = new array<CargoBase>;
+			GetGame().GetObjectsAtPosition(data.param1, 0.1, objects, proxycargos);
+			FuelStation station;
+			foreach(auto object : objects) {
+				station = FuelStation.Cast(object);
+				if (station) {
+					break;
+				}
+			}
+			station.PlayFuelingSound(data.param2);
+	    }
+	}
 }

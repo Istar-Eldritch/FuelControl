@@ -1,11 +1,19 @@
+static int IE_FC_STATION_CNT = 0;
+
 modded class FuelStation {
+	static const string	STATION_LOOP_SOUND = "IE_FC_PumpRefueling_SoundSet";
+	protected EffectSound 	m_StationSoundLoop;
+
+	void SetWorking(bool working) {
+		GetRPCManager().SendRPC("IE_FC", "FuelStationSoundUpdate", new Param2<vector, bool>(GetWorldPosition(), working), true);
+  	}
 	
-	void FuelStation() {
-		Print("FuelStation Constructor");
-	}
-	
-	override void OnVariablesSynchronized() {
-		super.OnVariablesSynchronized();
+	void PlayFuelingSound(bool play) {
+		if (play) {
+			PlaySoundSetLoop(m_StationSoundLoop, STATION_LOOP_SOUND, 0, 0);
+		} else {
+			StopSoundSet(m_StationSoundLoop);
+		}
 	}
 	
 	float GetFuel() {

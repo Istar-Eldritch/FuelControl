@@ -1,9 +1,8 @@
 class IE_FC_StationPowerSource: BuildingSuper {
 	
-	static const string	LOOP_SOUND = "ElectricalBoxOnLoop_SoundSet";
+	static const string	LOOP_SOUND = "IE_FC_ElectricalBoxOnLoop_SoundSet";
 
 	protected EffectSound 	m_HumLoop;
-	ref Timer 				m_SoundLoopCheckTimer;
 	protected bool m_Working = false;
 	
 	void IE_FC_StationPowerSource() {
