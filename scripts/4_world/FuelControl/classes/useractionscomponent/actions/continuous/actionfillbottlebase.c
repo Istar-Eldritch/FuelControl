@@ -1,13 +1,39 @@
-modded class ActionFillBottleBase: ActionContinuousBase {
+modded class ActionFillBottleBase {
+	override int GetLiquidType(PlayerBase player, ActionTarget target, ItemBase item) {
+		int res = super.GetLiquidType(player, target, item);
+		if (res == LIQUID_GASOLINE) {
+			return -1;
+		}
+		return res;
+	}
+};
+
+class ActionFillAtStationBottleBase: ActionFillBottleBase {
 
 	FuelStation m_station;
 	
+	int m_liquid = -1;
+	
+	override int GetLiquidType(PlayerBase player, ActionTarget target, ItemBase item) {
+		if (target.GetObject() && target.GetObject().IsFuelStation())
+		{
+			if (Liquid.CanFillContainer(item, m_liquid))
+				return m_liquid;
+		}
+
+		return -1;
+	}
+	
 	override string GetText(){
 		if (m_station) {
-			if (!m_station.HasFuel()) {
-				return "There is no fuel at this station";
+			string fuelname = IE_FC_StringForLiquid(m_liquid);
+			fuelname.ToLower();
+			if (!m_station.HasFuel(m_liquid)) {
+				return "There is no " + fuelname + " at this station";
 			} else if (!m_station.HasEnergy())  {
 				return "Fuel pumps require energy to run";
+			} else {
+				return "Fill with " + fuelname;
 			}
 		}
 		return super.GetText();		
@@ -27,7 +53,7 @@ modded class ActionFillBottleBase: ActionContinuousBase {
 	override bool ActionConditionContinue( ActionData action_data ) {
 		if (super.ActionConditionContinue( action_data )) {
 			if (m_station){
-				return !m_station.IsRuined() && m_station.HasFuel() && m_station.HasEnergy();
+				return !m_station.IsRuined() && m_station.HasFuel(m_liquid) && m_station.HasEnergy();
 			}
 			return true;
 		}
@@ -36,8 +62,10 @@ modded class ActionFillBottleBase: ActionContinuousBase {
 	
 	override void OnStartAnimationLoop(ActionData action_data) {
 		super.OnStartAnimationLoop(action_data);
-		if (GetGame().IsServer() && m_station && m_station.HasFuel() && m_station.HasEnergy()) {
+		if (GetGame().IsServer() && m_station && m_station.HasFuel(m_liquid) && m_station.HasEnergy()) {
 			m_station.SetWorking(true);
+			auto groupManager = GetFuelStationManager();
+			FuelStationGroup group = groupManager.FindStationForPump(m_station.GetPosition());
 		}
 	}
 	
@@ -46,10 +74,34 @@ modded class ActionFillBottleBase: ActionContinuousBase {
 		if (GetGame().IsServer()) {
 			if (m_station) {
 				m_station.SetWorking(false);
+				auto groupManager = GetFuelStationManager();
+				FuelStationGroup group = groupManager.FindStationForPump(m_station.GetPosition());
+				float remaining = group.GetFuel(m_liquid);
+				if (remaining != -1) {
+					groupManager.SyncStation(group.m_config.id, "state.fuels." + m_liquid + ".available" , "" + remaining, true);
+				}
 			}
 		}
 	}
 };
+
+class ActionFillGasolineBottleBase: ActionFillAtStationBottleBase {
+	void ActionFillGasolineBottleBase() {
+		m_liquid = LIQUID_GASOLINE;
+	}
+}
+
+class ActionFillDieselBottleBase: ActionFillAtStationBottleBase {
+	void ActionFillDieselBottleBase() {
+		m_liquid = LIQUID_DIESEL;
+	}
+}
+
+class ActionFillAVGasBottleBase: ActionFillAtStationBottleBase {
+	void ActionFillAVGasBottleBase() {
+		m_liquid = IE_FC_LIQUID_AVGAS;
+	}
+}
 
 modded class ActionFillBottleBaseCB : ActionContinuousBaseCB
 {

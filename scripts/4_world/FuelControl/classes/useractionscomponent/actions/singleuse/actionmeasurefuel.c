@@ -62,7 +62,7 @@ class ActionMeasureFuel: ActionSingleUseBase {
         FuelStation station = FuelStation.Cast( target.GetObject() );
 		
 		if ( station ) {
-			fuel = station.GetFuel();
+			fuel = station.GetFuel(LIQUID_GASOLINE);
 			showFuel = true;
 		}
 

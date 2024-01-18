@@ -18,7 +18,15 @@ class ActionSiphonCB : ActionContinuousBaseCB {
 		} else {
 			transferRate = itemRate;
 		}
-		m_ActionData.m_ActionComponent = new CASiphon( transferRate, LIQUID_GASOLINE );
+		int liquid;
+		CarScript car = CarScript.Cast( m_ActionData.m_Target.GetObject() );
+		if (car) {
+			liquid = car.GetFuelType();
+		} else {
+			CF_Log.Error("[FuelControl] Couldn't get fuel type for vehicle for siphoning, likely a bug");
+			liquid = LIQUID_GASOLINE;
+		}
+		m_ActionData.m_ActionComponent = new CASiphon( transferRate, liquid );
 	}
 };
 
@@ -59,7 +67,7 @@ class ActionSiphon : ActionContinuousBase {
 			return false;
 		
 		// Check this item can be used to put fuel inside
-		if(!item || !Liquid.CanFillContainer(item, LIQUID_GASOLINE))
+		if(!item || !Liquid.CanFillContainer(item, car.GetFuelType()))
 			return false;
 		
 		array<string> selections = new array<string>;

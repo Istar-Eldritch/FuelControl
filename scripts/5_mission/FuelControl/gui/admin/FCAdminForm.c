@@ -10,7 +10,7 @@ class FCAdminForm: ScriptedWidgetEventHandler {
 	protected ref ButtonWidget m_powerbox_btn;
 	protected ref FCAdminStationForm m_stationForm;
 	protected ref FCAdminOtherForm m_otherForm;
-	protected ref FCAdminAutonomyForm m_autonomyForm;
+	protected ref FCAdminVehicleForm m_vehicleForm;
 	protected ref FCAdminTransferRatesForm m_transferRatesForm;
 	protected ref FCAdminPowerBoxForm m_powerBoxForm;
 	
@@ -33,7 +33,7 @@ class FCAdminForm: ScriptedWidgetEventHandler {
 		m_content = layoutRoot.FindAnyWidget("content");
 		m_stationForm = new FCAdminStationForm(m_content);
 		m_otherForm = new FCAdminOtherForm(m_content);
-		m_autonomyForm = new FCAdminAutonomyForm(m_content);
+		m_vehicleForm = new FCAdminVehicleForm(m_content);
 		m_transferRatesForm = new FCAdminTransferRatesForm(m_content);
 		m_powerBoxForm = new FCAdminPowerBoxForm(m_content);
 		m_stations_btn = ButtonWidget.Cast(layoutRoot.FindAnyWidget("stations_btn"));
@@ -60,7 +60,7 @@ class FCAdminForm: ScriptedWidgetEventHandler {
 		
 		m_stationForm.layoutRoot.Show(false);
 		m_otherForm.layoutRoot.Show(false);
-		m_autonomyForm.layoutRoot.Show(false);
+		m_vehicleForm.layoutRoot.Show(false);
 		m_transferRatesForm.layoutRoot.Show(false);
 		m_powerBoxForm.layoutRoot.Show(false);
 
@@ -74,8 +74,8 @@ class FCAdminForm: ScriptedWidgetEventHandler {
 				m_otherForm.UpdateUI();
 				break;
 			case SELECT_CONSUMPTION:
-				m_autonomyForm.layoutRoot.Show(true);
-				m_autonomyForm.UpdateUI();
+				m_vehicleForm.layoutRoot.Show(true);
+				m_vehicleForm.UpdateUI();
 				break;
 			case SELECT_TRANSFER:
 				m_transferRatesForm.layoutRoot.Show(true);

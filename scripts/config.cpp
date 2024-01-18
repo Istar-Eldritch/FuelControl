@@ -25,6 +25,11 @@ class CfgMods
 
     class defs
     {
+	  class engineScriptModule
+      {
+        value = "";
+        files[] = {"FuelControl/scripts/1_Core"};
+      };
       class gameScriptModule
       {
         value = "";
@@ -64,7 +69,7 @@ class CfgVehicles {
 			cordTextureFile="DZ\gear\camping\Data\plug_black_CO.paa";
       		updateInterval=1;
 		};
-    class DamageSystem
+    	class DamageSystem
 		{
 			class GlobalHealth
 			{
@@ -136,6 +141,43 @@ class CfgVehicles {
 			};
 		};
 	};
+
+	class Inventory_Base;
+	class Edible_Base;
+	class Container_Base;
+	class Bottle_Base;
+
+	class Barrel_ColorBase: Container_Base {
+		liquidContainerType="512 + 1024 + 2048 + 4096 + 8192 + 16384 + 65536 + 1048576";
+	}
+
+	class Pot: Bottle_Base {
+		liquidContainerType="512 + 1024 + 2048 + 4096 + 8192 + 16384 + 65536 + 1048576";
+	}
+
+	class Cauldron: Bottle_Base {
+		liquidContainerType="512 + 1024 + 2048 + 4096 + 8192 + 16384 + 65536 + 1048576";
+	}
+
+	class Canteen: Bottle_Base {
+		liquidContainerType="512 + 1024 + 2048 + 4096 + 8192 + 16384 + 65536 + 1048576";
+	}
+
+	class WaterBottle: Bottle_Base {
+		liquidContainerType="512 + 1024 + 2048 + 4096 + 8192 + 16384 + 65536 + 1048576";
+	}
+
+	class Vodka: Bottle_Base {
+		liquidContainerType="512 + 1024 + 2048 + 4096 + 8192 + 16384 + 65536 + 1048576";
+	}
+
+	class WaterPouch_ColorBase: Bottle_Base {
+		liquidContainerType="512 + 1024 + 2048 + 4096 + 8192 + 16384 + 65536 + 1048576";
+	}
+
+	class CanisterGasoline: Bottle_Base {
+		liquidContainerType="512 + 1024 + 2048 + 4096 + 8192 + 16384 + 65536 + 1048576";
+	}
 }
 
 class CfgModels
@@ -152,15 +194,9 @@ class CfgModels
 		{
       "body"
 		};
-/*<potential axis>
-boundingbox_max
-boundingbox_min
-ce_center
-ce_radius
-invview
-</potential axis>*/
-	};//</Modelclass>
-};//</CfgModels>
+
+	};
+};
 
 class CfgSoundShaders {
 
@@ -229,3 +265,23 @@ class CfgSoundSets {
 		};
 	};
 }
+
+class cfgLiquidDefinitions
+{
+	class IEFCAVGasLiquid
+	{
+		type=1048576;
+		displayName="Aviation Fuel";
+		flammability=60;
+		class Nutrition
+		{
+			fullnessIndex=1;
+			energy=-10;
+			water=0;
+			nutritionalIndex=75;
+			toxicity=1;
+			digestibility=2;
+			agents=16;
+		};
+	};
+};

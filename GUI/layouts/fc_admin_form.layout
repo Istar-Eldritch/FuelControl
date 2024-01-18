@@ -45,7 +45,7 @@ FrameWidgetClass rootFrame {
      vexactpos 1
      hexactsize 1
      vexactsize 0
-     text "Vehicle Autonomy"
+     text "Vehicle Config"
      font "gui/fonts/metron-bold16"
     }
     ButtonWidgetClass transfer_btn {

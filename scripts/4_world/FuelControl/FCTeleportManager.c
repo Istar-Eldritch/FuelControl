@@ -4,7 +4,7 @@ class FCTeleportManager {
     void SendTeleportToStation(FuelStationGroup station) {
 		auto currentTime = GetGame().GetTime();
 		if (currentTime - lastRequestTime > 1000) {
-			CF_Log.Debug("[FuelControl] Requesting teleport to station " + station.name);
+			CF_Log.Debug("[FuelControl] Requesting teleport to station " + station.m_config.name);
 			GetRPCManager().SendRPC("IE_FC", "TeleportToStation", new Param1<FuelStationGroup>(station), true);
 			lastRequestTime = currentTime;
 		}
@@ -15,10 +15,10 @@ class FCTeleportManager {
 		#ifdef JM_COT
 		if (GetGame().IsServer() && ctx.Read(data)) {
 			ref FuelStationGroup station = data.param1;
-			CF_Log.Debug("[FuelControl] Got teleport request to " + station.name + " from client " + sender.GetId());
+			CF_Log.Debug("[FuelControl] Got teleport request to " + station.m_config.name + " from client " + sender.GetId());
 			auto player = PlayerBase.Cast(sender.GetPlayer());
 			player.SetLastPosition();
-			player.SetWorldPosition(FCTeleportManager.SnapToGround(station.position));
+			player.SetWorldPosition(FCTeleportManager.SnapToGround(station.GetPosition()));
 		}
 		#endif
 	}

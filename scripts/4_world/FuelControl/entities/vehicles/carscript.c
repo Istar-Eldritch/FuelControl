@@ -5,6 +5,7 @@ modded class CarScript {
 	
 	float lastFuelAmount;
 	float autonomy;
+	int fuel_type;
 	// During a dt teh amount of fuel may be so small the leak function doesn't compute it right.
 	// This is an acc across multiple updates.
 	float fuelDebt;
@@ -12,6 +13,7 @@ modded class CarScript {
 	
 	void CarScript() {
 		RegisterNetSyncVariableBool("m_Refueling");
+		ReloadConfigs();
 	}
 	
 	override void OnVariablesSynchronized() {
@@ -25,6 +27,10 @@ modded class CarScript {
 		}
 	}
 	
+	int GetFuelType() {
+		return fuel_type;
+	}
+	
 	void SetRefueling(bool refueling) {
 		m_Refueling = refueling;
 		SetSynchDirty();
@@ -32,7 +38,9 @@ modded class CarScript {
 		
 	override void SetActions() {
 		super.SetActions();
-		AddAction(ActionFillAtStation);
+		AddAction(ActionFillGasolineAtStation);
+		AddAction(ActionFillDieselAtStation);
+		AddAction(ActionFillAvGasAtStation);
 		AddAction(ActionSiphon);
 		AddAction(ActionMeasureFuel);
 	}
@@ -47,16 +55,28 @@ modded class CarScript {
 		lastFuelAmount = GetFluidCapacity(CarFluid.FUEL) * GetFluidFraction(CarFluid.FUEL);
 	}
 	
+	void ReloadConfigs() {
+		FuelControlSettings settings = GetFuelControlSettings();
+		auto type = GetType();
+		auto vehicle_config = settings.vehicle_config.Get(type);
+		if (vehicle_config) {
+			autonomy = vehicle_config.autonomy;
+			fuel_type = IE_FC_LiquidFromString(vehicle_config.fuel_type);
+			if (fuel_type == -1) {
+				CF_Log.Error("[FuelControl] Couldn't parse fuel type for " + type + " likely a misconfiguration");
+				fuel_type = LIQUID_GASOLINE;
+			}
+		} else {
+			autonomy = 0;
+			fuel_type = LIQUID_GASOLINE;
+		}
+	}
+	
 	override void OnEngineStart() {
 		fuelDebt = 0;
 		float fuelFraction = GetFluidFraction( CarFluid.FUEL);
 		lastFuelAmount = GetFluidCapacity(CarFluid.FUEL) * fuelFraction;
-		FuelControlSettings settings = GetFuelControlSettings();
-		auto type = GetType();
-		autonomy = settings.vehicle_autonomy.Get(type);
-		if (!autonomy) {
-			autonomy = 0;
-		}
+		ReloadConfigs();
 
 		super.OnEngineStart();
 	}
@@ -78,10 +98,13 @@ modded class CarScript {
 			float rpm;
 			#ifdef RFFS_HELI
 				RFFSHeli_base heli = RFFSHeli_base.Cast(this);
+			if (heli) {
 				rpm = heli.m_collective_level / 20;
-			#else
-				rpm = EngineGetRPM() / EngineGetRPMMax();
+			}
 			#endif
+			if (!rpm) {
+				rpm = EngineGetRPM() / EngineGetRPMMax();
+			}
 			
 			if (rpm < 0.1) {
 				rpm = 0.1;

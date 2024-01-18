@@ -17,7 +17,7 @@ modded class CAContinuousFill : CAContinuousBase
 	{
 		ItemBase theBottle = ItemBase.Cast(action_data.m_MainItem);
 		if (m_station && theBottle && GetGame().IsServer()){
-			m_station.RemoveFuel(m_SpentQuantity);
+			m_station.RemoveFuel(m_liquid_type, m_SpentQuantity / 1000);
 			// This is likely to be very ineficient. There should be a better way of doing this.
 			if (GetGame().IsServer()) {
 				GetFuelStationManager().Save();

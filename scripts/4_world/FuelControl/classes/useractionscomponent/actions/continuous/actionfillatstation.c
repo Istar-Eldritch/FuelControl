@@ -32,6 +32,7 @@ class ActionFillAtStation : ActionContinuousBase {
 	
 	protected FuelStation station;
 	protected CarScript vehicle;
+	protected int m_fuel_type;
 
 	void ActionFillAtStation() {
 		m_CallbackClass = ActionFillAtStationCB;
@@ -40,6 +41,7 @@ class ActionFillAtStation : ActionContinuousBase {
 		m_FullBody = true;
 		m_SpecialtyWeight = UASoftSkillsWeight.PRECISE_LOW;
 		m_LockTargetOnUse = true;
+		m_fuel_type = -1;
 	}
 	
 	override void CreateConditionComponents() {
@@ -47,13 +49,19 @@ class ActionFillAtStation : ActionContinuousBase {
 		m_ConditionTarget = new CCTCursor;
 	}
 	
+	int GetFuelType() {
+		return m_fuel_type;
+	}
+	
 	override string GetText() {
-		auto hasFuel = station.HasFuel();
+		auto hasFuel = station.HasFuel(GetFuelType());
 		auto hasEnergy = station.HasEnergy();
+		string fuel_type = IE_FC_StringForLiquid(m_fuel_type);
+		fuel_type.ToLower();
 		if (hasFuel && hasEnergy) {
-			return "#refuel";
+			return "Refuel " + fuel_type;
 		} else if (!hasFuel) {
-			return "There is no fuel at this station";
+			return "There is no " + fuel_type + " at this station";
 		} else {
 			return "Fuel pumps require energy to run";
 		}
@@ -86,11 +94,13 @@ class ActionFillAtStation : ActionContinuousBase {
 	
 	override void OnStartAnimationLoop(ActionData action_data) {
 		super.OnStartAnimationLoop(action_data);
-		if (GetGame().IsServer() && station && station.HasFuel() && station.HasEnergy()) {
+		if (GetGame().IsServer() && station && station.HasFuel(GetFuelType()) && station.HasEnergy()) {
 			station.SetWorking(true);
 			if (vehicle) {
 				vehicle.SetRefueling(true);
 			}
+			auto groupManager = GetFuelStationManager();
+			FuelStationGroup group = groupManager.FindStationForPump(station.GetPosition());
 		}
 	}
 	
@@ -99,6 +109,12 @@ class ActionFillAtStation : ActionContinuousBase {
 		if (GetGame().IsServer()) {
 			if (station) {
 				station.SetWorking(false);
+				auto groupManager = GetFuelStationManager();
+				FuelStationGroup group = groupManager.FindStationForPump(station.GetPosition());
+				float remaining = group.GetFuel(GetFuelType());
+				if (remaining != -1) {
+					groupManager.SyncStation(group.m_config.id, "state.fuels." + GetFuelType() + ".available" , "" + remaining, true);
+				}
 			}
 			if (vehicle) {
 				vehicle.SetRefueling(false);
@@ -126,7 +142,7 @@ class ActionFillAtStation : ActionContinuousBase {
 			CarScript carS = CarScript.Cast(car);
 			vehicle = carS;
 			
-			if ( carS ) {
+			if ( carS && carS.GetFuelType() == GetFuelType() ) {
 				for (int s = 0; s < selections.Count(); s++) {
 					if ( selections[s] == carS.GetActionCompNameFuel() ) {
 						refillPointPos = carS.GetRefillPointPosWS();
@@ -141,7 +157,7 @@ class ActionFillAtStation : ActionContinuousBase {
 					}
 				}
 			}
-		} else if (config.settings.pump_barrel_refueling && barrel && barrel.IsOpen() && Liquid.CanFillContainer(barrel, LIQUID_GASOLINE)) {
+		} else if (config.settings.pump_barrel_refueling && barrel && barrel.IsOpen() && Liquid.CanFillContainer(barrel, GetFuelType())) {
 			refillPointPos = barrel.GetPosition();
 			if (station == null) {
 				station = CheckNearbyStations(refillPointPos);
@@ -154,8 +170,26 @@ class ActionFillAtStation : ActionContinuousBase {
 	
 	override bool ActionConditionContinue( ActionData action_data ) {
 		if (super.ActionConditionContinue( action_data ) && station) {
-			return station.HasFuel() && station.HasEnergy();
+			return station.HasFuel(GetFuelType()) && station.HasEnergy();
 		}
 		return false;
 	}
 };
+
+class ActionFillGasolineAtStation: ActionFillAtStation {
+	void ActionFillGasolineAtStation() {
+		m_fuel_type = LIQUID_GASOLINE;
+	}
+}
+
+class ActionFillDieselAtStation: ActionFillAtStation {
+	void ActionFillDieselAtStation() {
+		m_fuel_type = LIQUID_DIESEL;
+	}
+}
+
+class ActionFillAvGasAtStation: ActionFillAtStation {
+	void ActionFillAvGasAtStation() {
+		m_fuel_type = IE_FC_LIQUID_AVGAS;
+	}
+}

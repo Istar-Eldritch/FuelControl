@@ -15,7 +15,7 @@ class FCAdminStationFormSubscriber: StationSubscriber {
 		}
 	}
 	
-	override void OnDelete(FuelStationGroup station) {
+	override void OnDelete(string id) {
 		if (!m_pending_update) {
 			GetGame().GetCallQueue(CALL_CATEGORY_GUI).CallLater(UpdateUI, 200);
 			m_pending_update = true;
@@ -43,7 +43,6 @@ class FCSelectStationSubscriber {
 	
 	void OnSelect(FuelStationGroup m_station) {
 		m_form.m_selectedStation = m_station;
-		m_form.UpdateSelected();
 	}
 	
 	void OnOptions(FuelStationGroup m_station, int x, int y) {}
@@ -65,14 +64,11 @@ class FCAdminStationForm: ScriptedWidgetEventHandler {
 	
 	protected ref ScrollWidget m_stationScroll;
 	protected ref Widget m_stationList;
-	protected ref Widget m_rightPanel;
-	protected ref MapWidget m_stationMap;
 	
 	protected ref EditBoxWidget m_filterBox;
 	protected ref ButtonWidget m_newBtn;
 	
 	ref FuelStationManager m_stationManager;
-	ref FCAdminStationFormSubscriber m_subscriber;
 	
 	ref array<FuelStationGroup> m_stations;
 	ref array<ref FCAdminStationFormListItem> m_children;
@@ -95,9 +91,7 @@ class FCAdminStationForm: ScriptedWidgetEventHandler {
 	
 	void ~FCAdminStationForm() {
 		m_stopChecks = true;
-		m_stationManager.DeSubscribe(m_subscriber);
 		delete m_selectedStationSubscriber;
-		delete m_subscriber;
 		delete m_children;
 		delete layoutRoot;
 	}
@@ -106,16 +100,10 @@ class FCAdminStationForm: ScriptedWidgetEventHandler {
 		m_children = new array<ref FCAdminStationFormListItem>;
 		m_stationManager = GetFuelStationManager();
 		m_stations = m_stationManager.m_stations.GetValueArray();
-		m_subscriber = FCAdminStationFormSubscriber(this);
-		m_stationManager.Subscribe(m_subscriber);
 
 		m_stationScroll = ScrollWidget.Cast(layoutRoot.FindAnyWidget("station_scroll"));
 		m_stationScroll.VScrollToPos(0);
 		m_stationList = layoutRoot.FindAnyWidget("station_list");
-		
-		m_rightPanel = layoutRoot.FindAnyWidget("right_panel");
-
-		m_stationMap = MapWidget.Cast(layoutRoot.FindAnyWidget("station_map"));
 		
 		m_newBtn = ButtonWidget.Cast(layoutRoot.FindAnyWidget("new_btn"));
 		m_filterBox = EditBoxWidget.Cast(layoutRoot.FindAnyWidget("filter_box"));
@@ -129,7 +117,7 @@ class FCAdminStationForm: ScriptedWidgetEventHandler {
 		if (filter != "") {
 			auto newArray = new array<FuelStationGroup>;
 			foreach (auto station: m_stations) {
-				string name = station.name;
+				string name = station.m_config.name;
 				name.ToLower();
 				if (name.Contains(filter)) {
 					newArray.Insert(station);
@@ -147,7 +135,7 @@ class FCAdminStationForm: ScriptedWidgetEventHandler {
 		     while (counter < m_stations.Count() - 1) {
 				auto current = m_stations.Get(counter);
 				auto next = m_stations.Get(counter + 1);
-		     	if (current.name > next.name) {
+		     	if (current.m_config.name > next.m_config.name) {
 					m_stations.Set(counter, next);
 					m_stations.Set(counter + 1, current);
 	                swaps = swaps + 1;
@@ -162,14 +150,6 @@ class FCAdminStationForm: ScriptedWidgetEventHandler {
 			}
 		}
 	}
-	
-	void UpdateSelected() {
-		if (m_selectedStation) {
-			m_stationMap.SetMapPos(m_selectedStation.position);
-		} else if (m_stations.Count() > 0) {
-			m_stationMap.SetMapPos(m_stations.Get(0).position);
-		}
-	}
 
 	void UpdateUI() {
 		float root_width;
@@ -178,14 +158,8 @@ class FCAdminStationForm: ScriptedWidgetEventHandler {
 		parent.GetScreenSize(root_width, root_height);
 		layoutRoot.SetSize(root_width, root_height);
 		layoutRoot.SetPos(0, 0);
-		float scroll_width;
-		float scroll_height;
-		m_stationScroll.GetScreenSize(scroll_width, scroll_height);
-		m_stationScroll.SetScreenSize(scroll_width, root_height);
-		auto map_width = root_width - scroll_width;
-		m_rightPanel.SetScreenSize(map_width, root_height);
-		m_rightPanel.SetPos(scroll_width, 0);
-		m_stationMap.SetScreenSize(map_width, root_height);
+		
+		m_stationScroll.SetSize(root_width, root_height - 60);
 		
 		foreach (auto child: m_children) {
 			if (child) {
@@ -194,8 +168,6 @@ class FCAdminStationForm: ScriptedWidgetEventHandler {
 		}
 		delete m_children;
 		m_children = new array<ref FCAdminStationFormListItem>;
-
-		m_stationMap.ClearUserMarks();
 		
 		float item_width;
 		float item_height;
@@ -208,7 +180,6 @@ class FCAdminStationForm: ScriptedWidgetEventHandler {
 			m_filterBox.SetFlags(WidgetFlags.DISABLED);
 			m_children.Insert(m_newStationWidget);
 			m_newStationWidget.layoutRoot.SetPos(0, 0);
-			m_stationMap.AddUserMark(m_newStation.position, m_newStation.name, FC_COLOR_GREEN, "\\FuelControl\\GUI\\textures\\gas_station_green.paa");
 		} else {
 			m_newBtn.ClearFlags(WidgetFlags.DISABLED);
 			m_filterBox.ClearFlags(WidgetFlags.DISABLED);
@@ -223,23 +194,10 @@ class FCAdminStationForm: ScriptedWidgetEventHandler {
 			item.layoutRoot.GetScreenSize(item_width, item_height);
 			float item_y_pos = item_height * (m_children.Count() - 1);
 			item.layoutRoot.SetPos(0, item_y_pos);
-			if (station.fuelAmount < 0) {
-				m_stationMap.AddUserMark(station.position, station.name, FC_COLOR_BLUE, "\\FuelControl\\GUI\\textures\\gas_station_blue.paa");
-			} else {
-				auto ratio = station.fuelAmount / station.fuelCapacity;
-				if (ratio > 0.5) {
-					m_stationMap.AddUserMark(station.position, station.name, FC_COLOR_GREEN, "\\FuelControl\\GUI\\textures\\gas_station_green.paa");	
-				} else if (ratio > 0.2) {
-					m_stationMap.AddUserMark(station.position, station.name, FC_COLOR_ORANGE, "\\FuelControl\\GUI\\textures\\gas_station_orange.paa");	
-				} else {
-					m_stationMap.AddUserMark(station.position, station.name, FC_COLOR_RED, "\\FuelControl\\GUI\\textures\\gas_station_red.paa");	
-				}
-			}
 		}
-		m_stationList.SetSize(item_width, item_height * m_children.Count() + item_height / 2);
+		m_stationList.SetSize(item_width, item_height * m_children.Count());
 		m_stationList.SetPos(0, 0);
 		m_stationList.Show(true);
-		UpdateSelected();
 	}
 	
 	void CheckLoop() {
@@ -260,7 +218,19 @@ class FCAdminStationForm: ScriptedWidgetEventHandler {
 			string id;
 			DayZPlayer player = GetGame().GetPlayer();
 			vector position = player.GetWorldPosition();
-			m_newStation = new FuelStationGroup(id, "New station", position, -1, -1);
+			map<string, ref IEFCStationFuelConfig> fuel_configs = new map<string, ref IEFCStationFuelConfig>;
+			fuel_configs.Set(IE_FC_StringForLiquid(LIQUID_GASOLINE), IEFCStationFuelConfig(-1));
+			fuel_configs.Set(IE_FC_StringForLiquid(LIQUID_DIESEL), IEFCStationFuelConfig(-1));
+			fuel_configs.Set(IE_FC_StringForLiquid(IE_FC_LIQUID_AVGAS), IEFCStationFuelConfig(-1));
+			IEFCStationConfig station_config = new IEFCStationConfig(id, position[0], position[2], "New station", fuel_configs);
+			
+			map<string, ref IEFCStationFuelState> fuel_state = new map<string, ref IEFCStationFuelState>;
+			fuel_state.Set(IE_FC_StringForLiquid(LIQUID_GASOLINE), IEFCStationFuelState(-1));
+			fuel_state.Set(IE_FC_StringForLiquid(LIQUID_DIESEL), IEFCStationFuelState(-1));
+			fuel_state.Set(IE_FC_StringForLiquid(IE_FC_LIQUID_AVGAS), IEFCStationFuelState(-1));
+			auto station_state = new IEFCStationState(id, fuel_state);
+
+			m_newStation = new FuelStationGroup(station_config, station_state);
 			m_selectedStation = m_newStation;
 			m_filterBox.SetText("");
 			UpdateUI();
