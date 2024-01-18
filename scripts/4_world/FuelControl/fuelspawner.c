@@ -6,13 +6,13 @@ class FuelSpawner {
     }
 
     void Start() {
-        Print("[FuelControl] Started spawner");
+        CF_Log.Info("[FuelControl] Started spawner");
         auto settings = GetFuelControlSettings().settings;
         m_SpawnTimer.Run(settings.spawn_interval, this, "SpawnFuel", NULL, true);
     }
 
     void SpawnFuel() {
-        Print("[FuelControl] Spawning fuel");
+        CF_Log.Debug("[FuelControl] Spawning fuel");
         auto settings = GetFuelControlSettings().settings;
         GetFuelStationManager().Spawn(settings.spawn_amount);
     }

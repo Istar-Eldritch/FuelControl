@@ -35,7 +35,7 @@ class CmdStationAdd extends CmdHandler {
         }
 
 
-		Print("[FuelControl] Executing AddStation chat command x:" + x + ",y:" + y + " name: " + stationName);
+		CF_Log.Debug("[FuelControl] Executing AddStation chat command x:" + x + ",y:" + y + " name: " + stationName);
 
         vector vpos;
 		vpos[0] = x;

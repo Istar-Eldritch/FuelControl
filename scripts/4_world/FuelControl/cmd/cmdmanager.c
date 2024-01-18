@@ -32,7 +32,7 @@ class CmdManager {
     void HandleChatCommand(CallType type, ref ParamsReadContext ctx, ref PlayerIdentity sender, ref Object target) {
 		if (GetGame().IsServer()) {
             if (!HasPermission(sender)) {
-                Print("[FuelControl] Player " + sender.GetPlainId() + " tried to perform a command but is not in the administrators list");
+                CF_Log.Info("[FuelControl] Player " + sender.GetPlainId() + " tried to perform a command but is not in the administrators list");
 				auto msg = new Param2<string, string>("You don't have permission to perform this action. This incident has been logged.", "colorImportant");
                 GetRPCManager().SendRPC("IE_FC", "HandleChatMessage", msg, true, sender);
                 return;

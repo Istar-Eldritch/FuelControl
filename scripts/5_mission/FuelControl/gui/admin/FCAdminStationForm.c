@@ -41,10 +41,6 @@ class FCSelectStationSubscriber {
 		m_form = form;
 	}
 	
-	void ~FCSelectStationSubscriber() {
-		Print("Removing subscriber");
-	}
-	
 	void OnSelect(FuelStationGroup m_station) {
 		m_form.m_selectedStation = m_station;
 		m_form.UpdateSelected();

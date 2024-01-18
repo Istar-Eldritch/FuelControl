@@ -27,7 +27,7 @@ class CmdStationDel extends CmdHandler {
 
         string text;
         if (station) {
-			Print("[FuelControl] Executing station del for " + station.name);
+			CF_Log.Debug("[FuelControl] Executing station del for " + station.name);
 			manager.DeleteStation(station, true);
             text = "Station " + station.name + " deleted";
         } else {

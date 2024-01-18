@@ -1,7 +1,6 @@
 
 modded class MissionBase {
   void MissionBase() {
-    Print("[FuelControl] Creating mission base");
     FuelControlSettings settings = GetFuelControlSettings();
     GetRPCManager().AddRPC("IE_FC", "FuelControlSettingsOnSyncRPC", settings, SingleplayerExecutionType.Both);
 
@@ -47,7 +46,7 @@ modded class MissionBase {
   }
 	
   void GeneratePowerSources() {
-	  Print("[FuelControl] Generating power sources");
+	  CF_Log.Debug("[FuelControl] Generating power sources");
 	  auto settings = GetFuelControlSettings();
 	  // Spawn power boxes
 	  foreach (auto box: settings.power_boxes) {

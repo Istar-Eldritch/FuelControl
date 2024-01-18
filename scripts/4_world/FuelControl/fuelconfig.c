@@ -72,35 +72,35 @@ class FuelControlSettings {
     }
 
     if (FileExist(SETTINGS_PATH)){ //If config exist load File
-      Print("[FuelControl] Loading configuration");
+      CF_Log.Info("[FuelControl] Loading configuration");
       JsonFileLoader<FCSettings>.JsonLoadFile(SETTINGS_PATH, settings );
     } else if (GetGame().IsServer()) { //File does not exist use default settings and create file.
       DefaultSettings();
     }
 		
     if (FileExist(STATIONS_PATH)){ //If config exist load File
-      Print("[FuelControl] Loading station configuration");
+      CF_Log.Info("[FuelControl] Loading station configuration");
       JsonFileLoader<array<ref StationConfig>>.JsonLoadFile(STATIONS_PATH, stations );
     } else if (GetGame().IsServer()) { //File does not exist use default settings and create file.
       DefaultStations();
     }
 		
 	if (FileExist(POWER_BOX_PATH)){ //If config exist load File
-      Print("[FuelControl] Loading power box configuration");
+      CF_Log.Info("[FuelControl] Loading power box configuration");
       JsonFileLoader<array<ref IE_FC_PowerBoxConfig>>.JsonLoadFile(POWER_BOX_PATH, power_boxes );
     } else if (GetGame().IsServer()) { //File does not exist use default settings and create file.
       DefaultPowerBoxes();
     }
 		
 	if (FileExist(VEHICLE_AUTONOMY_PATH)){ //If config exist load File
-      Print("[FuelControl] Loading vehicle autonomy configuration");
+      CF_Log.Info("[FuelControl] Loading vehicle autonomy configuration");
       JsonFileLoader<map<string, float>>.JsonLoadFile(VEHICLE_AUTONOMY_PATH, vehicle_autonomy );
     } else if (GetGame().IsServer()) { //File does not exist use default settings and create file.
       DefaultVehicleAutonomy();
     }
 		
 	if (FileExist(LIQUID_TRANSFER_RATES_PATH)){ //If config exist load File
-      Print("[FuelControl] Loading liquid transfer rates configuration");
+      CF_Log.Info("[FuelControl] Loading liquid transfer rates configuration");
       JsonFileLoader<map<string, float>>.JsonLoadFile(LIQUID_TRANSFER_RATES_PATH, liquid_transfer_rates );
     } else if (GetGame().IsServer()) { //File does not exist use default settings and create file.
       DefaultLiquidTransferRates();
@@ -174,27 +174,27 @@ class FuelControlSettings {
 	
   void DefaultStations() {
     stations.Insert(new ref StationConfig(FuelStationManager.GenId("Berezino"), 12977.8, 10076, "Berezino", -1, -1));
-    Print("[FuelControl] Stations file doesn't exist, creating one");
+    CF_Log.Info("[FuelControl] Stations file doesn't exist, creating one");
     JsonFileLoader<array<ref StationConfig>>.JsonSaveFile(STATIONS_PATH, stations);
   }
 	
   void DefaultPowerBoxes() {
 	power_boxes.Insert(new ref IE_FC_PowerBoxConfig(FuelStationManager.GenId("Berezino"), 12977.8, 10076, -170, "Berezino",));
-    Print("[FuelControl] Power boxes file doesn't exist, creating one");
+    CF_Log.Info("[FuelControl] Power boxes file doesn't exist, creating one");
     JsonFileLoader<array<ref IE_FC_PowerBoxConfig>>.JsonSaveFile(POWER_BOX_PATH, power_boxes);
   }
 
   void DefaultSettings() {
-    Print("[FuelControl] Config file doesn't exist, creating one");
+    CF_Log.Info("[FuelControl] Config file doesn't exist, creating one");
     JsonFileLoader<FCSettings>.JsonSaveFile(SETTINGS_PATH, settings);
   }
   
   void SyncSettings(bool push = false) {
 	if (push) {
-		Print("[FuelControl] Sending update");
+		CF_Log.Trace("[FuelControl] Sending update");
 		GetRPCManager().SendRPC("IE_FC", "FuelControlSettingsOnSyncRPC", new Param1<FuelControlSettings>(this), true);
 	} else {
-		Print("[FuelControl] Requesting settings");
+		CF_Log.Trace("[FuelControl] Requesting settings");
 		GetRPCManager().SendRPC("IE_FC", "FuelControlSettingsOnSyncRPC", null, true);	
 	}
   }
@@ -209,14 +209,14 @@ class FuelControlSettings {
       stations = config.stations;
       liquid_transfer_rates = config.liquid_transfer_rates;
 	  power_boxes = config.power_boxes;
-      Print("[FuelControl] Got config update");
+      CF_Log.Debug("[FuelControl] Got config update");
 	  if (GetGame().IsServer()) {
 		// The server saves and sends an update to all the clients
 		Save();	
 		SyncSettings(true);
 	  }
     } else if (GetGame().IsServer()) {
-	  Print("[FuelControl] Got config update request");
+	  CF_Log.Debug("[FuelControl] Got config update request");
       // If the sender is not sending an update, then send all the station information back to it.
       GetRPCManager().SendRPC("IE_FC", "FuelControlSettingsOnSyncRPC", new Param1<FuelControlSettings>(this), true, sender, target);
     }
@@ -232,7 +232,7 @@ static ref FuelControlSettings GetFuelControlSettings() {
       	g_FuelControlSettings.Load();
 	  }
 
-      Print("[FuelControl] Loaded settings");
+      CF_Log.Info("[FuelControl] Loaded settings");
     }
 
     return g_FuelControlSettings;

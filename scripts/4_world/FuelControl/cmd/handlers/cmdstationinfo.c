@@ -28,7 +28,7 @@ class CmdStationInfo extends CmdHandler {
 
         string text;
         if (station) {
-			Print("[FuelControl] Executing station info for " + station.name);
+			CF_Log.Debug("[FuelControl] Executing station info for " + station.name);
 
             parameter = new Param2<string, string>("Name: " + station.name, "colorStatusChannel");
             GetRPCManager().SendRPC("IE_FC", "HandleChatMessage", parameter, true, sender);

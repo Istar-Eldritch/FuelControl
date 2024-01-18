@@ -22,7 +22,7 @@ class CmdStationEdit extends CmdHandler {
 
         string newName = cmd.mapped.Get("name");
 
-        Print("[FuelControl] Executing station edit - " + currentName + " " + newName + " " + fuel + " " + capacity );
+        CF_Log.Debug("[FuelControl] Executing station edit - " + currentName + " " + newName + " " + fuel + " " + capacity );
 
         auto manager = GetFuelStationManager();
         ref FuelStationGroup station;

@@ -132,7 +132,6 @@ class FuelStationManager {
 	}
 
 	void FuelStationManager() {
-		Print("StationManager constructor");
 		if (GetGame().IsServer()) {
 			FuelControlSettings config = GetFuelControlSettings();
 			foreach(auto station: config.stations) {
@@ -231,20 +230,20 @@ class FuelStationManager {
 	
 	void SyncAll(bool push = false) {
 		if (push) {
-			Print("[FuelControl] Sending update with all stations");
+			CF_Log.Debug("[FuelControl] Sending update with all stations");
 			JsonSerializer ser = new JsonSerializer;
 			string data;
 			ser.WriteToString(m_stations.GetValueArray(), false, data);
 			GetRPCManager().SendRPC("IE_FC", "FuelStationManagerSyncAll", new Param1<string>(data), true);
 		} else {
-			Print("[FuelControl] Requesting update with all stations");
+			CF_Log.Debug("[FuelControl] Requesting update with all stations");
 			GetRPCManager().SendRPC("IE_FC", "FuelStationManagerSyncAll", null, true);	
 		}
 	}
 	
 	void FuelStationManagerSyncAll( CallType type, ref ParamsReadContext ctx, ref PlayerIdentity sender, ref Object target ) {
 		if (GetGame().IsServer()) {
-			Print("[FuelControl] Client is requesting all stations");
+			CF_Log.Debug("[FuelControl] Client is requesting all stations");
 			JsonSerializer ser = new JsonSerializer;
 			foreach (auto id, auto station: m_stations) {
 				string data;
@@ -255,7 +254,7 @@ class FuelStationManager {
 	}
 	
 	void SyncStation(FuelStationGroup station, bool push = false) {
-		Print("[FuelControl] Sending update on station " + station.name);
+		CF_Log.Trace("[FuelControl] Sending update on station " + station.name);
 		JsonSerializer ser = new JsonSerializer;
 		string data;
 		ser.WriteToString(station, false, data);
@@ -271,19 +270,19 @@ class FuelStationManager {
 			ser.ReadFromString(station, data.param1, error);
 			bool isUpdate = data.param2;
 			if (isUpdate) {
-				Print("[FuelControl] Got update on station " + station.name);
+				CF_Log.Trace("[FuelControl] Got update on station " + station.name);
 				UpdateStation(station, GetGame().IsServer());
 			} else {
-				Print("[FuelControl] Got update request on station " + station.name);
+				CF_Log.Trace("[FuelControl] Got update request on station " + station.name);
 				GetRPCManager().SendRPC("IE_FC", "FuelStationManagerSyncStation", new Param2<string, bool>(data.param1, true), true, sender, target);
 			}
 		} else {
-			Print("[FuelControl] We can't sync a station if there is no information about a station. Likely a bug");
+			CF_Log.Error("[FuelControl] We can't sync a station if there is no information about a station. Likely a bug");
 		}
 	}
 	
 	void SyncDeleteStation(FuelStationGroup station) {
-		Print("[FuelControl] Sending delete request for station " + station.name);
+		CF_Log.Debug("[FuelControl] Sending delete request for station " + station.name);
 		JsonSerializer ser = new JsonSerializer;
 		string data;
 		ser.WriteToString(station, false, data);
@@ -298,7 +297,7 @@ class FuelStationManager {
 			JsonSerializer ser = new JsonSerializer;
 			string error;
 			ser.ReadFromString(station, data.param1, error);
-			Print("[FuelControl] Got delete request for station " + station.name);
+			CF_Log.Debug("[FuelControl] Got delete request for station " + station.name);
 			DeleteStation(station, GetGame().IsServer());
 		}
 		
@@ -331,7 +330,7 @@ class FuelStationManager {
 	// Spawn the provided fuel amount (in liters)
 	void Spawn(float amount) {
 		amount = Math.Floor(amount);
-		Print("[FuelControl] Spawning " + amount + "L of fuel");
+		CF_Log.Debug("[FuelControl] Spawning " + amount + "L of fuel");
 		// UpdateStats();
 		// float free = totalCapacity - totalFuel;
 		// if (free < amount) {
@@ -380,7 +379,7 @@ class FuelStationManager {
 				}
 			}
 			sta.AddFuel(toAdd);
-			Print("[FuelControl] Added " + toAdd + "L to " + sta.name);
+			CF_Log.Trace("[FuelControl] Added " + toAdd + "L to " + sta.name);
 			amount = amount - toAdd;
 			if (capacity != -1) {
 				capacity = capacity - toAdd;
