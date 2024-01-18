@@ -1,0 +1,66 @@
+{
+    "OffroadHatchback_Blue": {
+        "autonomy": 25.0,
+        "fuel_type": "GASOLINE"
+    },
+    "OffroadHatchback": {
+        "autonomy": 25.0,
+        "fuel_type": "GASOLINE"
+    },
+    "Sedan_02": {
+        "autonomy": 25.0,
+        "fuel_type": "GASOLINE"
+    },
+    "Sedan_02_Red": {
+        "autonomy": 25.0,
+        "fuel_type": "GASOLINE"
+    },
+    "Truck_01_Covered_Blue": {
+        "autonomy": 25.0,
+        "fuel_type": "GASOLINE"
+    },
+    "Truck_01_Covered_Orange": {
+        "autonomy": 25.0,
+        "fuel_type": "GASOLINE"
+    },
+    "CivilianSedan_Black": {
+        "autonomy": 25.0,
+        "fuel_type": "GASOLINE"
+    },
+    "CivilianSedan": {
+        "autonomy": 25.0,
+        "fuel_type": "GASOLINE"
+    },
+    "CivilianSedan_Wine": {
+        "autonomy": 25.0,
+        "fuel_type": "GASOLINE"
+    },
+    "Sedan_02_Grey": {
+        "autonomy": 25.0,
+        "fuel_type": "GASOLINE"
+    },
+    "Hatchback_02": {
+        "autonomy": 25.0,
+        "fuel_type": "GASOLINE"
+    },
+    "Truck_01_Covered": {
+        "autonomy": 25.0,
+        "fuel_type": "GASOLINE"
+    },
+    "OffroadHatchback_White": {
+        "autonomy": 25.0,
+        "fuel_type": "GASOLINE"
+    },
+    "Hatchback_02_Blue": {
+        "autonomy": 25.0,
+        "fuel_type": "GASOLINE"
+    },
+    "Hatchback_02_Black": {
+        "autonomy": 25.0,
+        "fuel_type": "GASOLINE"
+    },
+    "Offroad_02": {
+        "autonomy": 25.0,
+        "fuel_type": "GASOLINE"
+    }
+}

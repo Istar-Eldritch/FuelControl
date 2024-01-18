@@ -7,8 +7,10 @@
     "pump_car_refueling": 1,
     "pump_barrel_refueling": 1,
     "siphoning": 1,
-    "siphoning_limit": 98,
+    "siphoning_limit": 98.0,
     "default_pumps_have_fuel": 0,
     "pumps_get_ruined": 1,
-    "measure_fuel_with_stick": 1
+    "measure_fuel_with_stick": 1,
+    "pumps_require_electricity": 1,
+    "pump_consumption": 10
 }

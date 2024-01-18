@@ -232,30 +232,57 @@ class FCAdminListForm: ScriptedWidgetEventHandler {
 	}
 }
 
-class FCAdminAutonomyForm: FCAdminListForm {
+bool IE_CmpFloats(float first, float second) {
+	return Math.AbsFloat(first - second) < 0.000001;
+}
+
+class FCAdminVehicleForm: FCAdminListForm {
 	override int GetColumns() {
-		return 2;
+		return 3;
 	}
 	override void OnSubmit() {
 		FuelControlSettings st = GetFuelControlSettings();
-		map<string, float> values = new map<string, float>;
+		map<string, ref IE_FC_VehicleConfig> values = new map<string, ref IE_FC_VehicleConfig>;
 		if (m_new_item) {
-			values.Set(m_new_item[0], m_new_item[1].ToFloat());
+			auto new_vehicle_conf = new IE_FC_VehicleConfig(m_new_item[1].ToFloat(), m_new_item[2]);
+			values.Set(m_new_item[0], new_vehicle_conf);
+			st.vehicle_config.Set(m_new_item[0], new_vehicle_conf);
+
+			st.SyncSetting("vehicle_config." + m_new_item[0] + ".autonomy", m_new_item[1]);
+			st.SyncSetting("vehicle_config." + m_new_item[0] + ".fuel_type", m_new_item[2]);
 		}
 		foreach (auto kv: m_data) {
-			values.Set(kv[0], kv[1].ToFloat());
+			values.Set(kv[0], new IE_FC_VehicleConfig(kv[1].ToFloat(), kv[2]));
 		}
-		st.vehicle_autonomy = values;
-		st.SyncSettings(true);
+		
+		foreach (auto key, auto value: st.vehicle_config) {
+			auto newconf = values.Get(key);
+			if (newconf) {
+				if (newconf.fuel_type != value.fuel_type) {
+					value.fuel_type = newconf.fuel_type;
+					st.SyncSetting("vehicle_config." + key + ".fuel_type", newconf.fuel_type);
+				}
+				
+				if (!IE_CmpFloats(newconf.autonomy, value.autonomy)) {
+					value.autonomy = newconf.autonomy;
+					st.SyncSetting("vehicle_config." + key + ".autonomy", "" + newconf.autonomy);
+				}
+			} else {
+				st.vehicle_config.Remove(key);
+				st.SyncRemoveSetting("vehicle_config." + key);
+			}
+		}
 		super.OnSubmit();
 	}
 	
 	override array<ref array<string>> GetData() {
 		array<ref array<string>> data = new array<ref array<string>>;
-		foreach (auto key, auto value: GetFuelControlSettings().vehicle_autonomy) {
+		auto config = GetFuelControlSettings().vehicle_config;
+		foreach (auto key, auto value: config) {
 			auto fckv = new array<string>();
 			fckv.Insert(key);
-			fckv.Insert("" + value);
+			fckv.Insert("" + value.autonomy);
+			fckv.Insert("" + value.fuel_type);
 			data.Insert(fckv);
 		}
 		return data;
@@ -271,12 +298,26 @@ class FCAdminTransferRatesForm: FCAdminListForm {
 		map<string, float> values = new map<string, float>;
 		if (m_new_item) {
 			values.Set(m_new_item[0], m_new_item[1].ToFloat());
+			st.liquid_transfer_rates.Set(m_new_item[0], m_new_item[1].ToFloat());
+			st.SyncSetting("liquid_transfer." + m_new_item[0], m_new_item[1]);
 		}
 		foreach (auto kv: m_data) {
-			values.Set(kv[0], kv[1].ToFloat());
+			float new_liquid_transfer = kv[1].ToFloat();
+			values.Set(kv[0], new_liquid_transfer);
 		}
-		st.liquid_transfer_rates = values;
-		st.SyncSettings(true);
+		
+		foreach (auto key, auto liquid_transfer: st.liquid_transfer_rates) {
+			auto new_transfer = values.Get(key);
+			if (new_transfer) {
+				if (!IE_CmpFloats(liquid_transfer, new_transfer)) {
+					st.liquid_transfer_rates.Set(key, new_transfer);
+					st.SyncSetting("liquid_transfer." + key, "" + new_transfer);
+				}
+			} else {
+				st.liquid_transfer_rates.Remove(key);
+				st.SyncRemoveSetting("liquid_transfer." + key);
+			}
+		}
 		super.OnSubmit();
 	}
 	
@@ -298,19 +339,48 @@ class FCAdminPowerBoxForm: FCAdminListForm {
 	}
 	override void OnSubmit() {
 		FuelControlSettings st = GetFuelControlSettings();
-		array<ref IE_FC_PowerBoxConfig> values = new array<ref IE_FC_PowerBoxConfig>;
+		map<string, ref IE_FC_PowerBoxConfig> values = new map<string, ref IE_FC_PowerBoxConfig>;
 		if (m_new_item) {
 			auto id = FuelStationManager.GenId(m_new_item[0]);
 			auto config = new IE_FC_PowerBoxConfig(id, m_new_item[1].ToFloat(), m_new_item[2].ToFloat(), m_new_item[3].ToFloat(), m_new_item[0]);
-			values.Insert(config);
+			values.Set(id, config);
+			st.power_boxes.Insert(config);
+			st.SyncSetting("powerbox." + config.id + ".x", "" + config.x);
+			st.SyncSetting("powerbox." + config.id + ".y", "" + config.y);
+			st.SyncSetting("powerbox." + config.id + ".orientation", "" + config.orientation);
+			st.SyncSetting("powerbox." + config.id + ".name", "" + config.name);
 		}
 		foreach (auto kv: m_data) {
 			auto dd = kv[4];
 			auto conf = new IE_FC_PowerBoxConfig(dd, kv[1].ToFloat(), kv[2].ToFloat(), kv[3].ToFloat(), kv[0]);
-			values.Insert(conf);
+			values.Set(dd, conf);
 		}
-		st.power_boxes = values;
-		st.SyncSettings(true);
+		for(int i = (st.power_boxes.Count() - 1); i >= 0; i--) {
+			auto powerbox = st.power_boxes[i];
+			auto updated = values.Get(powerbox.id);
+			
+			if (updated) {
+				if (IE_CmpFloats(updated.x, powerbox.x)) {
+					powerbox.x = updated.x;
+					st.SyncSetting("powerbox." + powerbox.id + ".x", "" + powerbox.x);
+				}
+				if (IE_CmpFloats(updated.y, powerbox.y)) {
+					powerbox.y = updated.y;
+					st.SyncSetting("powerbox." + powerbox.id + ".y", "" + powerbox.y);
+				}
+				if (IE_CmpFloats(updated.orientation, powerbox.orientation)) {
+					powerbox.orientation = updated.orientation;
+					st.SyncSetting("powerbox." + powerbox.id + ".orientation", "" + powerbox.orientation);
+				}
+				if (updated.name != powerbox.name) {
+					powerbox.name = updated.name;
+					st.SyncSetting("powerbox." + powerbox.id + ".name", powerbox.name);
+				}
+			} else {
+				st.power_boxes.Remove(i);
+				st.SyncRemoveSetting("powerbox." + powerbox.id);
+			}
+		}
 		super.OnSubmit();
 	}
 	

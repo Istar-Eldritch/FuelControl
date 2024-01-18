@@ -16,7 +16,7 @@ modded class FuelStation {
 		}
 	}
 	
-	float GetFuel() {
+	float GetFuel(int fuelType) {
 		auto config = GetFuelControlSettings();
 
 		if(config.settings.default_pumps_have_fuel) {
@@ -27,18 +27,18 @@ modded class FuelStation {
 		FuelStationGroup group = groupManager.FindStationForPump(this.GetPosition());
 		
 		if(group) {
-			return group.GetFuel();
+			return group.GetFuel(fuelType);
 		}
 
 		return 0;
 	}
 	
-	bool HasFuel() {
+	bool HasFuel(int fuelType) {
 		FuelStationManager groupManager = GetFuelStationManager();
 		FuelStationGroup group = groupManager.FindStationForPump(this.GetPosition());
 		
 		if (group) {
-			return group.HasFuel();
+			return group.HasFuel(fuelType);
 		}
 
 		auto config = GetFuelControlSettings();
@@ -46,11 +46,10 @@ modded class FuelStation {
 		return config.settings.default_pumps_have_fuel;
 	}
 
-	void RemoveFuel(float quantity) {
+	void RemoveFuel(int liquidType, float quantity) {
 		FuelStationManager groupManager = GetFuelStationManager();
 		FuelStationGroup group = groupManager.FindStationForPump(this.GetPosition());
-		group.RemoveFuel(quantity);
-		groupManager.SyncStation(group, true);
+		group.RemoveFuel(liquidType, quantity);
 	}
 	
 	bool HasEnergy() {

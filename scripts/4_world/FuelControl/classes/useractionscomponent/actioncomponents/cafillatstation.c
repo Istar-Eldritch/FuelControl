@@ -131,13 +131,14 @@ class CAFillAtStation : CAContinuousBase {
 			Object obj = action_data.m_Target.GetObject();
 			CarScript car = CarScript.Cast(obj);
 			Barrel_ColorBase barrel = Barrel_ColorBase.Cast(obj);
+			int fuel_type = ActionFillAtStation.Cast( action_data.m_Action ).GetFuelType();
 			if (car) {
 				car.AddFuel(m_SpentQuantity / 1000 );
 			} else if(barrel) {
-				Liquid.FillContainer(barrel, LIQUID_GASOLINE, m_SpentQuantity);
+				Liquid.FillContainer(barrel, fuel_type, m_SpentQuantity);
 			}
 
-			station.RemoveFuel(m_SpentQuantity);
+			station.RemoveFuel(fuel_type, m_SpentQuantity / 1000);
 			// This is likely to be very ineficient. There should be a better way of doing this
 			if (GetGame().IsServer()) {
 				GetFuelStationManager().Save();

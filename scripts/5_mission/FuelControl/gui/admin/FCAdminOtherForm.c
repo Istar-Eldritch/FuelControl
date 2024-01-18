@@ -62,23 +62,82 @@ class FCAdminOtherForm: ScriptedWidgetEventHandler {
 	override bool OnClick(Widget w, int x, int y, int button) {
 		
 		if (w == m_submit) {
-			FuelControlSettings set_manager = GetFuelControlSettings();
-			auto settings = set_manager.settings;
-			settings.spawn_enabled = m_enable_spawn_check.IsChecked();
-			settings.spawn_interval = m_spawn_interval_edit.GetText().ToInt();
-			settings.spawn_amount = m_spawn_amount_edit.GetText().ToInt();
-			settings.spawn_minimum = m_spawn_minimum_edit.GetText().ToInt();
-			settings.pump_car_refueling = m_pump_vehicle_refueling.IsChecked();
-			settings.pump_barrel_refueling = m_pump_barrel_refueling.IsChecked();
-			settings.siphoning = m_pump_siphoning.IsChecked();
-			settings.siphoning_limit = m_siphoning_limit_edit.GetText().ToFloat();
-			settings.default_pumps_have_fuel = m_default_pumps_have_fuel.IsChecked();
-			settings.pumps_get_ruined = m_pumps_get_ruined.IsChecked();
-			settings.measure_fuel_with_stick = m_enable_measure_fuel_with_stick.IsChecked();
-			settings.pumps_require_electricity = m_pumps_require_electricity.IsChecked();
-			settings.pump_consumption = m_pump_consumption_edit.GetText().ToInt();
-			set_manager.settings = settings;
-			set_manager.SyncSettings(true);
+			FuelControlSettings st = GetFuelControlSettings();
+			auto settings = st.settings;
+			bool new_spawn_enabled = m_enable_spawn_check.IsChecked();
+			if (settings.spawn_enabled != new_spawn_enabled) {
+				settings.spawn_enabled = new_spawn_enabled;
+				st.SyncSetting("settings.spawn_enabled", "" + new_spawn_enabled);
+			}
+			int new_spawn_interval = m_spawn_interval_edit.GetText().ToInt();
+			if (settings.spawn_interval != new_spawn_interval) {
+				settings.spawn_interval = new_spawn_interval;
+				st.SyncSetting("settings.spawn_interval", "" + new_spawn_interval);
+			}
+			int new_spawn_amount = m_spawn_amount_edit.GetText().ToInt();
+			if (settings.spawn_amount != new_spawn_amount) {
+				settings.spawn_amount = new_spawn_amount;
+				st.SyncSetting("settings.spawn_amount", "" + new_spawn_amount);
+			}
+			int new_spawn_minimum = m_spawn_minimum_edit.GetText().ToInt();
+			if (settings.spawn_minimum != new_spawn_minimum) {
+				settings.spawn_minimum = new_spawn_minimum;
+				st.SyncSetting("settings.spawn_minimum", "" + new_spawn_minimum);
+			}
+			
+			bool new_pump_vehicle_refueling = m_pump_vehicle_refueling.IsChecked();
+			if (settings.pump_car_refueling != new_pump_vehicle_refueling) {
+				settings.pump_car_refueling = new_pump_vehicle_refueling;
+				st.SyncSetting("settings.pump_car_refueling", "" + new_pump_vehicle_refueling);
+			}
+			
+			bool new_pump_barrel_refueling = m_pump_barrel_refueling.IsChecked();
+			if (settings.pump_barrel_refueling != new_pump_barrel_refueling) {
+				settings.pump_barrel_refueling = new_pump_barrel_refueling;
+				st.SyncSetting("settings.pump_barrel_refueling", "" + new_pump_barrel_refueling);
+			}
+
+			bool new_siphoning = m_pump_siphoning.IsChecked();
+			if (settings.siphoning != new_siphoning) {
+				settings.siphoning = new_siphoning;
+				st.SyncSetting("settings.siphoning", "" + new_siphoning);
+			}
+
+			float new_siphoning_limit = m_siphoning_limit_edit.GetText().ToFloat();
+			if (!IE_CmpFloats(settings.siphoning_limit, new_siphoning_limit)) {
+				settings.siphoning_limit = new_siphoning_limit;
+				st.SyncSetting("settings.siphoning_limit", "" + new_siphoning_limit);
+			}
+			
+			bool new_default_pumps_have_fuel = m_default_pumps_have_fuel.IsChecked();
+			if (settings.default_pumps_have_fuel != new_default_pumps_have_fuel) {
+				settings.default_pumps_have_fuel = new_default_pumps_have_fuel;
+				st.SyncSetting("settings.default_pumps_have_fuel", "" + new_default_pumps_have_fuel);
+			}
+			
+			bool new_pumps_get_ruined = m_pumps_get_ruined.IsChecked();
+			if (settings.pumps_get_ruined != new_pumps_get_ruined) {
+				settings.pumps_get_ruined = new_pumps_get_ruined;
+				st.SyncSetting("settings.pumps_get_ruined", "" + new_pumps_get_ruined);
+			}
+			
+			bool new_enable_measure_fuel_with_stick = m_enable_measure_fuel_with_stick.IsChecked();
+			if (settings.measure_fuel_with_stick != new_enable_measure_fuel_with_stick) {
+				settings.measure_fuel_with_stick = new_enable_measure_fuel_with_stick;
+				st.SyncSetting("settings.measure_fuel_with_stick", "" + new_enable_measure_fuel_with_stick);
+			}
+
+			bool new_pumps_require_electricity = m_pumps_require_electricity.IsChecked();
+			if (settings.pumps_require_electricity != new_pumps_require_electricity) {
+				settings.pumps_require_electricity = new_pumps_require_electricity;
+				st.SyncSetting("settings.pumps_require_electricity", "" + new_pumps_require_electricity);
+			}
+
+			int new_pump_consumption = m_pump_consumption_edit.GetText().ToInt();
+			if (settings.pump_consumption != new_pump_consumption) {
+				settings.pump_consumption = new_pump_consumption;
+				st.SyncSetting("settings.pump_consumption", "" + new_pump_consumption);
+			}
 			
 		}
 		

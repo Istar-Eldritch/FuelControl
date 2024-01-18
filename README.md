@@ -8,13 +8,15 @@ This mod provides tools to control your sever's fuel economy.
 - Set fuel limit per station.
 - Refuel a car directly if its placed close to a fuel pump.
 - Refuel a barrel directly if its placed close to a fuel pump.
+- Stations can provide Gasoline, Diesel and Aviaton Fuel (avgas).
 - Siphon fuel out of a car fuel tank.
 - Disable / Enable being able to use fuel pumps that were damaged / exploded.
 - Automatically spawn fuel on configured stations.
 - Configurable liquid transfer rates for arbitrary containers (using class names)
-- Configurable consumption rates for arbitrary vehicles (using class names)
+- Configurable consumption rates (autonomy) per vehicles (using class names)
+- Configurable required fuel type per vehicle, GASOLINE, DIESEL or AVGAS.
 - Measure the fuel in a car or fuel pump with a long stick.
-- Require stations to be powered with electricity (Requires battery with wire / generator & cable reel)
+- Configuration to require stations to be powered with electricity (Requires battery with wire / generator & cable reel)
 - Configuration for how many energy units are consumed per liter of fuel.
 - Administration UI (If COT is installed)
 

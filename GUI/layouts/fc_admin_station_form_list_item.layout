@@ -1,13 +1,13 @@
 ButtonWidgetClass rootFrame {
- position 509.07901 250
- size 250 140
+ position 509.07901 227.53001
+ size 797.22101 200
  hexactpos 1
  vexactpos 1
  hexactsize 1
  vexactsize 1
  {
   PanelWidgetClass info_panel {
-   visible 1
+   visible 0
    ignorepointer 1
    position 0 0
    size 1 1
@@ -18,7 +18,7 @@ ButtonWidgetClass rootFrame {
    {
     TextWidgetClass name_txt {
      ignorepointer 1
-     position 5 5
+     position 5 30
      size 165 25
      hexactpos 1
      vexactpos 1
@@ -27,53 +27,9 @@ ButtonWidgetClass rootFrame {
      text "Station Name"
      font "gui/fonts/metron16"
     }
-    TextWidgetClass capacity_label {
-     ignorepointer 1
-     position 10 85
-     size 100 20
-     hexactpos 1
-     vexactpos 1
-     hexactsize 1
-     vexactsize 1
-     text "capacity (L):"
-     font "gui/fonts/metron-bold12"
-    }
-    TextWidgetClass capacity_txt {
-     ignorepointer 1
-     position 135 85
-     size 100 20
-     hexactpos 1
-     vexactpos 1
-     hexactsize 1
-     vexactsize 1
-     text "0.000"
-     font "gui/fonts/metron12"
-    }
-    TextWidgetClass available_label {
-     ignorepointer 1
-     position 10 108
-     size 110 20
-     hexactpos 1
-     vexactpos 1
-     hexactsize 1
-     vexactsize 1
-     text "available (L):"
-     font "gui/fonts/metron-bold12"
-    }
-    TextWidgetClass available_txt {
-     ignorepointer 1
-     position 135 108
-     size 100 20
-     hexactpos 1
-     vexactpos 1
-     hexactsize 1
-     vexactsize 1
-     text "0.000"
-     font "gui/fonts/metron12"
-    }
     PanelWidgetClass buttons {
      ignorepointer 0
-     position 175 5
+     position 175 30
      size 70 25
      hexactpos 1
      vexactpos 1
@@ -159,8 +115,8 @@ ButtonWidgetClass rootFrame {
     }
     FrameWidgetClass position_panel {
      ignorepointer 1
-     position 0 35
-     size 1 45
+     position 0 60
+     size 1 60
      hexactpos 1
      vexactpos 1
      hexactsize 0
@@ -168,7 +124,7 @@ ButtonWidgetClass rootFrame {
      {
       TextWidgetClass location_x_label {
        ignorepointer 1
-       position 110 0
+       position 10 33
        size 20 20
        hexactpos 1
        vexactpos 1
@@ -179,7 +135,7 @@ ButtonWidgetClass rootFrame {
       }
       TextWidgetClass location_x_txt {
        ignorepointer 1
-       position 134 0
+       position 32 33
        size 100 20
        hexactpos 1
        vexactpos 1
@@ -191,7 +147,7 @@ ButtonWidgetClass rootFrame {
       TextWidgetClass location_y_label {
        visible 1
        ignorepointer 1
-       position 110 23
+       position 135 33
        size 20 20
        hexactpos 1
        vexactpos 1
@@ -201,8 +157,8 @@ ButtonWidgetClass rootFrame {
        font "gui/fonts/metron-bold12"
       }
       TextWidgetClass location_y_txt {
-       ignorepointer 1
-       position 134 24
+       ignorepointer 0
+       position 157 33
        size 100 20
        hexactpos 1
        vexactpos 1
@@ -210,10 +166,11 @@ ButtonWidgetClass rootFrame {
        vexactsize 1
        text "0.000"
        font "gui/fonts/metron12"
+       "exact text" 0
       }
       TextWidgetClass position_lbl {
        ignorepointer 1
-       position 10 0
+       position 10 10
        size 90 20
        hexactpos 1
        vexactpos 1
@@ -224,10 +181,212 @@ ButtonWidgetClass rootFrame {
       }
      }
     }
+    FrameWidgetClass gasoline_panel {
+     ignorepointer 1
+     size 253.231 80
+     valign bottom_ref
+     hexactpos 1
+     vexactpos 1
+     hexactsize 1
+     vexactsize 1
+     {
+      TextWidgetClass gasoline_available_txt {
+       ignorepointer 0
+       position 135 52
+       size 100 20
+       hexactpos 1
+       vexactpos 1
+       hexactsize 1
+       vexactsize 1
+       text "0.000"
+       font "gui/fonts/metron12"
+      }
+      TextWidgetClass available_label {
+       ignorepointer 1
+       position 10 52
+       size 110 20
+       hexactpos 1
+       vexactpos 1
+       hexactsize 1
+       vexactsize 1
+       text "available (L):"
+       font "gui/fonts/metron-bold12"
+      }
+      TextWidgetClass gasoline_capacity_txt {
+       ignorepointer 0
+       position 135 30
+       size 100 20
+       hexactpos 1
+       vexactpos 1
+       hexactsize 1
+       vexactsize 1
+       text "0.000"
+       font "gui/fonts/metron12"
+      }
+      TextWidgetClass capacity_label {
+       ignorepointer 1
+       position 10 30
+       size 100 20
+       hexactpos 1
+       vexactpos 1
+       hexactsize 1
+       vexactsize 1
+       text "capacity (L):"
+       font "gui/fonts/metron-bold12"
+      }
+      TextWidgetClass fuel_label {
+       ignorepointer 1
+       position 10 5
+       size 150 20
+       hexactpos 1
+       vexactpos 1
+       hexactsize 1
+       vexactsize 1
+       text "Gasoline"
+       font "gui/fonts/metron-bold12"
+      }
+     }
+    }
+    FrameWidgetClass diesel_panel {
+     ignorepointer 1
+     position 260 0
+     size 253.231 80
+     valign bottom_ref
+     hexactpos 1
+     vexactpos 1
+     hexactsize 1
+     vexactsize 1
+     {
+      TextWidgetClass diesel_available_txt {
+       ignorepointer 0
+       position 135 52
+       size 100 20
+       hexactpos 1
+       vexactpos 1
+       hexactsize 1
+       vexactsize 1
+       text "0.000"
+       font "gui/fonts/metron12"
+      }
+      TextWidgetClass diesel_available_label {
+       ignorepointer 1
+       position 10 52
+       size 110 20
+       hexactpos 1
+       vexactpos 1
+       hexactsize 1
+       vexactsize 1
+       text "available (L):"
+       font "gui/fonts/metron-bold12"
+      }
+      TextWidgetClass diesel_capacity_txt {
+       ignorepointer 0
+       position 135 30
+       size 100 20
+       hexactpos 1
+       vexactpos 1
+       hexactsize 1
+       vexactsize 1
+       text "0.000"
+       font "gui/fonts/metron12"
+      }
+      TextWidgetClass capacity_label1 {
+       ignorepointer 1
+       position 10 30
+       size 100 20
+       hexactpos 1
+       vexactpos 1
+       hexactsize 1
+       vexactsize 1
+       text "capacity (L):"
+       font "gui/fonts/metron-bold12"
+      }
+      TextWidgetClass fuel_label0 {
+       ignorepointer 1
+       position 10 5
+       size 150 20
+       hexactpos 1
+       vexactpos 1
+       hexactsize 1
+       vexactsize 1
+       text "Diesel"
+       font "gui/fonts/metron-bold12"
+      }
+     }
+    }
+    FrameWidgetClass avgas_panel {
+     ignorepointer 1
+     position 520 0
+     size 253.231 80
+     valign bottom_ref
+     hexactpos 1
+     vexactpos 1
+     hexactsize 1
+     vexactsize 1
+     {
+      TextWidgetClass avgas_available_txt {
+       ignorepointer 0
+       position 135 52
+       size 100 20
+       hexactpos 1
+       vexactpos 1
+       hexactsize 1
+       vexactsize 1
+       text "0.000"
+       font "gui/fonts/metron12"
+      }
+      TextWidgetClass diesel_available_label0 {
+       ignorepointer 1
+       position 10 52
+       size 110 20
+       hexactpos 1
+       vexactpos 1
+       hexactsize 1
+       vexactsize 1
+       text "available (L):"
+       font "gui/fonts/metron-bold12"
+      }
+      TextWidgetClass avgas_capacity_txt {
+       ignorepointer 0
+       position 135 30
+       size 100 20
+       hexactpos 1
+       vexactpos 1
+       hexactsize 1
+       vexactsize 1
+       text "0.000"
+       font "gui/fonts/metron12"
+       "exact text" 0
+      }
+      TextWidgetClass capacity_label2 {
+       ignorepointer 1
+       position 10 30
+       size 100 20
+       hexactpos 1
+       vexactpos 1
+       hexactsize 1
+       vexactsize 1
+       text "capacity (L):"
+       font "gui/fonts/metron-bold12"
+      }
+      TextWidgetClass fuel_label1 {
+       ignorepointer 1
+       position 10 5
+       size 150 20
+       hexactpos 1
+       vexactpos 1
+       hexactsize 1
+       vexactsize 1
+       text "Aviation Fuel"
+       font "gui/fonts/metron-bold12"
+       "exact text" 0
+      }
+     }
+    }
    }
   }
   PanelWidgetClass edit_panel {
-   visible 0
+   visible 1
    ignorepointer 0
    position 0 0
    size 1 1
@@ -238,7 +397,7 @@ ButtonWidgetClass rootFrame {
    {
     EditBoxWidgetClass name_edit {
      visible 1
-     position 5 1
+     position 5 30
      size 165 25
      hexactpos 1
      vexactpos 1
@@ -251,7 +410,7 @@ ButtonWidgetClass rootFrame {
     }
     PanelWidgetClass edit_buttons {
      ignorepointer 0
-     position 175 5
+     position 175 30
      size 70 25
      hexactpos 1
      vexactpos 1
@@ -310,64 +469,18 @@ ButtonWidgetClass rootFrame {
       }
      }
     }
-    TextWidgetClass capacity_label0 {
-     ignorepointer 1
-     position 10 85
-     size 100 20
-     hexactpos 1
-     vexactpos 1
-     hexactsize 1
-     vexactsize 1
-     text "capacity (L):"
-     font "gui/fonts/metron-bold12"
-    }
-    EditBoxWidgetClass capacity_edit {
-     ignorepointer 0
-     position 135 85
-     size 100 20
-     hexactpos 1
-     vexactpos 1
-     hexactsize 1
-     vexactsize 1
-     text "0.000"
-     "exact text" 1
-     font "gui/fonts/metron12"
-    }
-    TextWidgetClass available_label0 {
-     ignorepointer 1
-     position 10 108
-     size 110 20
-     hexactpos 1
-     vexactpos 1
-     hexactsize 1
-     vexactsize 1
-     text "available (L):"
-     font "gui/fonts/metron-bold12"
-    }
-    EditBoxWidgetClass available_edit {
-     ignorepointer 0
-     position 135 108
-     size 100 20
-     hexactpos 1
-     vexactpos 1
-     hexactsize 1
-     vexactsize 1
-     text "0.000"
-     "exact text" 1
-     font "gui/fonts/metron12"
-    }
     FrameWidgetClass position_panel0 {
      ignorepointer 1
-     position 0 35
-     size 1 45
+     position 0 60
+     size 1 60
      hexactpos 1
      vexactpos 1
      hexactsize 0
      vexactsize 1
      {
-      TextWidgetClass location_x_label1 {
+      TextWidgetClass location_x_label0 {
        ignorepointer 1
-       position 110 0
+       position 10 33
        size 20 20
        hexactpos 1
        vexactpos 1
@@ -378,7 +491,7 @@ ButtonWidgetClass rootFrame {
       }
       EditBoxWidgetClass location_x_edit {
        ignorepointer 0
-       position 134 0
+       position 32 33
        size 100 20
        hexactpos 1
        vexactpos 1
@@ -388,10 +501,10 @@ ButtonWidgetClass rootFrame {
        "exact text" 1
        font "gui/fonts/metron12"
       }
-      TextWidgetClass location_y_label1 {
+      TextWidgetClass location_y_label0 {
        visible 1
        ignorepointer 1
-       position 110 23
+       position 135 33
        size 20 20
        hexactpos 1
        vexactpos 1
@@ -402,7 +515,7 @@ ButtonWidgetClass rootFrame {
       }
       EditBoxWidgetClass location_y_edit {
        ignorepointer 0
-       position 134 23
+       position 157 33
        size 100 20
        hexactpos 1
        vexactpos 1
@@ -414,7 +527,7 @@ ButtonWidgetClass rootFrame {
       }
       TextWidgetClass position_lbl0 {
        ignorepointer 1
-       position 10 0
+       position 10 10
        size 90 20
        hexactpos 1
        vexactpos 1
@@ -422,6 +535,213 @@ ButtonWidgetClass rootFrame {
        vexactsize 1
        text "Position"
        font "gui/fonts/metron-bold12"
+      }
+     }
+    }
+    FrameWidgetClass gasoline_panel0 {
+     ignorepointer 1
+     size 253.231 80
+     valign bottom_ref
+     hexactpos 1
+     vexactpos 1
+     hexactsize 1
+     vexactsize 1
+     {
+      EditBoxWidgetClass gasoline_available_edit {
+       ignorepointer 0
+       position 135 52
+       size 100 20
+       hexactpos 1
+       vexactpos 1
+       hexactsize 1
+       vexactsize 1
+       text "0.000"
+       "exact text" 1
+       font "gui/fonts/metron12"
+      }
+      TextWidgetClass available_label0 {
+       ignorepointer 1
+       position 10 52
+       size 110 20
+       hexactpos 1
+       vexactpos 1
+       hexactsize 1
+       vexactsize 1
+       text "available (L):"
+       font "gui/fonts/metron-bold12"
+      }
+      EditBoxWidgetClass gasoline_capacity_edit {
+       ignorepointer 0
+       position 135 30
+       size 100 20
+       hexactpos 1
+       vexactpos 1
+       hexactsize 1
+       vexactsize 1
+       text "0.000"
+       "exact text" 1
+       font "gui/fonts/metron12"
+      }
+      TextWidgetClass capacity_label0 {
+       ignorepointer 1
+       position 10 30
+       size 100 20
+       hexactpos 1
+       vexactpos 1
+       hexactsize 1
+       vexactsize 1
+       text "capacity (L):"
+       font "gui/fonts/metron-bold12"
+      }
+      TextWidgetClass fuel_label2 {
+       ignorepointer 1
+       position 10 5
+       size 150 20
+       hexactpos 1
+       vexactpos 1
+       hexactsize 1
+       vexactsize 1
+       text "Gasoline"
+       font "gui/fonts/metron-bold12"
+      }
+     }
+    }
+    FrameWidgetClass diesel_panel0 {
+     ignorepointer 1
+     position 260 0
+     size 253.231 80
+     valign bottom_ref
+     hexactpos 1
+     vexactpos 1
+     hexactsize 1
+     vexactsize 1
+     {
+      EditBoxWidgetClass diesel_available_edit {
+       ignorepointer 0
+       position 135 52
+       size 100 20
+       hexactpos 1
+       vexactpos 1
+       hexactsize 1
+       vexactsize 1
+       text "0.000"
+       "exact text" 1
+       font "gui/fonts/metron12"
+      }
+      TextWidgetClass diesel_available_label1 {
+       ignorepointer 1
+       position 10 52
+       size 110 20
+       hexactpos 1
+       vexactpos 1
+       hexactsize 1
+       vexactsize 1
+       text "available (L):"
+       font "gui/fonts/metron-bold12"
+      }
+      EditBoxWidgetClass diesel_capacity_edit {
+       ignorepointer 0
+       position 135 30
+       size 100 20
+       hexactpos 1
+       vexactpos 1
+       hexactsize 1
+       vexactsize 1
+       text "0.000"
+       "exact text" 1
+       font "gui/fonts/metron12"
+      }
+      TextWidgetClass capacity_label3 {
+       ignorepointer 1
+       position 10 30
+       size 100 20
+       hexactpos 1
+       vexactpos 1
+       hexactsize 1
+       vexactsize 1
+       text "capacity (L):"
+       font "gui/fonts/metron-bold12"
+      }
+      TextWidgetClass fuel_label3 {
+       ignorepointer 1
+       position 10 5
+       size 150 20
+       hexactpos 1
+       vexactpos 1
+       hexactsize 1
+       vexactsize 1
+       text "Diesel"
+       font "gui/fonts/metron-bold12"
+      }
+     }
+    }
+    FrameWidgetClass avgas_panel0 {
+     ignorepointer 1
+     position 520 0
+     size 253.231 80
+     valign bottom_ref
+     hexactpos 1
+     vexactpos 1
+     hexactsize 1
+     vexactsize 1
+     {
+      EditBoxWidgetClass avgas_available_edit {
+       ignorepointer 0
+       position 135 52
+       size 100 20
+       hexactpos 1
+       vexactpos 1
+       hexactsize 1
+       vexactsize 1
+       text "0.000"
+       "exact text" 1
+       font "gui/fonts/metron12"
+      }
+      TextWidgetClass diesel_available_label2 {
+       ignorepointer 1
+       position 10 52
+       size 110 20
+       hexactpos 1
+       vexactpos 1
+       hexactsize 1
+       vexactsize 1
+       text "available (L):"
+       font "gui/fonts/metron-bold12"
+      }
+      EditBoxWidgetClass avgas_capacity_edit {
+       ignorepointer 0
+       position 135 30
+       size 100 20
+       hexactpos 1
+       vexactpos 1
+       hexactsize 1
+       vexactsize 1
+       text "0.000"
+       "exact text" 1
+       font "gui/fonts/metron12"
+      }
+      TextWidgetClass capacity_label4 {
+       ignorepointer 1
+       position 10 30
+       size 100 20
+       hexactpos 1
+       vexactpos 1
+       hexactsize 1
+       vexactsize 1
+       text "capacity (L):"
+       font "gui/fonts/metron-bold12"
+      }
+      TextWidgetClass fuel_label4 {
+       ignorepointer 1
+       position 10 5
+       size 150 20
+       hexactpos 1
+       vexactpos 1
+       hexactsize 1
+       vexactsize 1
+       text "Aviation Fuel"
+       font "gui/fonts/metron-bold12"
+       "exact text" 0
       }
      }
     }
@@ -452,8 +772,10 @@ ButtonWidgetClass rootFrame {
      "text valign" center
     }
     ButtonWidgetClass ok_del_btn {
-     position 59.1055 85
+     position -50 40
      size 50 30
+     halign center_ref
+     valign center_ref
      hexactpos 1
      vexactpos 1
      hexactsize 1
@@ -462,8 +784,10 @@ ButtonWidgetClass rootFrame {
      font "gui/fonts/metron-bold12"
     }
     ButtonWidgetClass cancel_del_btn {
-     position 136.58301 85
+     position 50 40
      size 50 30
+     halign center_ref
+     valign center_ref
      hexactpos 1
      vexactpos 1
      hexactsize 1
