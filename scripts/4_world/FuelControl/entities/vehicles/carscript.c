@@ -74,8 +74,18 @@ modded class CarScript {
 				float consumed = lastFuelAmount - currentFuelAmount;
 				AddFuel(consumed);
 			}
+
+			float rpm;
+			#ifndef RFFHeli
+				RFFSHeli_base heli = RFFSHeli_base.Cast(this);
+				rpm = heli.m_collective_level / 20;
+			#else
+				rpm = EngineGetRPM() / EngineGetRPMMax();
+			#endif
 			
-			float rpm = EngineGetRPM() / EngineGetRPMMax();
+			if (rpm < 0.1) {
+				rpm = 0.1;
+			}
 			
 			
 			float speed = GetVelocity(this).Length(); // speed in m/s
