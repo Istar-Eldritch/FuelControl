@@ -317,10 +317,10 @@ class FCAdminPowerBoxForm: FCAdminListForm {
 	override void OnNew() {
 		m_new_item = new array<string>();
 		m_new_item.Insert("--");
-		auto position = GetPlayer().GetWorldPosition();
+		auto position = GetGame().GetPlayer().GetWorldPosition();
 		m_new_item.Insert("" + position[0]);
 		m_new_item.Insert("" + position[2]);
-		auto orientation = GetPlayer().GetOrientation();
+		auto orientation = GetGame().GetPlayer().GetOrientation();
 		m_new_item.Insert("" + orientation[0]);
 		UpdateUI();
 	}
