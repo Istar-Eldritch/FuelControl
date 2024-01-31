@@ -16,10 +16,6 @@ class FuelStationGroup: Managed {
 		m_state = state;
 	}
 	
-	void ~FuelStationGroup() {
-		CF_Log.Trace("[FuelControl] Dropped station group");
-	}
-	
 	void SetProp(string prop, string value) {
 		TStringArray tokens = new TStringArray;
 		int liquidId;

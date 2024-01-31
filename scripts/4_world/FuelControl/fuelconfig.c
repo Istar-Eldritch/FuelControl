@@ -4,10 +4,6 @@ class IEFCStationFuelState {
 	void IEFCStationFuelState(float _amount) {
 		quantity = _amount;
 	}
-	
-	void ~IEFCStationFuelState() {
-		CF_Log.Trace("[FuelControl] Dropped Fuel state");
-	}
 
 }
 
@@ -18,10 +14,6 @@ class IEFCStationState: Managed {
 	void IEFCStationState(string _id, map<string, ref IEFCStationFuelState> _fuels) {
 		id = _id;
 		fuels = _fuels;
-	}
-	
-	void ~IEFCStationState() {
-		CF_Log.Trace("[FuelControl] Dropped Station state");
 	}
 }
 

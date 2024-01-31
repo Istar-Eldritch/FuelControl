@@ -97,7 +97,7 @@ modded class CarScript {
 
 			float rpm;
 			#ifdef RFFS_HELI
-				RFFSHeli_base heli = RFFSHeli_base.Cast(this);
+			RFFSHeli_base heli = RFFSHeli_base.Cast(this);
 			if (heli) {
 				rpm = heli.m_collective_level / 20;
 			}
