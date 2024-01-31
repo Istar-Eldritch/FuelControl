@@ -57,9 +57,10 @@ class CfgVehicles {
 	class IE_FC_ElectricalBox: House
 	{
 		scope=2;
-		displayName="Electric Box";
+		displayName="Station Electrical Enclosure";
 		descriptionShort="Allows to power fuel stations";
 		model="FuelControl\GUI\models\IE_FC_ElectricalBox_Model.p3d";
+		attachments[]= {"IE_FC_ElectricalBox"};
 		class EnergyManager
 		{
 			hasIcon=1;
