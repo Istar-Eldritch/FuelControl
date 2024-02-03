@@ -7,7 +7,6 @@ In the profiles folder you'll find some default configurations. Only change the 
 This file is used to change general settings and toggle features on and off:
 ```js
 {
-    "administrators": [], // A list of steam ids, separated by commas, allows for usage of the administration commands.
     "spawn_enabled": true, // If the automated spawn is enabled.
     "spawn_interval": 1800, // How often the spawn task runs in seconds. Defaults to 30 min
     "spawn_amount": 1, // How much fuel in liters the spawn task spawns. Defaults to 1. 

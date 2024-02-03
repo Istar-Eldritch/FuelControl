@@ -87,7 +87,6 @@ class IE_FC_VehicleConfig {
 }
 
 class FCSettings {
-  ref array<string> administrators = new ref array<string>;
   int spawn_enabled = true;
   int spawn_interval = 1800;
   int spawn_amount = 1;

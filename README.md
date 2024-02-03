@@ -27,13 +27,14 @@ All this features are configurable. Check Configuration or use the COT UI.
 - Community Framework: https://steamcommunity.com/sharedfiles/filedetails/?id=1559212036
 - [OPTIONAL for Admin UI] Commmunity Online tools: https://steamcommunity.com/sharedfiles/filedetails/?id=1564026768
 
+## Mod compatibility
+
+If you are a modder and you want to detect if FuelControl is installed, the mod defines `IE_FC`. You can check it using #ifdef.
+
 ## Mod support:
+
 On discord server: https://discord.gg/xrJmPMfwqX
 Ask on channel #mod-support
-
-## Commands
-
-Check [Commands.md](https://github.com/Istar-Eldritch/FuelControl/blob/main/commands.md)
 
 ## Configuration:
 
