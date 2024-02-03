@@ -397,7 +397,7 @@ class FuelStationManager {
 	// Spawn the provided fuel amount (in liters)
 	void Spawn(int fuelType, float amount) {
 		amount = Math.Floor(amount);
-		CF_Log.Debug("[FuelControl] Spawning " + amount + "L of fuel");
+		CF_Log.Debug("[FuelControl] Spawning " + amount + "L of " + IE_FC_StringForLiquid(fuelType));
 		// UpdateStats();
 		// float free = totalCapacity - totalFuel;
 		// if (free < amount) {

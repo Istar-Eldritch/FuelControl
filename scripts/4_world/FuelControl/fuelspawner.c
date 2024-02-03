@@ -15,6 +15,8 @@ class FuelSpawner {
         CF_Log.Debug("[FuelControl] Spawning fuel");
         auto settings = GetFuelControlSettings().settings;
         GetFuelStationManager().Spawn(LIQUID_GASOLINE, settings.spawn_amount);
+		GetFuelStationManager().Spawn(LIQUID_DIESEL, settings.spawn_amount);
+		GetFuelStationManager().Spawn(IE_FC_LIQUID_AVGAS, settings.spawn_amount);
     }
 }
 
