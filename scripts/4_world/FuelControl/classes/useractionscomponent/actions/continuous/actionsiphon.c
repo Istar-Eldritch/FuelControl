@@ -63,7 +63,14 @@ class ActionSiphon : ActionContinuousBase {
 			return false;
 
 		CarScript car = CarScript.Cast( target.GetObject() );
-		if (!car || car.GetFluidFraction(CarFluid.FUEL) <= (100 - config.settings.siphoning_limit) / 100)
+		if (!car)
+			return false;
+
+		if (GetGame().IsServer()) {
+			car.Synchronize();
+		}
+
+		if (car.GetFluidFraction(CarFluid.FUEL) <= (100 - config.settings.siphoning_limit) / 100)
 			return false;
 		
 		// Check this item can be used to put fuel inside
@@ -73,15 +80,12 @@ class ActionSiphon : ActionContinuousBase {
 		array<string> selections = new array<string>;
 		target.GetObject().GetActionComponentNameList(target.GetComponentIndex(), selections);
 
-		
-		if ( car ) {
-			for (int s = 0; s < selections.Count(); s++) {
-				if ( selections[s] == car.GetActionCompNameFuel() ) {
-					vector refillPointPos = car.GetRefillPointPosWS();
-					float dist = vector.DistanceSq(refillPointPos, player.GetPosition() );
-					float distanceFuel = car.GetActionDistanceFuel() * car.GetActionDistanceFuel();
-					return dist < distanceFuel;
-				}
+		for (int s = 0; s < selections.Count(); s++) {
+			if ( selections[s] == car.GetActionCompNameFuel() ) {
+				vector refillPointPos = car.GetRefillPointPosWS();
+				float dist = vector.DistanceSq(refillPointPos, player.GetPosition() );
+				float distanceFuel = car.GetActionDistanceFuel() * car.GetActionDistanceFuel();
+				return dist < distanceFuel;
 			}
 		}
 

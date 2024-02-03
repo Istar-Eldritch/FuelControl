@@ -17,7 +17,7 @@ modded class MissionBase {
     GetRPCManager().AddRPC("IE_FC", "TeleportToStation", teleportManager, SingleplayerExecutionType.Both);
 
 	GetRPCManager().AddRPC("IE_FC", "FuelStationSoundUpdate", this, SingleplayerExecutionType.Both);
-
+	
     if (GetGame().IsClient()) {
       settings.SyncAll();
 	  manager.SyncAll();

@@ -8,7 +8,9 @@ modded class ActionConstructor {
 		actions.Insert(ActionFillGasolineFuel);
 		actions.Insert(ActionFillAvGasFuel);
 		actions.Insert(ActionSiphon);
-		actions.Insert(ActionMeasureFuel);
+		actions.Insert(ActionMeasureGasoline);
+		actions.Insert(ActionMeasureDiesel);
+		actions.Insert(ActionMeasureAvGas);
 		actions.Insert(IEActionTurnOn);
 		actions.Insert(IEActionTurnOff);
 		actions.Insert(ActionFillGasolineBottleBase);

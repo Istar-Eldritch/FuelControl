@@ -1,19 +1,19 @@
 class ActionMeasureFuel: ActionSingleUseBase {
 	
-	float fuel;
-	bool showFuel;
-
-	void ActionAttach() {
+	override string GetText() {
+		string fuelName = IE_FC_StringForLiquid(GetFuelType());
+		fuelName.ToLower();
+		return "Measure " + fuelName + " level";
 	}
 	
-	override string GetText() {
-		if (showFuel) {
-			if (fuel == -1) {
-				return "You can't reach the bottom";
-			}
-			return "" + fuel + "L";
-		}
-		return "Measure fuel level";
+	int GetFuelType() {
+		return -1;
+	}
+	
+	string GetFuelName() {
+		string fuelName = IE_FC_StringForLiquid(GetFuelType());
+		fuelName.ToLower();
+		return fuelName;
 	}
 
 	override void CreateConditionComponents() 
@@ -39,6 +39,9 @@ class ActionMeasureFuel: ActionSingleUseBase {
         CarScript car = CarScript.Cast( target.GetObject() );
 
         if (car && item) {
+			if (car.GetFuelType() != GetFuelType()) {
+				return false;
+			}
 			array<string> selections = new array<string>;
 			target.GetObject().GetActionComponentNameList(target.GetComponentIndex(), selections);
             for (int s = 0; s < selections.Count(); s++) {
@@ -47,6 +50,9 @@ class ActionMeasureFuel: ActionSingleUseBase {
                     float dist = vector.DistanceSq(refillPointPos, player.GetPosition() );
                     float distanceFuel = car.GetActionDistanceFuel() * car.GetActionDistanceFuel();
                     if (dist <= distanceFuel) {
+						if (GetGame().IsServer()) {
+							car.Synchronize();
+						}
                         return true;
                     }
                 }
@@ -56,30 +62,50 @@ class ActionMeasureFuel: ActionSingleUseBase {
 	}
 
     override void OnExecute( ActionData action_data ) {
+		if (GetGame().IsClient()) {
+	        auto target = action_data.m_Target;
+	
+	        FuelStation station = FuelStation.Cast( target.GetObject() );
+			
+			float fuel;
+			if ( station ) {
+				fuel = station.GetFuel(GetFuelType());
+			}
+	
+			CarScript car = CarScript.Cast( target.GetObject() );
+	        if (car) {
+	            fuel = car.GetFuelAmount();
+	        }
 
-        auto target = action_data.m_Target;
-
-        FuelStation station = FuelStation.Cast( target.GetObject() );
-		
-		if ( station ) {
-			fuel = station.GetFuel(LIQUID_GASOLINE);
-			showFuel = true;
+			string fuelAmount;
+			if (fuel == -1) {
+				fuelAmount = "infinite";
+			} else {
+				int fuelInt = fuel * 100;
+				fuel = fuelInt / 100;
+				fuelAmount = "" + fuel + "l of";
+			}
+			GetGame().Chat("" + fuelAmount + " " + GetFuelName(), "colorImportant");
 		}
-
-		CarScript car = CarScript.Cast( target.GetObject() );
-        if (car) {
-            float fuelCapacity = car.GetFluidCapacity( CarFluid.FUEL );
-            float currentFuel = car.GetFluidFraction( CarFluid.FUEL );
-            currentFuel = currentFuel * fuelCapacity;
-            fuel = currentFuel;
-            showFuel = true;
-        }
-
-        GetGame().GetCallQueue(CALL_CATEGORY_SYSTEM).CallLater(ResetText, 3000);
-
 	}
+}
 
-    void ResetText() {
-		showFuel = false;
-    }
+class ActionMeasureDiesel: ActionMeasureFuel {
+	
+	override int GetFuelType() {
+		return LIQUID_DIESEL;
+	}
+}
+
+class ActionMeasureGasoline: ActionMeasureFuel {
+
+	override int GetFuelType() {
+		return LIQUID_GASOLINE;
+	}
+}
+
+class ActionMeasureAvGas: ActionMeasureFuel {
+	override int GetFuelType() {
+		return IE_FC_LIQUID_AVGAS;
+	}
 }

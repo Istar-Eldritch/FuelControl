@@ -19,15 +19,15 @@ modded class FuelStation {
 	float GetFuel(int fuelType) {
 		auto config = GetFuelControlSettings();
 
-		if(config.settings.default_pumps_have_fuel) {
-			return -1;
-		}
-
 		FuelStationManager groupManager = GetFuelStationManager();
 		FuelStationGroup group = groupManager.FindStationForPump(this.GetPosition());
 		
 		if(group) {
 			return group.GetFuel(fuelType);
+		}
+		
+		if(config.settings.default_pumps_have_fuel) {
+			return -1;
 		}
 
 		return 0;

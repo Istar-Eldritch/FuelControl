@@ -3,7 +3,7 @@ modded class CarScript {
 	static const string VEHICLE_LOOP_SOUND = "IE_FC_VehicleRefueling_SoundSet";
 	protected EffectSound 	m_RefuelingSound;
 	
-	float lastFuelAmount;
+	float m_lastFuelAmount;
 	float autonomy;
 	int fuel_type;
 	// During a dt teh amount of fuel may be so small the leak function doesn't compute it right.
@@ -42,17 +42,25 @@ modded class CarScript {
 		AddAction(ActionFillDieselAtStation);
 		AddAction(ActionFillAvGasAtStation);
 		AddAction(ActionSiphon);
-		AddAction(ActionMeasureFuel);
+		AddAction(ActionMeasureGasoline);
+		AddAction(ActionMeasureDiesel);
+		AddAction(ActionMeasureAvGas);
 	}
 	
 	void AddFuel(float quantity) {
 		Fill(CarFluid.FUEL, quantity);
-		lastFuelAmount = GetFluidCapacity(CarFluid.FUEL) * GetFluidFraction(CarFluid.FUEL);
+		m_lastFuelAmount = GetFluidCapacity(CarFluid.FUEL) * GetFluidFraction(CarFluid.FUEL);
+		SetSynchDirty();
 	}
 	
 	void RemoveFuel(float quantity) {
 		Leak(CarFluid.FUEL, quantity);
-		lastFuelAmount = GetFluidCapacity(CarFluid.FUEL) * GetFluidFraction(CarFluid.FUEL);
+		m_lastFuelAmount = GetFluidCapacity(CarFluid.FUEL) * GetFluidFraction(CarFluid.FUEL);
+		SetSynchDirty();
+	}
+	
+	float GetFuelAmount() {
+		return GetFluidCapacity(CarFluid.FUEL) * GetFluidFraction(CarFluid.FUEL);
 	}
 	
 	void ReloadConfigs() {
@@ -75,7 +83,7 @@ modded class CarScript {
 	override void OnEngineStart() {
 		fuelDebt = 0;
 		float fuelFraction = GetFluidFraction( CarFluid.FUEL);
-		lastFuelAmount = GetFluidCapacity(CarFluid.FUEL) * fuelFraction;
+		m_lastFuelAmount = GetFluidCapacity(CarFluid.FUEL) * fuelFraction;
 		ReloadConfigs();
 
 		super.OnEngineStart();
@@ -90,8 +98,8 @@ modded class CarScript {
 			float fuelTankHealth = GetHealth01("FuelTank", "");
 			// Disable vanilla consumption if autonomy rate is defined and the fuel tank is healthty.
 			// Otherwise damaged tanks would not leak
-			if (currentFuelAmount < lastFuelAmount && fuelTankHealth > GameConstants.DAMAGE_DAMAGED_VALUE) {
-				float consumed = lastFuelAmount - currentFuelAmount;
+			if (currentFuelAmount < m_lastFuelAmount && fuelTankHealth > GameConstants.DAMAGE_DAMAGED_VALUE) {
+				float consumed = m_lastFuelAmount - currentFuelAmount;
 				AddFuel(consumed);
 			}
 
@@ -100,6 +108,12 @@ modded class CarScript {
 			RFFSHeli_base heli = RFFSHeli_base.Cast(this);
 			if (heli) {
 				rpm = heli.m_collective_level / 20;
+			}
+			#endif
+			#ifdef RFWC
+			RFWC_base boat = RFWC_base.Cast(this);
+			if (boat) {
+				rpm = Math.AbsFloat(boat.m_throttle_level / 20);
 			}
 			#endif
 			if (!rpm) {
