@@ -160,10 +160,67 @@ class FuelControlSettings {
       CF_Log.Info("[FuelControl] Loading configuration");
       JsonFileLoader<FCSettings>.JsonLoadFile(SETTINGS_PATH, settings );
     }
+
+    if (FileExist(STATIONS_STATE_PATH)){ //If config exist load File
+      CF_Log.Info("[FuelControl] Loading stations state");
+      JsonFileLoader<array<ref IEFCStationState>>.JsonLoadFile(STATIONS_STATE_PATH, stations_state );
+    }
 		
     if (FileExist(STATIONS_CONFIG_PATH)){ //If config exist load File
       CF_Log.Info("[FuelControl] Loading station configuration");
       JsonFileLoader<array<ref IEFCStationConfig>>.JsonLoadFile(STATIONS_CONFIG_PATH, stations_config );
+	  string gasoline = IE_FC_StringForLiquid(LIQUID_GASOLINE);
+	  string diesel = IE_FC_StringForLiquid(LIQUID_DIESEL);
+	  string avgas = IE_FC_StringForLiquid(IE_FC_LIQUID_AVGAS);
+	  foreach (auto config: stations_config) {
+		auto gasoline_config = config.fuels.Get(gasoline);
+		if (!gasoline_config) {
+			config.fuels.Set(gasoline, new IEFCStationFuelConfig(-1));
+		}
+		auto diesel_config = config.fuels.Get(diesel);
+		if (!diesel_config) {
+			config.fuels.Set(diesel, new IEFCStationFuelConfig(-1));
+		}
+		auto avgas_config = config.fuels.Get(avgas);
+		if (!avgas_config) {
+			config.fuels.Set(avgas, new IEFCStationFuelConfig(-1));
+		}
+
+		ref IEFCStationState found;
+		foreach(auto state: stations_state) {
+			if (config.id == state.id) {
+				found = state;
+			}
+		}
+
+		if (!found) {
+			auto fuelStates = new map<string, ref IEFCStationFuelState>;
+
+			float gasoline_capacity = config.fuels.Get(gasoline).capacity;
+			fuelStates.Set(gasoline, new IEFCStationFuelState(gasoline_capacity));
+			
+			float diesel_capacity = config.fuels.Get(diesel).capacity;
+			fuelStates.Set(diesel, new IEFCStationFuelState(diesel_capacity));
+
+			float avgas_capacity = config.fuels.Get(avgas).capacity;
+			fuelStates.Set(avgas, new IEFCStationFuelState(avgas_capacity));
+
+			stations_state.Insert(new IEFCStationState(config.id, fuelStates));
+		} else {
+			auto gasoline_state = found.fuels.Get(gasoline);
+			if (!gasoline_state) {
+				found.fuels.Set(gasoline, new IEFCStationFuelState(config.fuels.Get(gasoline).capacity));
+			}
+			auto diesel_state = found.fuels.Get(diesel);
+			if (!diesel_state) {
+				found.fuels.Set(diesel, new IEFCStationFuelState(config.fuels.Get(diesel).capacity));
+			}
+			auto avgas_state = found.fuels.Get(avgas);
+			if (!avgas_state) {
+				found.fuels.Set(avgas, new IEFCStationFuelState(config.fuels.Get(avgas).capacity));
+			}
+		}
+	  }
     } else if (GetGame().IsServer()) { //File does not exist use default settings and create file.
 			stations_state = new array<ref IEFCStationState>;
       	if (FileExist(LEGACY_STATIONS_PATH)){ //If config exist load File
@@ -171,11 +228,6 @@ class FuelControlSettings {
     	} else {
 			DefaultStations();
 		}
-    }
-		
-    if (FileExist(STATIONS_STATE_PATH)){ //If config exist load File
-      CF_Log.Info("[FuelControl] Loading stations state");
-      JsonFileLoader<array<ref IEFCStationState>>.JsonLoadFile(STATIONS_STATE_PATH, stations_state );
     }
 		
 	if (FileExist(POWER_BOX_PATH)){ //If config exist load File
