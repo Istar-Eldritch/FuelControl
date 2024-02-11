@@ -4,13 +4,12 @@
 
         float m_fuelDebt = 0;
         float m_Autonomy = 0;
-		int m_FuelType = LIQUID_DIESEL;
 
         override bool StartEngine(bool forceStart = false, bool skipStartup = false)
         {
-            ReloadConfigs();
+            ReloadFCConfigs();
+		    Print("Starting engine!");
             return super.StartEngine(forceStart, skipStartup);
-            Print("Starting engine!");
         }
 
         override protected void UpdateFuel(float dt) {
@@ -48,21 +47,40 @@
 			}
         }
 
-        void ReloadConfigs() {
+        void ReloadFCConfigs() {
             FuelControlSettings settings = GetFuelControlSettings();
             auto type = GetType();
             auto vehicle_config = settings.vehicle_config.Get(type);
+			int fuelType = GetLiquidType();
             if (vehicle_config) {
                 m_Autonomy = vehicle_config.autonomy;
-                m_FuelType = IE_FC_LiquidFromString(vehicle_config.fuel_type);
-                if (m_FuelType == -1) {
+                fuelType = IE_FC_LiquidFromString(vehicle_config.fuel_type);
+                if (fuelType == -1) {
                     CF_Log.Error("[FuelControl] Couldn't parse fuel type for " + type + " likely a misconfiguration");
-                    m_FuelType = LIQUID_DIESEL;
+                    fuelType = GetLiquidType();
                 }
             } else {
                 m_Autonomy = 0;
-                m_FuelType = LIQUID_DIESEL;
             }
+			if (fuelType != GetLiquidType()) {
+				SetLiquidType(fuelType);	
+			}
+	    }
+	
+		override bool CanFillWithLiquid(int liquidType, bool ignore_fullness_check = false)
+		{
+			if(IsFullLiquidQuantity() && !ignore_fullness_check) return false;
+	
+			if(m_LiquidQuantity > 0 && m_LiquidType != liquidType) return false;
+	
+			return true;
+		}
+	
+
+	    override protected void SetInitialLiquids()
+	    {
+	        super.SetInitialLiquids();
+			ReloadFCConfigs();
 	    }
     }
 #endif
