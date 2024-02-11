@@ -21,6 +21,9 @@ cmd.exe /c mklink /J "P:\JM\COT" "$(wslpath -w "$SCRIPT_DIR/../../DayZ-Community
 # RFFSHeli_Core
 cmd.exe /c mklink /J "P:\RFFSHeli_Core" "$(wslpath -w "$SCRIPT_DIR/../../RFFSHeli_Core")"
 
+#HypeTrain Core
+cmd.exe /c mklink /J "P:\HypeTrain" "$(wslpath -w "$SCRIPT_DIR/../../HypeTrain")"
+
 # Missions
 
 cmd.exe /c mklink /J "C:\Program Files (x86)\Steam\steamapps\common\DayZ\missions" "$(wslpath -w "$SCRIPT_DIR/missions")"

@@ -10,8 +10,10 @@ cmd.exe /c rmdir "C:\Program Files (x86)\Steam\steamapps\common\DayZ\JM"
 cmd.exe /c rmdir "P:\JM"
 
 # RFFSHeli_Core
-
 cmd.exe /c rmdir "P:\RFFSHeli_Core"
+
+# HypeTrain Core
+cmd.exe /c rmdir "P:\HypeTrain"
 
 # Missions
 cmd.exe /c rmdir "C:\Program Files (x86)\Steam\steamapps\common\DayZ\missions"
