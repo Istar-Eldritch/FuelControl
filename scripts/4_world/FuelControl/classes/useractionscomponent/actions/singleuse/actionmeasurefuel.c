@@ -58,6 +58,17 @@ class ActionMeasureFuel: ActionSingleUseBase {
                 }
             }
         }
+
+		#ifdef HypeTrain
+			auto trainTarget = HypeTrain_PartBase.Cast(target.GetObject());
+
+			if (trainTarget) {
+				auto cmpName = target.GetObject().GetActionComponentName(target.GetComponentIndex());
+				if(cmpName.Contains("pour"))
+					return true;
+			}
+		#endif
+
 		return false;
 	}
 
