@@ -233,7 +233,8 @@ class FuelStationManager {
 	float totalCapacity;
 	string fullestStation;
 	float fullestStationFreeCapacity;
-	int last_save = 0;
+	int last_state_save = 0;
+	int last_config_save = 0;
 	
 	ref map<string, ref FuelStationGroup> m_stations = new ref map<string, ref FuelStationGroup>;
 	
@@ -271,7 +272,8 @@ class FuelStationManager {
 		station.SetProp(prop, value);
 
 		if (GetGame().IsServer()) {
-			Save();
+			SaveConfig();
+			SaveState();
 		}
 		
 		if (sync) {
@@ -281,8 +283,10 @@ class FuelStationManager {
 	
 	void DeleteStation(string id, bool sync = false) {
 		m_stations.Remove(id);
+		
 		if (GetGame().IsServer()) {
-			Save();
+			SaveConfig();
+			SaveState();
 		}
 		if (sync) {
 			SyncDeleteStation(id);
@@ -309,23 +313,38 @@ class FuelStationManager {
 		return null;
 	}
 	
-	void Save() {
+	void SaveState() {
 		int now = GetGame().GetTime();
-		if (last_save <= now + 1000) {
-			GetGame().GetCallQueue(CALL_CATEGORY_SYSTEM).CallLater(_Save, 10000);
-			last_save = now + 1000;
+		if (last_state_save <= now + 1000) {
+			GetGame().GetCallQueue(CALL_CATEGORY_SYSTEM).CallLater(_SaveState, 10000);
+			last_state_save = now + 1000;
 		}
 	}
 	
-	void _Save() {
+	void _SaveState() {
 		FuelControlSettings config = GetFuelControlSettings();
-		config.stations_config = new array<ref IEFCStationConfig>;
 		config.stations_state = new array<ref IEFCStationState>;
 		foreach(auto id, auto st: m_stations) {
-			config.stations_config.Insert(st.m_config);
 			config.stations_state.Insert(st.m_state);
 		}
-		config.Save();
+		config.SaveStationState();
+	}
+
+	void SaveConfig() {
+		int now = GetGame().GetTime();
+		if (last_config_save <= now + 1000) {
+			GetGame().GetCallQueue(CALL_CATEGORY_SYSTEM).CallLater(_SaveConfig, 10000);
+			last_config_save = now + 1000;
+		}
+	}
+	
+	void _SaveConfig() {
+		FuelControlSettings config = GetFuelControlSettings();
+		config.stations_config = new array<ref IEFCStationConfig>;
+		foreach(auto id, auto st: m_stations) {
+			config.stations_config.Insert(st.m_config);
+		}
+		config.SaveStationConfig();
 	}
 	
 	void SyncAll() {
@@ -390,8 +409,6 @@ class FuelStationManager {
 			CF_Log.Debug("[FuelControl] Got delete request for station " + data.param1);
 			DeleteStation(data.param1, GetGame().IsServer());
 		}
-		
-		Save();
 	}
 
 	// Spawn the provided fuel amount (in liters)
@@ -455,7 +472,7 @@ class FuelStationManager {
 				}
 			}
 		}
-		Save();
+		SaveState();
 	}
 }
 

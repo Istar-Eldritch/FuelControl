@@ -20,7 +20,7 @@ modded class CAContinuousFill : CAContinuousBase
 			m_station.RemoveFuel(m_liquid_type, m_SpentQuantity / 1000);
 			// This is likely to be very ineficient. There should be a better way of doing this.
 			if (GetGame().IsServer()) {
-				GetFuelStationManager().Save();
+				GetFuelStationManager().SaveState();
 			}
 		}
 		

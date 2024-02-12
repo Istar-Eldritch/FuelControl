@@ -256,17 +256,6 @@ class FuelControlSettings {
       DefaultLiquidTransferRates();
     }
   }
-  
-  void Save() {
-	if (GetGame().IsServer()) {
-	    SaveStationConfig();
-		SaveStationState();
-		SaveSettings();
-		SaveVehicleConfig();
-		SaveLiquidTransfer();
-		SavePowerBoxes();
-	}
-  }
 	
   void SaveStationConfig() {
 	JsonFileLoader<array<ref IEFCStationConfig>>.JsonSaveFile(STATIONS_CONFIG_PATH, stations_config );
