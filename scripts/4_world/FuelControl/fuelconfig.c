@@ -495,6 +495,7 @@ class FuelControlSettings {
 			break;
 		case "liquid_transfer":
 			liquid_transfer_rates.Set(tokens[1], value.ToFloat());
+			SaveLiquidTransfer();
 			break;
 		case "powerbox":
 			auto power_id = tokens[1];
