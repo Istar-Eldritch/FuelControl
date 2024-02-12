@@ -64,8 +64,6 @@ class ActionFillAtStationBottleBase: ActionFillBottleBase {
 		super.OnStartAnimationLoop(action_data);
 		if (GetGame().IsServer() && m_station && m_station.HasFuel(m_liquid) && m_station.HasEnergy()) {
 			m_station.SetWorking(true);
-			auto groupManager = GetFuelStationManager();
-			FuelStationGroup group = groupManager.FindStationForPump(m_station.GetPosition());
 		}
 	}
 	
@@ -76,9 +74,11 @@ class ActionFillAtStationBottleBase: ActionFillBottleBase {
 				m_station.SetWorking(false);
 				auto groupManager = GetFuelStationManager();
 				FuelStationGroup group = groupManager.FindStationForPump(m_station.GetPosition());
-				float remaining = group.GetFuel(m_liquid);
-				if (remaining != -1) {
-					groupManager.SyncStation(group.m_config.id, "state.fuels." + m_liquid + ".available" , "" + remaining, true);
+				if (group) {
+					float remaining = group.GetFuel(m_liquid);
+					if (remaining != -1) {
+						groupManager.SyncStation(group.m_config.id, "state.fuels." + m_liquid + ".available" , "" + remaining, true);
+					}
 				}
 			}
 		}
