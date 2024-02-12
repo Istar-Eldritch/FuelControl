@@ -12,6 +12,12 @@
             return super.StartEngine(forceStart, skipStartup);
         }
 
+		override void SetActions()
+		{
+			super.SetActions();
+	        AddAction(ActionSiphon);
+		}
+
         override protected void UpdateFuel(float dt) {
 			if (m_Autonomy == 0) {
 				super.UpdateFuel(dt);

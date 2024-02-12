@@ -64,7 +64,7 @@ class ActionMeasureFuel: ActionSingleUseBase {
 
 			if (trainTarget) {
 				auto cmpName = target.GetObject().GetActionComponentName(target.GetComponentIndex());
-				if(cmpName.Contains("pour"))
+				if(cmpName.Contains("pour") && trainTarget.GetLiquidType() == GetFuelType())
 					return true;
 			}
 		#endif
@@ -87,6 +87,13 @@ class ActionMeasureFuel: ActionSingleUseBase {
 	        if (car) {
 	            fuel = car.GetFuelAmount();
 	        }
+
+			#ifdef HypeTrain
+				auto trainTarget = HypeTrain_PartBase.Cast(target.GetObject());
+				if (trainTarget) {
+					fuel = trainTarget.GetLiquidQuantity() / 1000;
+				}
+			#endif
 
 			string fuelAmount;
 			if (fuel == -1) {

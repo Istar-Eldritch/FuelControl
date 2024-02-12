@@ -1,5 +1,5 @@
-
-override class ActionPourLiquidTrain
+#ifdef HypeTrain
+modded class ActionPourLiquidTrain : ActionPourLiquid
 {
 
     override bool ActionCondition(PlayerBase player, ActionTarget target, ItemBase item)
@@ -15,3 +15,4 @@ override class ActionPourLiquidTrain
         return trainTarget.CanTransferLiquidFromItem(item);
     }
 }
+#endif

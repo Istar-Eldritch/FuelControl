@@ -14,7 +14,15 @@ class CASiphon : CAContinuousFill {
 		
 		if (GetGame().IsServer()) {
 			CarScript car = CarScript.Cast(action_data.m_Target.GetObject());
-			car.RemoveFuel(m_SpentQuantity / 1000);
+			if (car) {
+				car.RemoveFuel(m_SpentQuantity / 1000);
+			}
+			#ifdef HypeTrain
+				auto trainTarget = HypeTrain_PartBase.Cast(action_data.m_Target.GetObject());
+				if (trainTarget) {
+					trainTarget.AddLiquidQuantity(-m_SpentQuantity);
+				}
+			#endif
 			Liquid.FillContainerEnviro(action_data.m_MainItem, m_liquid_type, m_SpentQuantity, false);
 		}
 		

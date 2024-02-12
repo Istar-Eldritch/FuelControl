@@ -22,7 +22,16 @@ class ActionSiphonCB : ActionContinuousBaseCB {
 		CarScript car = CarScript.Cast( m_ActionData.m_Target.GetObject() );
 		if (car) {
 			liquid = car.GetFuelType();
-		} else {
+		}
+		
+		#ifdef HypeTrain
+			auto trainTarget = HypeTrain_PartBase.Cast(m_ActionData.m_Target.GetObject());
+			if (trainTarget) {
+				liquid = trainTarget.GetLiquidType();
+			}
+		#endif
+			
+		if (!liquid) {
 			CF_Log.Error("[FuelControl] Couldn't get fuel type for vehicle for siphoning, likely a bug");
 			liquid = LIQUID_GASOLINE;
 		}
@@ -62,32 +71,52 @@ class ActionSiphon : ActionContinuousBase {
 		if(!config.settings.siphoning)
 			return false;
 
-		CarScript car = CarScript.Cast( target.GetObject() );
-		if (!car)
-			return false;
-
-		if (GetGame().IsServer()) {
-			car.Synchronize();
+		float siphoning_limit = (100 - config.settings.siphoning_limit) / 100;
+		if(siphoning_limit < 0) {
+			siphoning_limit = 0;
 		}
 
-		if (car.GetFluidFraction(CarFluid.FUEL) <= (100 - config.settings.siphoning_limit) / 100)
-			return false;
-		
-		// Check this item can be used to put fuel inside
-		if(!item || !Liquid.CanFillContainer(item, car.GetFuelType()))
-			return false;
-		
-		array<string> selections = new array<string>;
-		target.GetObject().GetActionComponentNameList(target.GetComponentIndex(), selections);
+		CarScript car = CarScript.Cast( target.GetObject() );
+		if (car) {
+			if (GetGame().IsServer()) {
+				car.Synchronize();
+			}
 
-		for (int s = 0; s < selections.Count(); s++) {
-			if ( selections[s] == car.GetActionCompNameFuel() ) {
-				vector refillPointPos = car.GetRefillPointPosWS();
-				float dist = vector.DistanceSq(refillPointPos, player.GetPosition() );
-				float distanceFuel = car.GetActionDistanceFuel() * car.GetActionDistanceFuel();
-				return dist < distanceFuel;
+			if (car.GetFluidFraction(CarFluid.FUEL) <= siphoning_limit)
+				return false;
+			
+			// Check this item can be used to put fuel inside
+			if(!item || !Liquid.CanFillContainer(item, car.GetFuelType()))
+				return false;
+			
+			array<string> selections = new array<string>;
+			target.GetObject().GetActionComponentNameList(target.GetComponentIndex(), selections);
+
+			for (int s = 0; s < selections.Count(); s++) {
+				if ( selections[s] == car.GetActionCompNameFuel() ) {
+					vector refillPointPos = car.GetRefillPointPosWS();
+					float dist = vector.DistanceSq(refillPointPos, player.GetPosition() );
+					float distanceFuel = car.GetActionDistanceFuel() * car.GetActionDistanceFuel();
+					return dist < distanceFuel;
+				}
 			}
 		}
+
+		#ifdef HypeTrain
+			auto trainTarget = HypeTrain_PartBase.Cast(target.GetObject());
+			if (trainTarget) {
+				auto cmpName = target.GetObject().GetActionComponentName(target.GetComponentIndex());
+				if(!cmpName.Contains("pour"))
+					return false;
+
+				float fraction = trainTarget.GetLiquidQuantity() / trainTarget.GetLiquidQuantityMax();
+
+				if (fraction <= siphoning_limit)
+					return false;
+
+				return trainTarget.CanTransferLiquidToItem(item);
+			}
+		#endif
 
 		return false;
 	}
@@ -102,10 +131,24 @@ class ActionSiphon : ActionContinuousBase {
 			if(siphoning_limit < 0) {
 				siphoning_limit = 0;
 			}
-			if (!car || car.GetFluidFraction(CarFluid.FUEL) <= siphoning_limit)
-				return false;
+			if (car) {
+				if (car.GetFluidFraction(CarFluid.FUEL) <= siphoning_limit)
+					return false;
 
-			return true;
+				return true;
+			}
+
+			#ifdef HypeTrain
+				auto trainTarget = HypeTrain_PartBase.Cast(action_data.m_Target.GetObject());
+				if (trainTarget) {
+					float fraction = trainTarget.GetLiquidQuantity() / trainTarget.GetLiquidQuantityMax();
+
+					if (fraction <= siphoning_limit)
+						return false;
+
+					return true;
+				}
+			#endif
 		}
 		return false;
 	}

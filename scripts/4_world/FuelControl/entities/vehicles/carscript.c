@@ -42,9 +42,6 @@ modded class CarScript {
 		AddAction(ActionFillDieselAtStation);
 		AddAction(ActionFillAvGasAtStation);
 		AddAction(ActionSiphon);
-		AddAction(ActionMeasureGasoline);
-		AddAction(ActionMeasureDiesel);
-		AddAction(ActionMeasureAvGas);
 	}
 	
 	void AddFuel(float quantity) {
