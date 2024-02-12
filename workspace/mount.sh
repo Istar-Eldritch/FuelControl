@@ -24,6 +24,10 @@ cmd.exe /c mklink /J "P:\RFFSHeli_Core" "$(wslpath -w "$SCRIPT_DIR/../../RFFSHel
 #HypeTrain Core
 cmd.exe /c mklink /J "P:\HypeTrain" "$(wslpath -w "$SCRIPT_DIR/../../HypeTrain")"
 
+#Liquid Framework
+cmd.exe /c mkdir "P:\rag\rag_stuff"
+cmd.exe /c mklink /J "P:\rag\rag_stuff\rag_liquid_framework" "$(wslpath -w "$SCRIPT_DIR/../../LiquidFramework")"
+
 # Missions
 
 cmd.exe /c mklink /J "C:\Program Files (x86)\Steam\steamapps\common\DayZ\missions" "$(wslpath -w "$SCRIPT_DIR/missions")"

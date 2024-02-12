@@ -15,6 +15,9 @@ cmd.exe /c rmdir "P:\RFFSHeli_Core"
 # HypeTrain Core
 cmd.exe /c rmdir "P:\HypeTrain"
 
+# Liquid Framework
+cmd.exe /c rmdir "P:\rag" /s /q
+
 # Missions
 cmd.exe /c rmdir "C:\Program Files (x86)\Steam\steamapps\common\DayZ\missions"
 

@@ -1,4 +1,4 @@
-#ifndef RAG_LiquidFramework
+#ifndef rag_liquid_framework
 modded class InspectMenuNew {
 	
 	//--------------------------------------------------------------------------
