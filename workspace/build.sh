@@ -15,7 +15,6 @@ cp -r "$SCRIPT_DIR/../keys" "$FC_PATH/keys"
 cp -r "$SCRIPT_DIR/../profiles" "$FC_PATH/profiles"
 cp -r "$SCRIPT_DIR/../LICENSE" "$FC_PATH/LICENSE"
 cp -r "$SCRIPT_DIR/../README.md" "$FC_PATH/README.md"
-cp -r "$SCRIPT_DIR/../commands.md" "$FC_PATH/commands.md"
 cp -r "$SCRIPT_DIR/../configuration.md" "$FC_PATH/configuration.md"
 cp -r "$SCRIPT_DIR/../mod.cpp" "$FC_PATH/mod.cpp"
 
