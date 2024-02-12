@@ -315,9 +315,9 @@ class FuelStationManager {
 	
 	void SaveState() {
 		int now = GetGame().GetTime();
-		if (last_state_save <= now + 1000) {
-			GetGame().GetCallQueue(CALL_CATEGORY_SYSTEM).CallLater(_SaveState, 10000);
-			last_state_save = now + 1000;
+		if (last_state_save <= now + 60000) {
+			GetGame().GetCallQueue(CALL_CATEGORY_SYSTEM).CallLater(_SaveState, 60000);
+			last_state_save = now + 60000;
 		}
 	}
 	
@@ -332,9 +332,9 @@ class FuelStationManager {
 
 	void SaveConfig() {
 		int now = GetGame().GetTime();
-		if (last_config_save <= now + 1000) {
-			GetGame().GetCallQueue(CALL_CATEGORY_SYSTEM).CallLater(_SaveConfig, 10000);
-			last_config_save = now + 1000;
+		if (last_config_save <= now + 60000) {
+			GetGame().GetCallQueue(CALL_CATEGORY_SYSTEM).CallLater(_SaveConfig, 60000);
+			last_config_save = now + 60000;
 		}
 	}
 	
