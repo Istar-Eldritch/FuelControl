@@ -14,7 +14,7 @@ class FCTeleportManager {
 		Param1<FuelStationGroup> data;
 		#ifdef JM_COT
 		if (GetGame().IsServer() && ctx.Read(data)) {
-			ref FuelStationGroup station = data.param1;
+			FuelStationGroup station = data.param1;
 			CF_Log.Debug("[FuelControl] Got teleport request to " + station.m_config.name + " from client " + sender.GetId());
 			auto player = PlayerBase.Cast(sender.GetPlayer());
 			player.SetLastPosition();
@@ -35,9 +35,9 @@ class FCTeleportManager {
 }
 
 static ref FCTeleportManager g_FCTeleportManager;
-static ref FCTeleportManager FCGetTeleportManager() {
+static FCTeleportManager FCGetTeleportManager() {
     if (!g_FCTeleportManager) {
-      g_FCTeleportManager = new ref FCTeleportManager();
+      g_FCTeleportManager = new FCTeleportManager();
     }
 
     return g_FCTeleportManager;

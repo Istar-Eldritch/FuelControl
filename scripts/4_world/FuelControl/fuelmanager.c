@@ -236,7 +236,7 @@ class FuelStationManager {
 	int last_state_save = 0;
 	int last_config_save = 0;
 	
-	ref map<string, ref FuelStationGroup> m_stations = new ref map<string, ref FuelStationGroup>;
+	ref map<string, ref FuelStationGroup> m_stations = new map<string, ref FuelStationGroup>;
 	
 	static string GenId(string seed) {
 		CF_StringStream stream = new CF_StringStream(seed);
@@ -425,7 +425,7 @@ class FuelStationManager {
 		// 	return;
 		// }
 
-		ref array<ref FuelStationGroup> filteredStations = new ref array<ref FuelStationGroup>;
+		array<ref FuelStationGroup> filteredStations = new array<ref FuelStationGroup>;
 		foreach(auto station: m_stations) {
 			float availableCapacity = station.AvailableCapacity(fuelType);
 			if (availableCapacity == -1 || availableCapacity > 0) {
@@ -477,9 +477,9 @@ class FuelStationManager {
 }
 
 static ref FuelStationManager g_FuelStationManager;
-static ref FuelStationManager GetFuelStationManager() {
+static FuelStationManager GetFuelStationManager() {
     if (!g_FuelStationManager) {
-        g_FuelStationManager = new ref FuelStationManager();
+        g_FuelStationManager = new FuelStationManager();
     }
 
     return g_FuelStationManager;

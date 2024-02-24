@@ -21,9 +21,9 @@ class FuelSpawner {
 }
 
 static ref FuelSpawner g_FuelSpawner;
-static ref FuelSpawner GetFuelSpawner() {
+static FuelSpawner GetFuelSpawner() {
     if (!g_FuelSpawner) {
-        g_FuelSpawner = new ref FuelSpawner();
+        g_FuelSpawner = new FuelSpawner();
     }
 
     return g_FuelSpawner;

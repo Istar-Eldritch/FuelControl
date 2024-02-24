@@ -144,12 +144,12 @@ class FuelControlSettings {
   static private const string LEGACY_VEHICLE_AUTONOMY_PATH = DIR_PATH + "\\vehicle_autonomy.json";
   static private const string LIQUID_TRANSFER_RATES_PATH = DIR_PATH + "\\liquid_transfer_rates.json";
   
-  ref FCSettings settings = new ref FCSettings();
-  ref array<ref IEFCStationConfig> stations_config = new ref array<ref IEFCStationConfig>;
+  ref FCSettings settings = new FCSettings();
+  ref array<ref IEFCStationConfig> stations_config = new array<ref IEFCStationConfig>;
   ref array<ref IEFCStationState> stations_state = new array<ref IEFCStationState>;
-  ref array<ref IE_FC_PowerBoxConfig> power_boxes = new ref array<ref IE_FC_PowerBoxConfig>;
-  ref map<string, ref IE_FC_VehicleConfig> vehicle_config = new ref map<string, ref IE_FC_VehicleConfig>;
-  ref map<string, float> liquid_transfer_rates = new ref map<string, float>;
+  ref array<ref IE_FC_PowerBoxConfig> power_boxes = new array<ref IE_FC_PowerBoxConfig>;
+  ref map<string, ref IE_FC_VehicleConfig> vehicle_config = new map<string, ref IE_FC_VehicleConfig>;
+  ref map<string, float> liquid_transfer_rates = new map<string, float>;
   
   void Load() {
     if (!FileExist(DIR_PATH)){
@@ -186,7 +186,7 @@ class FuelControlSettings {
 			config.fuels.Set(avgas, new IEFCStationFuelConfig(-1));
 		}
 
-		ref IEFCStationState found;
+		IEFCStationState found;
 		foreach(auto state: stations_state) {
 			if (config.id == state.id) {
 				found = state;
@@ -350,7 +350,7 @@ class FuelControlSettings {
 	
 	void MigrateLegacyStations() {
 		CF_Log.Info("[FuelControl] Loading legacy station configuration");
- 		ref array<ref LegacyStationConfig> stations = new ref array<ref LegacyStationConfig>;
+ 		array<ref LegacyStationConfig> stations = new array<ref LegacyStationConfig>;
      	JsonFileLoader<array<ref LegacyStationConfig>>.JsonLoadFile(LEGACY_STATIONS_PATH, stations );
 		foreach(auto legacyStation: stations) {
 			auto fuels = new map<string, ref IEFCStationFuelConfig>;
@@ -390,7 +390,7 @@ class FuelControlSettings {
   }
 	
   void DefaultPowerBoxes() {
-	power_boxes.Insert(new ref IE_FC_PowerBoxConfig(FuelStationManager.GenId("Berezino"), 12977.8, 10076, -170, "Berezino",));
+	power_boxes.Insert(new IE_FC_PowerBoxConfig(FuelStationManager.GenId("Berezino"), 12977.8, 10076, -170, "Berezino",));
     CF_Log.Info("[FuelControl] Power boxes file doesn't exist, creating one");
     JsonFileLoader<array<ref IE_FC_PowerBoxConfig>>.JsonSaveFile(POWER_BOX_PATH, power_boxes);
   }
@@ -631,9 +631,9 @@ class FuelControlSettings {
 }
 
 static ref FuelControlSettings g_FuelControlSettings;
-static ref FuelControlSettings GetFuelControlSettings() {
+static FuelControlSettings GetFuelControlSettings() {
     if (!g_FuelControlSettings) {
-      g_FuelControlSettings = new ref FuelControlSettings();
+      g_FuelControlSettings = new FuelControlSettings();
 	  if(GetGame().IsServer()) {
       	g_FuelControlSettings.Load();
 	  }
