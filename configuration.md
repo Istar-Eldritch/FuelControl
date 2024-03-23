@@ -10,14 +10,14 @@ This file is used to change general settings and toggle features on and off:
     "spawn_enabled": true, // If the automated spawn is enabled.
     "spawn_interval": 1800, // How often the spawn task runs in seconds. Defaults to 30 min
     "spawn_amount": 1, // How much fuel in liters the spawn task spawns. Defaults to 1. 
-    "spawn_minimum" 10, // During spawning, what is the minimum amount of fuel in liters that should be added to a station (if available).
+    "spawn_minimum": 10, // During spawning, what is the minimum amount of fuel in liters that should be added to a station (if available).
     "pump_car_refueling": 1, // Enables refueling a car if its close to a fuel pump. 1 = enabled, 0 = disabled
     "pump_barrel_refueling": 1, // Enables refueling a barrel if its close to a fuel pump. 1 = enabled, 0 = disabled
     "siphoning": 1, // Enables siphoning fuel from cars. 1 = enabled, 0 = disabled.
     "siphoning_limit": 98.0, // The percentage of fuel that is possible to siphon out of a car fuel tank.
     "default_pumps_have_fuel": 0, // The behaviour of pumps that don't belong to a station. If set to 1, this pumps will have infinite fuel. Defaults to  0.
     "pumps_get_ruined": 1, // If a pump gets ruined it won't produce fuel.
-    "measure_fuel_with_stick": 1 // If enabled, you can measure the fuel of cars and pumps with a long stick
+    "measure_fuel_with_stick": 1, // If enabled, you can measure the fuel of cars and pumps with a long stick
     "pumps_require_electricity": 1, // If enabled, player need to power the powerboxes in order to operate the pumps.
     "pump_consumption": 10 // The amount of electriciy used by the pumps per L of fuel consumed.
 }

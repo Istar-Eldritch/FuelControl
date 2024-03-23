@@ -415,15 +415,6 @@ class FuelStationManager {
 	void Spawn(int fuelType, float amount) {
 		amount = Math.Floor(amount);
 		CF_Log.Debug("[FuelControl] Spawning " + amount + "L of " + IE_FC_StringForLiquid(fuelType));
-		// UpdateStats();
-		// float free = totalCapacity - totalFuel;
-		// if (free < amount) {
-		// 	foreach(auto st: stations) {
-		// 		st.fuelAmount = st.fuelCapacity;
-		// 	}
-		// 	Save();
-		// 	return;
-		// }
 
 		array<ref FuelStationGroup> filteredStations = new array<ref FuelStationGroup>;
 		foreach(auto station: m_stations) {
