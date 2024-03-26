@@ -13,6 +13,12 @@ mklink /J "%DAYZ_PATH%\FuelControl" "%SCRIPT_DIR%\..\mod"
 mklink /J "P:\FuelControl" "%SCRIPT_DIR%\..\mod"
 mklink /J "P:\Mods" "%UserProfile%\Documents\Mods"
 
+@REM IE Framework
+mkdir "%DAYZ_PATH%IE"
+mkdir "P:\IE"
+mklink /J "%DAYZ_PATH%IE\Framework" "%UserProfile%\Documents\DZ\IEFramework\mod"
+mklink /J "P:\IE\Framework" "%UserProfile%\Documents\DZ\IEFramework\mod"
+
 @REM Community Framework
 
 mklink /J "%DAYZ_PATH%JM" "%UserProfile%\Documents\DZ\CommunityFramework\JM"

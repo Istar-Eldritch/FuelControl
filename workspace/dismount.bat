@@ -5,8 +5,8 @@ set "WORKDRIVE_PATH=%ProgramFiles(x86)%\Steam\steamapps\common\DayZ Tools\Bin\Wo
 rmdir "%DAYZ_PATH%\FuelControl" /s /q
 rmdir "P:\FuelControl" /s /q
 
-rmdir "%DAYZ_PATH%\HL2_IDs" /s /q
-rmdir "P:\HL2_IDs" /s /q
+rmdir "P:\IE" /s /q
+rmdir "%DAYZ_PATH%\IE" /s /q
 
 @REM Community Framework
 
