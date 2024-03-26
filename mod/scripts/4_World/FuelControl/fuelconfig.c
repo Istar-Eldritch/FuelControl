@@ -160,6 +160,10 @@ class FuelControlSettings {
       CF_Log.Info("[FuelControl] Loading configuration");
       JsonFileLoader<FCSettings>.JsonLoadFile(SETTINGS_PATH, settings );
     }
+	else
+	{
+		DefaultSettings();
+	}
 
     if (FileExist(STATIONS_STATE_PATH)){ //If config exist load File
       CF_Log.Info("[FuelControl] Loading stations state");
@@ -436,7 +440,7 @@ class FuelControlSettings {
 					settings.default_pumps_have_fuel = value == "true";
 					break;
 				case "pumps_get_ruined":
-					settings.default_pumps_have_fuel = value == "true";
+					settings.pumps_get_ruined = value == "true";
 					break;
 				case "measure_fuel_with_stick":
 					settings.measure_fuel_with_stick = value == "true";
