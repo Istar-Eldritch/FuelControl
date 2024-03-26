@@ -33,8 +33,7 @@ If you are a modder and you want to detect if FuelControl is installed, the mod 
 
 ## Mod support:
 
-On discord server: https://discord.gg/xrJmPMfwqX
-Ask on channel #mod-support
+On discord server: https://discord.gg/3BH6HeMBas
 
 ## Configuration:
 
@@ -47,5 +46,4 @@ Run `./workspace/build.sh`
 Run `AddonBuilder` from DayZ-Tools
     - Configure it to include `.paa`
     - Configure it to sign the pbo.
-    - Use FuelControl/GUI as the source with `FuelControl\GUI` as prefix.
-    - Use FuelControl/scripts as the source with `FuelControl\scripts` as prefix.
+    - Use FuelControl/mod as the source with `FuelControl` as prefix.

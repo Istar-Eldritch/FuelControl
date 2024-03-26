@@ -1,0 +1,16 @@
+MetaFileClass {
+ Name "{B59CAD4A67A67A5E}FuelControl/data/textures/cancel_white.edds"
+ Author "desktop-c2tqomk"
+ ChangeDate 1061711774
+ Configurations {
+  PNGResourceClass PC {
+   SourceFile "cancel_white.png"
+  }
+  PNGResourceClass XBOX_ONE : PC {
+  }
+  PNGResourceClass PS4 : PC {
+  }
+  PNGResourceClass LINUX : PC {
+  }
+ }
+}

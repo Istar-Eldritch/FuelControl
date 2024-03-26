@@ -12,4 +12,4 @@ copy "%SCRIPT_DIR%/../README.md" "%MOD_PATH%/README.md"
 copy "%SCRIPT_DIR%/../configuration.md" "%MOD_PATH%/configuration"
 copy "%SCRIPT_DIR%/../mod.cpp" "%MOD_PATH%/mod.cpp"
 
-start /wait /D "%ADDON_BUILDER_PATH%" AddonBuilder.exe "P:\FuelControl\mod" "%MOD_PATH%\addons" -project="P:" -prefix="FuelControl" -clear -binarizeFullLogs -sign="%UserProfile%\Documents\Keys\IstarEldritch.biprivatekey"
+start /wait /D "%ADDON_BUILDER_PATH%" AddonBuilder.exe "P:\FuelControl" "%MOD_PATH%\addons" -project="P:" -prefix="FuelControl" -clear -binarizeFullLogs -sign="%UserProfile%\Documents\Keys\IstarEldritch.biprivatekey"

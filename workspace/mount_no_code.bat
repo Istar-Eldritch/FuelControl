@@ -1,10 +1,7 @@
-#!/bin/bash
+set "SCRIPT_DIR=%cd%"
+set "DAYZ_PATH=%ProgramFiles(x86)%\Steam\steamapps\common\DayZ\"
+set "WORKDRIVE_PATH=%ProgramFiles(x86)%\Steam\steamapps\common\DayZ Tools\Bin\WorkDrive"
 
-SCRIPT_DIR=$( cd -- "$( dirname -- "${BASH_SOURCE[0]}" )" &> /dev/null && pwd )
+start /wait /D "%WORKDRIVE_PATH%" WorkDrive.exe /Mount P "%UserProfile%\Documents\DayZData"
 
-/mnt/c/Program\ Files\ \(x86\)/Steam/steamapps/common/DayZ\ Tools/Bin/WorkDrive/WorkDrive.exe /Mount P \
-  "$(wslvar USERPROFILE)\Documents\DayZData"
-
-# Missions
-
-cmd.exe /c mklink /J "C:\Program Files (x86)\Steam\steamapps\common\DayZ\missions" "$(wslpath -w "$SCRIPT_DIR/missions")"
+mklink /J "P:\Mods" "%UserProfile%\Documents\Mods"
