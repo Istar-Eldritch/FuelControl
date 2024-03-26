@@ -30,28 +30,6 @@ modded class MissionBase {
     }
   }
 	
-  override void OnMissionLoaded() {
-	if(GetGame().IsServer()) {
-		GetGame().GetCallQueue(CALL_CATEGORY_SYSTEM).CallLater(GeneratePowerSources, 1000);
-	}
-  }
-	
-  void GeneratePowerSources() {
-	  CF_Log.Debug("[FuelControl] Generating power sources");
-	  auto settings = GetFuelControlSettings();
-	  // Spawn power boxes
-	  foreach (auto box: settings.power_boxes) {
-		  vector pos;
-		  pos[0] = box.x;
-		  pos[2] = box.y;
-		  int powerSourceFlags = ECE_CREATEPHYSICS || ECE_PLACE_ON_SURFACE;
-		  auto obj = GetGame().CreateObjectEx("IE_FC_ElectricalBox", FCTeleportManager.SnapToGround(pos), powerSourceFlags);
-		  vector powerSourceOrientation = "0 0 0";
-		  powerSourceOrientation[0] = box.orientation;
-		  obj.SetOrientation(powerSourceOrientation);
-	  }
-  }
-	
 	void FuelStationSoundUpdate( CallType type, ref ParamsReadContext ctx, ref PlayerIdentity sender, ref Object target ) {
 	    Param2<vector, bool> data;
 	    if (ctx.Read(data)) {
@@ -68,4 +46,28 @@ modded class MissionBase {
 			station.PlayFuelingSound(data.param2);
 	    }
 	}
+}
+
+modded class MissionServer
+{
+  override void OnMissionStart() {
+	super.OnMissionStart();
+	GetGame().GetCallQueue(CALL_CATEGORY_SYSTEM).CallLater(IE_GeneratePowerSources, 1000);
+  }
+	
+  void IE_GeneratePowerSources() {
+	  CF_Log.Debug("[FuelControl] Generating power sources");
+	  auto settings = GetFuelControlSettings();
+	  // Spawn power boxes
+	  foreach (auto box: settings.power_boxes) {
+		  vector pos;
+		  pos[0] = box.x;
+		  pos[2] = box.y;
+		  int powerSourceFlags = ECE_CREATEPHYSICS || ECE_PLACE_ON_SURFACE;
+		  auto obj = GetGame().CreateObjectEx("IE_FC_ElectricalBox", FCTeleportManager.SnapToGround(pos), powerSourceFlags);
+		  vector powerSourceOrientation = "0 0 0";
+		  powerSourceOrientation[0] = box.orientation;
+		  obj.SetOrientation(powerSourceOrientation);
+	  }
+  }
 }

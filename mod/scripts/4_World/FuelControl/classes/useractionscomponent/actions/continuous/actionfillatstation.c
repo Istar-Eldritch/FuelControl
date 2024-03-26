@@ -56,14 +56,19 @@ class ActionFillAtStation : ActionContinuousBase {
 	override string GetText() {
 		auto hasFuel = station.HasFuel(GetFuelType());
 		auto hasEnergy = station.HasEnergy();
-		string fuel_type = IE_FC_StringForLiquid(m_fuel_type);
+		string fuel_type = IE_FC_UIStringForLiquid(m_fuel_type);
 		fuel_type.ToLower();
 		if (hasFuel && hasEnergy) {
-			return "Refuel " + fuel_type;
+			string refuelLoc = Widget.TranslateString( "#STR_IEFC_REFUEL");
+			refuelLoc.Replace("{fuel_type}", fuel_type);
+			return refuelLoc;
 		} else if (!hasFuel) {
-			return "There is no " + fuel_type + " at this station";
+			string noFuelLoc = Widget.TranslateString( "#STR_IEFC_NO_FUELTYPE");
+			noFuelLoc.Replace("{fuel_type}", fuel_type);
+			return noFuelLoc;
 		} else {
-			return "Fuel pumps require energy to run";
+			string noEnergyLoc = Widget.TranslateString( "#STR_IEFC_NO_ENERGY");
+			return noEnergyLoc;
 		}
 	}
 	

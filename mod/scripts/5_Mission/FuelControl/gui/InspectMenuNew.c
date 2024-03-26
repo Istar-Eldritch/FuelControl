@@ -79,7 +79,7 @@ modded class InspectMenuNew {
 				}
 				
 				case IE_FC_LIQUID_AVGAS:
-					WidgetTrySetText(root_widget, "ItemLiquidTypeWidget", "AVIATION FUEL", Colors.COLOR_LIQUID);
+					WidgetTrySetText(root_widget, "ItemLiquidTypeWidget", "#STR_IEFC_AVIATION_FUEL", Colors.COLOR_LIQUID);
 					break;
 				
 				default:

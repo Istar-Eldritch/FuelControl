@@ -26,14 +26,19 @@ class ActionFillAtStationBottleBase: ActionFillBottleBase {
 	
 	override string GetText(){
 		if (m_station) {
-			string fuelname = IE_FC_StringForLiquid(m_liquid);
+			string fuelname = IE_FC_UIStringForLiquid(m_liquid);
 			fuelname.ToLower();
 			if (!m_station.HasFuel(m_liquid)) {
-				return "There is no " + fuelname + " at this station";
+				string noFuelLoc = Widget.TranslateString( "#STR_IEFC_NO_FUELTYPE" );
+				noFuelLoc.Replace("{fuel_type}", fuelname);
+				return noFuelLoc;
 			} else if (!m_station.HasEnergy())  {
-				return "Fuel pumps require energy to run";
+				string noEnergyLoc = Widget.TranslateString( "#STR_IEFC_NO_ENERGY" );
+				return noEnergyLoc;
 			} else {
-				return "Fill with " + fuelname;
+				string fillLoc = Widget.TranslateString( "#STR_IEFC_FILL_FUELTYPE" );
+				fillLoc.Replace("{fuel_type}", fuelname);
+				return fillLoc;
 			}
 		}
 		return super.GetText();		

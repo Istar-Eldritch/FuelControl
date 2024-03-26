@@ -34,6 +34,20 @@ modded class ActionFillFuel: ActionContinuousBase
 		return -1;
 	}
 
+	override string GetText()
+	{
+		int fuelType = GetFuelType();
+		string fuelname = "";
+		if (fuelType != -1)
+		{
+			fuelname = IE_FC_UIStringForLiquid(fuelType);
+			fuelname.ToLower();
+		}
+		string fillLoc = Widget.TranslateString( "#STR_IEFC_FILL_FUELTYPE" );
+		fillLoc.Replace("{fuel_type}", fuelname);
+		return fillLoc;
+	}
+
 	override bool ActionCondition( PlayerBase player, ActionTarget target, ItemBase item )
 	{
 		if ( !target || !IsTransport(target) )
@@ -84,31 +98,21 @@ modded class ActionFillFuel: ActionContinuousBase
 };
 
 class ActionFillGasolineFuel: ActionFillFuel {
-	
-	override string GetText() {
-		return "Refuel Gasoline";
-	}
-	
+
 	override int GetFuelType() {
 		return LIQUID_GASOLINE;
 	}
 }
 
 class ActionFillDieselFuel: ActionFillFuel {
-	
+
 	override int GetFuelType() {
 		return LIQUID_DIESEL;
 	}
-	
-	override string GetText() {
-		return "Refuel Diesel";
-	}
+
 }
 
 class ActionFillAvGasFuel: ActionFillFuel {
-	override string GetText() {
-		return "Refuel Aviation Fuel";
-	}
 
 	override int GetFuelType() {
 		return IE_FC_LIQUID_AVGAS;

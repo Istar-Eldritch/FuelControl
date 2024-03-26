@@ -1,9 +1,11 @@
 class ActionMeasureFuel: ActionSingleUseBase {
 	
 	override string GetText() {
-		string fuelName = IE_FC_StringForLiquid(GetFuelType());
+		string fuelName = IE_FC_UIStringForLiquid(GetFuelType());
 		fuelName.ToLower();
-		return "Measure " + fuelName + " level";
+		string measureLoc = Widget.TranslateString( "#STR_IEFC_MEASURE_FUELTYPE" );
+		measureLoc.Replace("{fuel_type}", fuelName);
+		return measureLoc;
 	}
 	
 	int GetFuelType() {
@@ -11,7 +13,7 @@ class ActionMeasureFuel: ActionSingleUseBase {
 	}
 	
 	string GetFuelName() {
-		string fuelName = IE_FC_StringForLiquid(GetFuelType());
+		string fuelName = IE_FC_UIStringForLiquid(GetFuelType());
 		fuelName.ToLower();
 		return fuelName;
 	}
@@ -95,15 +97,16 @@ class ActionMeasureFuel: ActionSingleUseBase {
 				}
 			#endif
 
-			string fuelAmount;
+			string formatText = "{fuel_amount} " + GetFuelName();
 			if (fuel == -1) {
-				fuelAmount = "infinite";
+				string infiniteLoc = Widget.TranslateString( "#STR_IEFC_INFINITE" );
+				formatText.Replace("{fuel_amount}", infiniteLoc);
 			} else {
 				int fuelInt = fuel * 100;
 				fuel = fuelInt / 100;
-				fuelAmount = "" + fuel + "l of";
+				formatText.Replace("{fuel_amount}", "" + fuel + "l of");
 			}
-			GetGame().Chat("" + fuelAmount + " " + GetFuelName(), "colorImportant");
+			GetGame().Chat(formatText, "colorImportant");
 		}
 	}
 }

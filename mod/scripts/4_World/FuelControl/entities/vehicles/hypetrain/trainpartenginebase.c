@@ -8,7 +8,6 @@
         override bool StartEngine(bool forceStart = false, bool skipStartup = false)
         {
             ReloadFCConfigs();
-		    Print("Starting engine!");
             return super.StartEngine(forceStart, skipStartup);
         }
 

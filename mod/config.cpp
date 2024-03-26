@@ -56,8 +56,8 @@ class CfgVehicles {
 	class IE_FC_ElectricalBox: House
 	{
 		scope=2;
-		displayName="Station Electrical Enclosure";
-		descriptionShort="Allows to power fuel stations";
+		displayName="$STR_IEFC_ELECTRICAL_BOX_NAME";
+		descriptionShort="$STR_IEFC_ELECTRICAL_BOX_DESC";
 		model="FuelControl\data\models\IE_FC_ElectricalBox_Model.p3d";
 		attachments[]= {"IE_FC_ElectricalBox"};
 		class EnergyManager
@@ -271,7 +271,7 @@ class cfgLiquidDefinitions
 	class IEFCAVGasLiquid
 	{
 		type=1048576;
-		displayName="Aviation Fuel";
+		displayName="$STR_IEFC_AVIATION_FUEL";
 		flammability=60;
 		class Nutrition
 		{

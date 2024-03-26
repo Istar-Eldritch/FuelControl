@@ -56,7 +56,8 @@ class ActionSiphon : ActionContinuousBase {
 	}
 	
 	override string GetText() {
-		return "Siphon Fuel";
+		string siphonLoc = Widget.TranslateString( "#STR_IEFC_SIPHON" );
+		return siphonLoc;
 	}
 	
 	override typename GetInputType()

@@ -102,6 +102,21 @@ class FCSettings {
   int pump_consumption = 2;
 }
 
+string IE_FC_UIStringForLiquid(int liquidType)
+{
+	switch (liquidType) {
+		case LIQUID_GASOLINE:
+			return Widget.TranslateString( "#inv_inspect_gasoline" );
+		case LIQUID_DIESEL:
+			return Widget.TranslateString( "#inv_inspect_diesel" );
+		case IE_FC_LIQUID_AVGAS:
+			return Widget.TranslateString( "#STR_IEFC_AVIATION_FUEL");
+		default:
+			return "ERROR";
+	}
+	return "ERROR";
+}
+
 
 string IE_FC_StringForLiquid(int liquidType) {
 	switch (liquidType) {
